@@ -5,48 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Search, Clock, Star, ArrowRight } from "lucide-react";
+import { mockBooks } from "@/lib/bookData";
 import heroImage from "@/assets/books-hero.jpg";
 
 const Index = () => {
-  // Mock data for featured books
-  const featuredBooks = [
-    {
-      title: "The Great Gatsby",
-      author: "F. Scott Fitzgerald",
-      price: 12.99,
-      originalPrice: 18.99,
-      condition: "old" as const,
-      rating: 4,
-      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop",
-      isPopular: true
-    },
-    {
-      title: "Atomic Habits",
-      author: "James Clear",
-      price: 16.99,
-      condition: "new" as const,
-      rating: 5,
-      image: "https://images.unsplash.com/photo-1589998059171-988d887df646?w=300&h=400&fit=crop"
-    },
-    {
-      title: "1984",
-      author: "George Orwell",
-      price: 9.99,
-      originalPrice: 14.99,
-      condition: "old" as const,
-      rating: 5,
-      image: "https://images.unsplash.com/photo-1541963463532-d68292c34d19?w=300&h=400&fit=crop",
-      isPopular: true
-    },
-    {
-      title: "The Psychology of Money",
-      author: "Morgan Housel",
-      price: 18.99,
-      condition: "new" as const,
-      rating: 4,
-      image: "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=300&h=400&fit=crop"
-    }
-  ];
+  // Use actual book data from the mock database
+  const featuredBooks = mockBooks.slice(0, 4);
 
   return (
     <div className="min-h-screen bg-background">
@@ -147,8 +111,8 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {featuredBooks.map((book, index) => (
-              <BookCard key={index} {...book} />
+            {featuredBooks.map((book) => (
+              <BookCard key={book.id} {...book} />
             ))}
           </div>
         </div>
