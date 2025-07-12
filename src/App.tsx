@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import Search from "./pages/Search";
 import Index from "./pages/Index";
 import NewBooks from "./pages/NewBooks";
 import OldBooks from "./pages/OldBooks";
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/new-books" element={<NewBooks />} />
           <Route path="/old-books" element={<OldBooks />} />
           <Route path="/books" element={<BookCommerce />} />
+          <Route path="/search" element={<Search />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/request" element={<BookRequest />} />
           <Route path="/support" element={<Support />} />

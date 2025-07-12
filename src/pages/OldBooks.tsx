@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { mockBooks, filterBooksByCondition, filterBooksByGenre, sortBooks, genres } from "@/lib/bookData";
-import { BookOpen, Search, Filter, Sparkles } from "lucide-react";
+import { BookOpen, Search, Filter, Sparkles, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const OldBooks = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -145,22 +146,40 @@ const OldBooks = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No books found</h3>
-              <p className="text-muted-foreground mb-4">
-                Try adjusting your search or filter criteria.
-              </p>
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedGenre("All Genres");
-                  setSortBy("title");
-                }}
-              >
-                Clear Filters
-              </Button>
+            <div className="text-center py-16">
+              <div className="max-w-md mx-auto">
+                <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-foreground mb-4">
+                  {searchQuery ? `No pre-owned books found for "${searchQuery}"` : "No pre-owned books found"}
+                </h3>
+                <p className="text-muted-foreground mb-8 leading-relaxed">
+                  We couldn't find any pre-owned books matching your criteria. But don't worry! 
+                  Our team can help you find classic editions and rare finds you're looking for.
+                </p>
+                
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">Try adjusting your search or filters, or:</p>
+                  <Button size="lg" variant="hero" asChild className="w-full">
+                    <Link to="/request">
+                      <BookOpen className="mr-2 h-5 w-5" />
+                      Request This Pre-owned Book
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button 
+                    size="lg"
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedGenre("All Genres");
+                      setSortBy("title");
+                    }}
+                  >
+                    Clear All Filters
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
         </div>
