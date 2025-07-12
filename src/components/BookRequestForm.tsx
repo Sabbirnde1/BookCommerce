@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BookOpen, Send } from "lucide-react";
+import { BookOpen, Send, Phone, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function BookRequestForm() {
@@ -14,6 +14,9 @@ export function BookRequestForm() {
   const [condition, setCondition] = useState("");
   const [budget, setBudget] = useState("");
   const [notes, setNotes] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [telegramNumber, setTelegramNumber] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -23,6 +26,15 @@ export function BookRequestForm() {
       toast({
         title: "Missing Information",
         description: "Please fill in the required fields (title, author, and condition preference).",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!whatsappNumber && !telegramNumber && !mobileNumber) {
+      toast({
+        title: "Contact Information Required",
+        description: "Please provide at least one contact method (WhatsApp, Telegram, or Mobile Phone).",
         variant: "destructive"
       });
       return;
@@ -40,6 +52,9 @@ export function BookRequestForm() {
     setCondition("");
     setBudget("");
     setNotes("");
+    setWhatsappNumber("");
+    setTelegramNumber("");
+    setMobileNumber("");
   };
 
   return (
@@ -102,6 +117,60 @@ export function BookRequestForm() {
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
             />
+          </div>
+
+          {/* Contact Information Section */}
+          <div className="space-y-4 p-4 bg-muted/30 rounded-lg border">
+            <div className="flex items-center gap-2 mb-2">
+              <Phone className="h-4 w-4 text-primary" />
+              <Label className="text-sm font-medium">Contact Information (Required) *</Label>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              Please provide at least one contact method so we can reach you when we find your book.
+            </p>
+            
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="whatsapp" className="flex items-center gap-2">
+                  <MessageCircle className="h-3 w-3 text-green-600" />
+                  WhatsApp Number
+                </Label>
+                <Input
+                  id="whatsapp"
+                  placeholder="e.g., +880 1234567890"
+                  value={whatsappNumber}
+                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                  type="tel"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="telegram" className="flex items-center gap-2">
+                  <Send className="h-3 w-3 text-blue-500" />
+                  Telegram Number/Username
+                </Label>
+                <Input
+                  id="telegram"
+                  placeholder="e.g., @username or +880 1234567890"
+                  value={telegramNumber}
+                  onChange={(e) => setTelegramNumber(e.target.value)}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="mobile" className="flex items-center gap-2">
+                  <Phone className="h-3 w-3 text-primary" />
+                  Mobile Phone
+                </Label>
+                <Input
+                  id="mobile"
+                  placeholder="e.g., +880 1234567890"
+                  value={mobileNumber}
+                  onChange={(e) => setMobileNumber(e.target.value)}
+                  type="tel"
+                />
+              </div>
+            </div>
           </div>
           
           <div className="space-y-2">
