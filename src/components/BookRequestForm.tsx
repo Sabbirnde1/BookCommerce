@@ -7,8 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BookOpen, Send, Phone, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function BookRequestForm() {
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [condition, setCondition] = useState("");
@@ -17,10 +21,19 @@ export function BookRequestForm() {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [telegramNumber, setTelegramNumber] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
-  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to submit a book request.",
+        variant: "destructive"
+      });
+      return;
+    }
     
     if (!title || !author || !condition) {
       toast({
@@ -40,21 +53,49 @@ export function BookRequestForm() {
       return;
     }
 
-    // Here you would typically send the request to your backend
-    toast({
-      title: "Request Submitted! 📚",
-      description: "We'll search for your book and get back to you within 24 hours.",
-    });
+    setIsSubmitting(true);
 
-    // Reset form
-    setTitle("");
-    setAuthor("");
-    setCondition("");
-    setBudget("");
-    setNotes("");
-    setWhatsappNumber("");
-    setTelegramNumber("");
-    setMobileNumber("");
+    try {
+      const { error } = await supabase
+        .from('book_requests')
+        .insert({
+          user_id: user.id,
+          title,
+          author,
+          condition_preference: condition,
+          budget: budget ? parseFloat(budget.replace(/[^\d.]/g, '')) : null,
+          notes,
+          whatsapp: whatsappNumber,
+          telegram: telegramNumber,
+          mobile: mobileNumber,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Request Submitted! 📚",
+        description: "We'll search for your book and get back to you within 24 hours.",
+      });
+
+      // Reset form
+      setTitle("");
+      setAuthor("");
+      setCondition("");
+      setBudget("");
+      setNotes("");
+      setWhatsappNumber("");
+      setTelegramNumber("");
+      setMobileNumber("");
+    } catch (error) {
+      console.error('Error submitting book request:', error);
+      toast({
+        title: "Submission Failed",
+        description: "There was a problem submitting your request. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -184,9 +225,9 @@ export function BookRequestForm() {
             />
           </div>
           
-          <Button type="submit" className="w-full" variant="hero">
+          <Button type="submit" className="w-full" variant="hero" disabled={isSubmitting}>
             <Send className="h-4 w-4 mr-2" />
-            Submit Request
+            {isSubmitting ? "Submitting..." : "Submit Request"}
           </Button>
         </form>
       </CardContent>

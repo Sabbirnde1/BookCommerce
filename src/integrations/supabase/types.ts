@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      book_requests: {
+        Row: {
+          author: string
+          budget: number | null
+          condition_preference: string
+          created_at: string
+          id: string
+          mobile: string | null
+          notes: string | null
+          status: string
+          telegram: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          whatsapp: string | null
+        }
+        Insert: {
+          author: string
+          budget?: number | null
+          condition_preference: string
+          created_at?: string
+          id?: string
+          mobile?: string | null
+          notes?: string | null
+          status?: string
+          telegram?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          whatsapp?: string | null
+        }
+        Update: {
+          author?: string
+          budget?: number | null
+          condition_preference?: string
+          created_at?: string
+          id?: string
+          mobile?: string | null
+          notes?: string | null
+          status?: string
+          telegram?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           book_author: string
