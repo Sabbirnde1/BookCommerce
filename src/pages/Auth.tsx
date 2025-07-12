@@ -139,12 +139,13 @@ const Auth = () => {
           </Link>
           
           <div className="flex justify-center">
-            <div className="relative">
+            <div className="relative flex items-center space-x-3">
               <img 
                 src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
                 alt="Nijercart Logo" 
                 className="h-16 w-auto drop-shadow-2xl"
               />
+              <div className="text-2xl font-bold text-foreground">Nijercart</div>
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent rounded-lg"></div>
             </div>
           </div>

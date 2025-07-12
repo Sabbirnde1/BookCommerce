@@ -30,12 +30,13 @@ const Index = () => {
         <div className="relative container mx-auto px-4 text-center">
           {/* Floating Logo */}
           <div className="flex justify-center mb-8">
-            <div className="relative animate-fade-in">
+            <div className="relative animate-fade-in flex items-center space-x-4">
               <img 
                 src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
                 alt="Nijercart Logo" 
                 className="h-20 w-auto drop-shadow-2xl hover:scale-110 transition-transform duration-300"
               />
+              <div className="text-3xl font-bold text-foreground">Nijercart</div>
               <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-transparent rounded-lg animate-pulse"></div>
             </div>
           </div>
