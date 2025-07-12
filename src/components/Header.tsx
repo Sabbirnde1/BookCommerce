@@ -158,7 +158,7 @@ export function Header() {
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-background border border-border">
+              <DropdownMenuContent align="end" className="w-56 bg-background border border-border z-50">
                 {user ? (
                   <>
                     <DropdownMenuLabel className="font-normal">
