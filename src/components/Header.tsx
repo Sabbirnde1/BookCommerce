@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Search, ShoppingCart, BookOpen, User, Menu, LogOut, Settings, Heart } from "lucide-react";
+import { Search, ShoppingCart, BookOpen, User, Menu, LogOut, Settings, Heart, FileText } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "@/lib/cartStore";
 import { useWishlistStore } from "@/lib/wishlistStore";
@@ -135,6 +135,12 @@ export function Header() {
                       <Link to="/wishlist" className="flex items-center">
                         <Heart className="mr-2 h-4 w-4" />
                         <span>Wishlist</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/request" className="flex items-center">
+                        <FileText className="mr-2 h-4 w-4" />
+                        <span>Request Books</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
