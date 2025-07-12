@@ -17,6 +17,14 @@ const Payment = () => {
   const [selectedMethod, setSelectedMethod] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
+  const [shippingAddress, setShippingAddress] = useState({
+    fullName: "",
+    phone: "",
+    address: "",
+    city: "",
+    area: "",
+    postalCode: ""
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -86,9 +94,17 @@ const Payment = () => {
       return;
     }
 
+    if (!shippingAddress.fullName || !shippingAddress.phone || !shippingAddress.address || !shippingAddress.city) {
+      toast({
+        title: "Please fill in all shipping address fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if ((selectedMethod === "bkash" || selectedMethod === "rocket" || selectedMethod === "nagad") && !phoneNumber) {
       toast({
-        title: "Please enter your phone number",
+        title: "Please enter your phone number for mobile banking",
         variant: "destructive"
       });
       return;
@@ -96,7 +112,7 @@ const Payment = () => {
 
     if (selectedMethod === "cod" && !address) {
       toast({
-        title: "Please enter your delivery address",
+        title: "Please enter any special delivery instructions",
         variant: "destructive"
       });
       return;
@@ -155,8 +171,84 @@ const Payment = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Payment Methods */}
-          <div className="lg:col-span-2">
+          {/* Shipping Address */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="shadow-page">
+              <CardHeader>
+                <CardTitle>Shipping Address</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="fullName">Full Name *</Label>
+                    <Input
+                      id="fullName"
+                      placeholder="Enter your full name"
+                      value={shippingAddress.fullName}
+                      onChange={(e) => setShippingAddress({...shippingAddress, fullName: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="shippingPhone">Phone Number *</Label>
+                    <Input
+                      id="shippingPhone"
+                      placeholder="01xxxxxxxxx"
+                      value={shippingAddress.phone}
+                      onChange={(e) => setShippingAddress({...shippingAddress, phone: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="shippingAddress">Street Address *</Label>
+                  <Textarea
+                    id="shippingAddress"
+                    placeholder="House/Building number, Street name"
+                    value={shippingAddress.address}
+                    onChange={(e) => setShippingAddress({...shippingAddress, address: e.target.value})}
+                    className="mt-1"
+                    rows={2}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="city">City *</Label>
+                    <Input
+                      id="city"
+                      placeholder="e.g., Dhaka"
+                      value={shippingAddress.city}
+                      onChange={(e) => setShippingAddress({...shippingAddress, city: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="area">Area/District</Label>
+                    <Input
+                      id="area"
+                      placeholder="e.g., Dhanmondi"
+                      value={shippingAddress.area}
+                      onChange={(e) => setShippingAddress({...shippingAddress, area: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="postalCode">Postal Code</Label>
+                    <Input
+                      id="postalCode"
+                      placeholder="e.g., 1205"
+                      value={shippingAddress.postalCode}
+                      onChange={(e) => setShippingAddress({...shippingAddress, postalCode: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Payment Methods */}
             <Card className="shadow-page">
               <CardHeader>
                 <CardTitle>Select Payment Method</CardTitle>
@@ -212,14 +304,14 @@ const Payment = () => {
                 {selectedMethod === "cod" && (
                   <div className="mt-6 space-y-4">
                     <div>
-                      <Label htmlFor="address">Delivery Address</Label>
+                      <Label htmlFor="deliveryInstructions">Special Delivery Instructions</Label>
                       <Textarea
-                        id="address"
-                        placeholder="Enter your complete delivery address..."
+                        id="deliveryInstructions"
+                        placeholder="Any special instructions for delivery (optional)..."
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         className="mt-1"
-                        rows={3}
+                        rows={2}
                       />
                     </div>
                   </div>
