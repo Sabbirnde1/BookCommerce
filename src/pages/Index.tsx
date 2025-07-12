@@ -200,7 +200,7 @@ const Index = () => {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <BookOpen className="h-6 w-6" />
-                <span className="font-bold text-lg">BookHaven</span>
+                <span className="font-bold text-lg">Nijer Cart</span>
               </div>
               <p className="text-primary-foreground/80">
                 Your trusted destination for both new and pre-owned books.
@@ -230,7 +230,7 @@ const Index = () => {
             <div>
               <h4 className="font-semibold mb-4">Contact</h4>
               <ul className="space-y-2 text-primary-foreground/80">
-                <li>support@bookhaven.com</li>
+                <li>support@nijercart.com</li>
                 <li>1-800-BOOKS-01</li>
                 <li>Mon-Fri: 9AM-6PM</li>
               </ul>
@@ -238,7 +238,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/80">
-            <p>&copy; 2024 BookHaven. All rights reserved.</p>
+            <p>&copy; 2024 Nijer Cart. All rights reserved.</p>
           </div>
         </div>
       </footer>

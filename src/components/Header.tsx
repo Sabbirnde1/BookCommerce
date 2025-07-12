@@ -27,7 +27,7 @@ export function Header() {
           <Link to="/" className="flex items-center space-x-2">
             <BookOpen className="h-8 w-8 text-primary" />
             <div className="flex flex-col leading-none">
-              <span className="font-bold text-lg text-primary">BookHaven</span>
+              <span className="font-bold text-lg text-primary">Nijer Cart</span>
               <span className="text-xs text-muted-foreground">Old & New Books</span>
             </div>
           </Link>
