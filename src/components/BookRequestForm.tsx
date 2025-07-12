@@ -132,7 +132,7 @@ export function BookRequestForm() {
             <div className="grid gap-4">
               <div className="space-y-2">
                 <Label htmlFor="whatsapp" className="flex items-center gap-2">
-                  <MessageCircle className="h-3 w-3 text-green-600" />
+                  <MessageCircle className="h-3 w-3 text-accent" />
                   WhatsApp Number
                 </Label>
                 <Input
@@ -146,7 +146,7 @@ export function BookRequestForm() {
               
               <div className="space-y-2">
                 <Label htmlFor="telegram" className="flex items-center gap-2">
-                  <Send className="h-3 w-3 text-blue-500" />
+                  <Send className="h-3 w-3 text-accent" />
                   Telegram Number/Username
                 </Label>
                 <Input
