@@ -76,9 +76,6 @@ export function Header() {
             {/* Categories - Hidden on mobile */}
             <div className="hidden lg:flex items-center space-x-2">
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/books">All Books</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild>
                 <Link to="/new-books">New Books</Link>
               </Button>
               <Button variant="ghost" size="sm" asChild>
@@ -88,21 +85,6 @@ export function Header() {
                 <Link to="/request">Request</Link>
               </Button>
             </div>
-
-            {/* Wishlist */}
-            <Button variant="ghost" size="icon" asChild className="relative">
-              <Link to="/wishlist">
-                <Heart className="h-5 w-5" />
-                {wishlistCount > 0 && (
-                  <Badge 
-                    variant="secondary" 
-                    className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
-                  >
-                    {wishlistCount}
-                  </Badge>
-                )}
-              </Link>
-            </Button>
 
             {/* Cart */}
             <Button variant="ghost" size="icon" asChild className="relative">
