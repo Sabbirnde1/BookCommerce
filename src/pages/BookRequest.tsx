@@ -197,14 +197,14 @@ const BookRequest = () => {
       {/* Main Content */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid xl:grid-cols-5 gap-12">
+          <div className="grid xl:grid-cols-3 gap-12">
             {/* Request Form */}
-            <div className="xl:col-span-2">
+            <div className="xl:col-span-1">
               <div className="sticky top-8">
-                <div className="mb-8">
-                  <h2 className="text-3xl font-bold mb-4">Submit Your Request</h2>
-                  <p className="text-muted-foreground text-lg">
-                    Fill out the form below and we'll start hunting for your book immediately.
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold mb-3">Submit Your Request</h2>
+                  <p className="text-muted-foreground">
+                    Fill out the form and we'll start hunting for your book.
                   </p>
                 </div>
                 <BookRequestForm />
@@ -212,7 +212,7 @@ const BookRequest = () => {
             </div>
 
             {/* Recent Requests & Testimonials */}
-            <div className="xl:col-span-3 space-y-12">
+            <div className="xl:col-span-2 space-y-12">
               {/* Recent Requests */}
               <div>
                 <h2 className="text-3xl font-bold mb-8">Your Recent Requests</h2>

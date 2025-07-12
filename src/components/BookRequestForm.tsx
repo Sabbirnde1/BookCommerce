@@ -99,94 +99,94 @@ export function BookRequestForm() {
   };
 
   return (
-    <Card className="w-full shadow-xl border-0 bg-gradient-to-br from-background to-secondary/10 backdrop-blur">
-      <CardHeader className="text-center space-y-4 pb-6">
+    <Card className="w-full max-w-lg shadow-xl border-0 bg-gradient-to-br from-background to-secondary/10 backdrop-blur">
+      <CardHeader className="text-center space-y-3 pb-6">
         <div className="flex justify-center">
           <div className="relative">
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-lg"></div>
-            <div className="relative p-4 rounded-full bg-primary/10">
-              <BookOpen className="h-8 w-8 text-primary" />
+            <div className="relative p-3 rounded-full bg-primary/10">
+              <BookOpen className="h-6 w-6 text-primary" />
             </div>
           </div>
         </div>
         <div>
-          <CardTitle className="text-2xl">Request a Book</CardTitle>
-          <CardDescription className="text-base">
-            Can't find what you're looking for? Let us help you find it!
+          <CardTitle className="text-xl">Request a Book</CardTitle>
+          <CardDescription className="text-sm">
+            Let us help you find it!
           </CardDescription>
         </div>
       </CardHeader>
       
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-base font-medium">Book Title *</Label>
+            <Label htmlFor="title" className="text-sm font-medium">Book Title *</Label>
             <Input
               id="title"
-              placeholder="Enter the book title you're looking for"
+              placeholder="Enter book title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="h-12"
+              className="h-10"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="author" className="text-base font-medium">Author *</Label>
+            <Label htmlFor="author" className="text-sm font-medium">Author *</Label>
             <Input
               id="author"
-              placeholder="Enter the author's name"
+              placeholder="Enter author name"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               required
-              className="h-12"
+              className="h-10"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="condition" className="text-base font-medium">Condition Preference *</Label>
+            <Label htmlFor="condition" className="text-sm font-medium">Condition *</Label>
             <Select value={condition} onValueChange={setCondition} required>
-              <SelectTrigger className="h-12">
-                <SelectValue placeholder="Select your preference" />
+              <SelectTrigger className="h-10">
+                <SelectValue placeholder="Select preference" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="new">New Books Only</SelectItem>
-                <SelectItem value="old">Pre-owned Books Only</SelectItem>
-                <SelectItem value="both">Both New & Pre-owned</SelectItem>
+                <SelectItem value="new">New Only</SelectItem>
+                <SelectItem value="old">Pre-owned Only</SelectItem>
+                <SelectItem value="both">Both</SelectItem>
               </SelectContent>
             </Select>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="budget" className="text-base font-medium">Budget Range (Optional)</Label>
+            <Label htmlFor="budget" className="text-sm font-medium">Budget (Optional)</Label>
             <Input
               id="budget"
-              placeholder="e.g., ৳500-1500 or your maximum budget"
+              placeholder="e.g., ৳500-1500"
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
-              className="h-12"
+              className="h-10"
             />
           </div>
 
           {/* Contact Information Section */}
-          <div className="space-y-4 p-6 bg-gradient-to-r from-secondary/20 to-accent/10 rounded-xl border">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-primary/10 rounded-full">
-                <Phone className="h-5 w-5 text-primary" />
+          <div className="space-y-4 p-4 bg-gradient-to-r from-secondary/20 to-accent/10 rounded-lg border">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="p-1.5 bg-primary/10 rounded-full">
+                <Phone className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <Label className="text-base font-medium">Contact Information *</Label>
-                <p className="text-sm text-muted-foreground">
-                  We'll use this to notify you when we find your book
+                <Label className="text-sm font-medium">Contact Info *</Label>
+                <p className="text-xs text-muted-foreground">
+                  At least one method required
                 </p>
               </div>
             </div>
             
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="whatsapp" className="flex items-center gap-2 text-sm font-medium">
-                  <MessageCircle className="h-4 w-4 text-green-600" />
-                  WhatsApp Number
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="whatsapp" className="flex items-center gap-2 text-xs font-medium">
+                  <MessageCircle className="h-3.5 w-3.5 text-green-600" />
+                  WhatsApp
                 </Label>
                 <Input
                   id="whatsapp"
@@ -194,28 +194,28 @@ export function BookRequestForm() {
                   value={whatsappNumber}
                   onChange={(e) => setWhatsappNumber(e.target.value)}
                   type="tel"
-                  className="h-11"
+                  className="h-9"
                 />
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="telegram" className="flex items-center gap-2 text-sm font-medium">
-                  <Send className="h-4 w-4 text-blue-600" />
+              <div className="space-y-1.5">
+                <Label htmlFor="telegram" className="flex items-center gap-2 text-xs font-medium">
+                  <Send className="h-3.5 w-3.5 text-blue-600" />
                   Telegram
                 </Label>
                 <Input
                   id="telegram"
-                  placeholder="@username or phone number"
+                  placeholder="@username or phone"
                   value={telegramNumber}
                   onChange={(e) => setTelegramNumber(e.target.value)}
-                  className="h-11"
+                  className="h-9"
                 />
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="mobile" className="flex items-center gap-2 text-sm font-medium">
-                  <Phone className="h-4 w-4 text-primary" />
-                  Mobile Phone
+              <div className="space-y-1.5">
+                <Label htmlFor="mobile" className="flex items-center gap-2 text-xs font-medium">
+                  <Phone className="h-3.5 w-3.5 text-primary" />
+                  Mobile
                 </Label>
                 <Input
                   id="mobile"
@@ -223,32 +223,32 @@ export function BookRequestForm() {
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   type="tel"
-                  className="h-11"
+                  className="h-9"
                 />
               </div>
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="notes" className="text-base font-medium">Additional Notes (Optional)</Label>
+            <Label htmlFor="notes" className="text-sm font-medium">Notes (Optional)</Label>
             <Textarea
               id="notes"
-              placeholder="Specific edition, publisher, ISBN, or any other requirements..."
+              placeholder="Specific edition, publisher, etc..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              rows={4}
-              className="min-h-[100px]"
+              rows={3}
+              className="min-h-[80px]"
             />
           </div>
           
           <Button 
             type="submit" 
-            className="w-full h-12 text-base font-semibold" 
+            className="w-full h-10 text-sm font-semibold" 
             variant="hero" 
             disabled={isSubmitting}
           >
-            <Send className="h-5 w-5 mr-2" />
-            {isSubmitting ? "Submitting Request..." : "Submit Request"}
+            <Send className="h-4 w-4 mr-2" />
+            {isSubmitting ? "Submitting..." : "Submit Request"}
           </Button>
         </form>
       </CardContent>
