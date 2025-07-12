@@ -35,3 +35,6 @@ port = 54330
 
 [functions.customer-handling]
 verify_jwt = true
+
+[functions.admin-dashboard]
+verify_jwt = true
