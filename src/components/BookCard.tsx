@@ -75,14 +75,14 @@ export function BookCard(book: Book) {
   };
 
   return (
-    <Card className="group relative overflow-hidden bg-card hover:shadow-book transition-all duration-300 transform hover:-translate-y-1">
+    <Card className="group relative overflow-hidden bg-card hover:shadow-book transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
       {book.isPopular && (
-        <Badge className="absolute top-2 right-2 z-10 bg-accent text-accent-foreground">
+        <Badge className="absolute top-2 right-2 z-10 bg-accent text-accent-foreground text-xs">
           Popular
         </Badge>
       )}
       
-      <CardHeader className="p-0">
+      <CardHeader className="p-0 flex-shrink-0">
         <div className="aspect-[3/4] overflow-hidden bg-muted rounded-t-lg">
           <img 
             src={book.image} 
@@ -92,7 +92,7 @@ export function BookCard(book: Book) {
         </div>
       </CardHeader>
       
-      <CardContent className="p-4 space-y-2">
+      <CardContent className="p-3 md:p-4 space-y-2 flex-grow">
         <div className="flex items-start justify-between">
           <Badge variant={book.condition === "new" ? "default" : "secondary"} className="text-xs">
             {book.condition === "new" ? "New" : "Pre-owned"}
@@ -100,20 +100,20 @@ export function BookCard(book: Book) {
           <Button 
             variant="ghost" 
             size="icon" 
-            className={`h-8 w-8 transition-colors ${
+            className={`h-7 w-7 md:h-8 md:w-8 transition-colors ${
               isWishlisted ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-red-500'
             }`}
             onClick={handleWishlistToggle}
           >
-            <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
+            <Heart className={`h-3 w-3 md:h-4 md:w-4 ${isWishlisted ? 'fill-current' : ''}`} />
           </Button>
         </div>
         
-        <CardTitle className="text-sm font-medium line-clamp-2 leading-tight">
+        <CardTitle className="text-sm md:text-base font-medium line-clamp-2 leading-tight">
           {book.title}
         </CardTitle>
         
-        <p className="text-sm text-muted-foreground">{book.author}</p>
+        <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">{book.author}</p>
         
         <div className="flex items-center gap-1">
           {[...Array(5)].map((_, i) => (
@@ -126,11 +126,11 @@ export function BookCard(book: Book) {
         </div>
       </CardContent>
       
-      <CardFooter className="p-4 pt-0 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-primary">৳{book.price}</span>
+      <CardFooter className="p-3 md:p-4 pt-0 flex flex-col gap-2 md:flex-row md:items-center md:justify-between mt-auto">
+        <div className="flex items-center gap-2 justify-center md:justify-start">
+          <span className="text-base md:text-lg font-bold text-primary">৳{book.price}</span>
           {book.originalPrice && book.originalPrice > book.price && (
-            <span className="text-sm text-muted-foreground line-through">৳{book.originalPrice}</span>
+            <span className="text-xs md:text-sm text-muted-foreground line-through">৳{book.originalPrice}</span>
           )}
         </div>
         <Button 
@@ -138,6 +138,7 @@ export function BookCard(book: Book) {
           variant="default" 
           onClick={handleAddToCart}
           disabled={cartQuantity >= book.inStock}
+          className="text-xs md:text-sm px-2 md:px-3 w-full md:w-auto"
         >
           {cartQuantity >= book.inStock ? "Out of Stock" : 
            cartQuantity > 0 ? `In Cart (${cartQuantity})` : "Add to Cart"}

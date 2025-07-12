@@ -246,30 +246,30 @@ const Search = () => {
       <Header />
       
       {/* Search Hero Section */}
-      <section className="bg-gradient-primary text-primary-foreground py-16">
+      <section className="bg-gradient-primary text-primary-foreground py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-4">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4">
               {searchQuery ? `Search Results for "${searchQuery}"` : "Search Books"}
             </h1>
-            <p className="text-xl text-primary-foreground/80 mb-8">
+            <p className="text-lg md:text-xl text-primary-foreground/80 mb-6 md:mb-8">
               Find your next great read from our extensive collection
             </p>
             
             {/* Enhanced Search Bar */}
             <form onSubmit={handleSearchSubmit} className="relative">
-              <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <SearchIcon className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search by title, author, genre, or description..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-24 h-14 text-lg bg-background text-foreground rounded-lg"
+                className="pl-10 md:pl-12 pr-20 md:pr-24 h-12 md:h-14 text-base md:text-lg bg-background text-foreground rounded-lg"
               />
               <Button 
                 type="submit"
                 variant="hero"
-                className="absolute right-2 top-2 h-10"
+                className="absolute right-2 top-2 h-8 md:h-10 text-sm md:text-base"
               >
                 Search
               </Button>
@@ -279,20 +279,20 @@ const Search = () => {
       </section>
 
       {/* Filters and Tabs */}
-      <section className="py-8 border-b">
+      <section className="py-6 md:py-8 border-b">
         <div className="container mx-auto px-4">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4 md:mb-6">
             <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
-              <TabsTrigger value="all">All Books</TabsTrigger>
-              <TabsTrigger value="new">New Books</TabsTrigger>
-              <TabsTrigger value="old">Pre-owned</TabsTrigger>
+              <TabsTrigger value="all" className="text-sm md:text-base">All Books</TabsTrigger>
+              <TabsTrigger value="new" className="text-sm md:text-base">New Books</TabsTrigger>
+              <TabsTrigger value="old" className="text-sm md:text-base">Pre-owned</TabsTrigger>
             </TabsList>
           </Tabs>
           
-          <div className="flex flex-wrap gap-4 items-center justify-between">
-            <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto">
               <Select value={selectedGenre} onValueChange={setSelectedGenre}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue placeholder="Select Genre" />
                 </SelectTrigger>
@@ -304,7 +304,7 @@ const Search = () => {
               </Select>
               
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -318,7 +318,7 @@ const Search = () => {
               </Select>
             </div>
             
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-muted-foreground text-center sm:text-right w-full sm:w-auto mt-2 sm:mt-0">
               {searchQuery && (
                 <>Showing {filteredBooks.length} results for "{searchQuery}"</>
               )}
@@ -331,10 +331,10 @@ const Search = () => {
       </section>
 
       {/* Results Section */}
-      <section className="py-12">
+      <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">
           {filteredBooks.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
               {filteredBooks.map(book => (
                 <BookCard key={book.id} book={book} />
               ))}
