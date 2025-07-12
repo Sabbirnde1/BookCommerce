@@ -7,13 +7,18 @@ export function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-          <div className="flex items-center space-x-3 mb-4">
-            <img 
-              src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
-              alt="Nijercart Logo" 
-              className="h-10 w-auto brightness-0 invert"
-            />
-            <div className="text-xl font-bold text-primary-foreground">Nijercart</div>
+          <div className="flex items-center space-x-3 mb-4 hover:scale-105 transition-transform duration-200">
+            <div className="relative">
+              <img 
+                src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
+                alt="Nijercart Logo" 
+                className="h-12 w-auto drop-shadow-lg hover:drop-shadow-xl transition-all duration-200 brightness-0 invert"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary-foreground/5 rounded-lg"></div>
+            </div>
+            <div>
+              <div className="text-sm font-medium text-primary-foreground">Nijer Cart</div>
+            </div>
           </div>
             <p className="text-primary-foreground/80 max-w-xs">
               Your trusted destination for both new and pre-owned books in Bangladesh. Discover, learn, and grow with Nijercart.
