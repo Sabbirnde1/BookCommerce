@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,6 +42,8 @@ const Orders = () => {
   useEffect(() => {
     if (user) {
       fetchOrders();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
@@ -118,29 +119,43 @@ const Orders = () => {
     });
   };
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold mb-4">Please log in to view your orders</h2>
+            <Button asChild variant="hero">
+              <Link to="/auth">Sign In</Link>
+            </Button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   if (loading) {
     return (
-      <ProtectedRoute>
-        <div className="min-h-screen bg-background">
-          <Header />
-          <div className="container mx-auto px-4 py-8">
-            <div className="flex items-center justify-center min-h-96">
-              <div className="text-center">
-                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading your orders...</p>
-              </div>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-96">
+            <div className="text-center">
+              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading your orders...</p>
             </div>
           </div>
-          <Footer />
         </div>
-      </ProtectedRoute>
+        <Footer />
+      </div>
     );
   }
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-background">
-        <Header />
+    <div className="min-h-screen bg-background">
+      <Header />
         
         <div className="container mx-auto px-4 py-8">
           {/* Navigation */}
@@ -304,9 +319,8 @@ const Orders = () => {
           </div>
         </div>
 
-        <Footer />
-      </div>
-    </ProtectedRoute>
+      <Footer />
+    </div>
   );
 };
 
