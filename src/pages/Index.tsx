@@ -189,9 +189,11 @@ const Index = () => {
                 <p className="text-primary-foreground/80 mb-6">
                   Latest releases, bestsellers, and fresh arrivals straight from publishers.
                 </p>
-                <Button variant="secondary" size="lg">
-                  Browse New Books
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                <Button variant="secondary" size="lg" asChild>
+                  <Link to="/new-books">
+                    Browse New Books
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
@@ -202,9 +204,11 @@ const Index = () => {
                 <p className="text-accent-foreground/80 mb-6">
                   Carefully curated pre-owned books at amazing prices. Every book tells a story.
                 </p>
-                <Button variant="secondary" size="lg">
-                  Browse Old Books
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                <Button variant="secondary" size="lg" asChild>
+                  <Link to="/old-books">
+                    Browse Old Books
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
