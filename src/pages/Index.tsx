@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { BookCard } from "@/components/BookCard";
 import { BookRequestForm } from "@/components/BookRequestForm";
 import { Button } from "@/components/ui/button";
@@ -193,55 +194,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <BookOpen className="h-6 w-6" />
-                <span className="font-bold text-lg">Nijer Cart</span>
-              </div>
-              <p className="text-primary-foreground/80">
-                Your trusted destination for both new and pre-owned books.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-primary-foreground/80">
-                <li><a href="#" className="hover:text-primary-foreground transition-colors">New Books</a></li>
-                <li><a href="#" className="hover:text-primary-foreground transition-colors">Old Books</a></li>
-                <li><a href="#" className="hover:text-primary-foreground transition-colors">Request a Book</a></li>
-                <li><a href="#" className="hover:text-primary-foreground transition-colors">About Us</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Categories</h4>
-              <ul className="space-y-2 text-primary-foreground/80">
-                <li><a href="#" className="hover:text-primary-foreground transition-colors">Fiction</a></li>
-                <li><a href="#" className="hover:text-primary-foreground transition-colors">Non-Fiction</a></li>
-                <li><a href="#" className="hover:text-primary-foreground transition-colors">Science</a></li>
-                <li><a href="#" className="hover:text-primary-foreground transition-colors">Biography</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Contact</h4>
-              <ul className="space-y-2 text-primary-foreground/80">
-                <li>support@nijercart.com</li>
-                <li>1-800-BOOKS-01</li>
-                <li>Mon-Fri: 9AM-6PM</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/80">
-            <p>&copy; 2024 Nijer Cart. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

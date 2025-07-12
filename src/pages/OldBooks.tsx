@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { BookCard } from "@/components/BookCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -165,18 +166,7 @@ const OldBooks = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-12 mt-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <h3 className="text-xl font-semibold mb-2">Looking for something specific?</h3>
-            <p className="text-primary-foreground/80 mb-4">
-              Use our book request service and we'll help you find any book!
-            </p>
-            <Button variant="secondary">Request a Book</Button>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

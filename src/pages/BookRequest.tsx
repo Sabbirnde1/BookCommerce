@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { BookRequestForm } from "@/components/BookRequestForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -235,6 +236,8 @@ const BookRequest = () => {
           </div>
         </div>
       </section>
+      
+      <Footer />
     </div>
   );
 };
