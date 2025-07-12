@@ -99,48 +99,55 @@ export function BookRequestForm() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-page">
-      <CardHeader className="text-center space-y-2">
+    <Card className="w-full shadow-xl border-0 bg-gradient-to-br from-background to-secondary/10 backdrop-blur">
+      <CardHeader className="text-center space-y-4 pb-6">
         <div className="flex justify-center">
-          <div className="p-3 rounded-full bg-primary/10">
-            <BookOpen className="h-6 w-6 text-primary" />
+          <div className="relative">
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-lg"></div>
+            <div className="relative p-4 rounded-full bg-primary/10">
+              <BookOpen className="h-8 w-8 text-primary" />
+            </div>
           </div>
         </div>
-        <CardTitle className="text-xl">Request a Book</CardTitle>
-        <CardDescription>
-          Can't find what you're looking for? Let us help you find it!
-        </CardDescription>
+        <div>
+          <CardTitle className="text-2xl">Request a Book</CardTitle>
+          <CardDescription className="text-base">
+            Can't find what you're looking for? Let us help you find it!
+          </CardDescription>
+        </div>
       </CardHeader>
       
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="title">Book Title *</Label>
+            <Label htmlFor="title" className="text-base font-medium">Book Title *</Label>
             <Input
               id="title"
-              placeholder="Enter book title"
+              placeholder="Enter the book title you're looking for"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
+              className="h-12"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="author">Author *</Label>
+            <Label htmlFor="author" className="text-base font-medium">Author *</Label>
             <Input
               id="author"
-              placeholder="Enter author name"
+              placeholder="Enter the author's name"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               required
+              className="h-12"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="condition">Condition Preference *</Label>
+            <Label htmlFor="condition" className="text-base font-medium">Condition Preference *</Label>
             <Select value={condition} onValueChange={setCondition} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Select condition preference" />
+              <SelectTrigger className="h-12">
+                <SelectValue placeholder="Select your preference" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="new">New Books Only</SelectItem>
@@ -151,83 +158,97 @@ export function BookRequestForm() {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="budget">Budget Range</Label>
+            <Label htmlFor="budget" className="text-base font-medium">Budget Range (Optional)</Label>
             <Input
               id="budget"
-              placeholder="e.g., ৳500-1500"
+              placeholder="e.g., ৳500-1500 or your maximum budget"
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
+              className="h-12"
             />
           </div>
 
           {/* Contact Information Section */}
-          <div className="space-y-4 p-4 bg-muted/30 rounded-lg border">
-            <div className="flex items-center gap-2 mb-2">
-              <Phone className="h-4 w-4 text-primary" />
-              <Label className="text-sm font-medium">Contact Information (Required) *</Label>
+          <div className="space-y-4 p-6 bg-gradient-to-r from-secondary/20 to-accent/10 rounded-xl border">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-primary/10 rounded-full">
+                <Phone className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <Label className="text-base font-medium">Contact Information *</Label>
+                <p className="text-sm text-muted-foreground">
+                  We'll use this to notify you when we find your book
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground mb-3">
-              Please provide at least one contact method so we can reach you when we find your book.
-            </p>
             
             <div className="grid gap-4">
               <div className="space-y-2">
-                <Label htmlFor="whatsapp" className="flex items-center gap-2">
-                  <MessageCircle className="h-3 w-3 text-accent" />
+                <Label htmlFor="whatsapp" className="flex items-center gap-2 text-sm font-medium">
+                  <MessageCircle className="h-4 w-4 text-green-600" />
                   WhatsApp Number
                 </Label>
                 <Input
                   id="whatsapp"
-                  placeholder="e.g., +880 1234567890"
+                  placeholder="+880 1234567890"
                   value={whatsappNumber}
                   onChange={(e) => setWhatsappNumber(e.target.value)}
                   type="tel"
+                  className="h-11"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="telegram" className="flex items-center gap-2">
-                  <Send className="h-3 w-3 text-accent" />
-                  Telegram Number/Username
+                <Label htmlFor="telegram" className="flex items-center gap-2 text-sm font-medium">
+                  <Send className="h-4 w-4 text-blue-600" />
+                  Telegram
                 </Label>
                 <Input
                   id="telegram"
-                  placeholder="e.g., @username or +880 1234567890"
+                  placeholder="@username or phone number"
                   value={telegramNumber}
                   onChange={(e) => setTelegramNumber(e.target.value)}
+                  className="h-11"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="mobile" className="flex items-center gap-2">
-                  <Phone className="h-3 w-3 text-primary" />
+                <Label htmlFor="mobile" className="flex items-center gap-2 text-sm font-medium">
+                  <Phone className="h-4 w-4 text-primary" />
                   Mobile Phone
                 </Label>
                 <Input
                   id="mobile"
-                  placeholder="e.g., +880 1234567890"
+                  placeholder="+880 1234567890"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   type="tel"
+                  className="h-11"
                 />
               </div>
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="notes">Additional Notes</Label>
+            <Label htmlFor="notes" className="text-base font-medium">Additional Notes (Optional)</Label>
             <Textarea
               id="notes"
-              placeholder="Any specific edition, publisher, or other requirements..."
+              placeholder="Specific edition, publisher, ISBN, or any other requirements..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              rows={3}
+              rows={4}
+              className="min-h-[100px]"
             />
           </div>
           
-          <Button type="submit" className="w-full" variant="hero" disabled={isSubmitting}>
-            <Send className="h-4 w-4 mr-2" />
-            {isSubmitting ? "Submitting..." : "Submit Request"}
+          <Button 
+            type="submit" 
+            className="w-full h-12 text-base font-semibold" 
+            variant="hero" 
+            disabled={isSubmitting}
+          >
+            <Send className="h-5 w-5 mr-2" />
+            {isSubmitting ? "Submitting Request..." : "Submit Request"}
           </Button>
         </form>
       </CardContent>
