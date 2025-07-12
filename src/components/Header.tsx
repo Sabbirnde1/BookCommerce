@@ -103,47 +103,44 @@ export function Header() {
             </form>
           </div>
 
-          {/* Right Side Actions */}
+          {/* Right Side Actions - Streamlined */}
           <div className="flex items-center space-x-1 sm:space-x-2">
-            {/* Desktop Categories */}
+            {/* Desktop Categories - Reduced */}
             <div className="hidden xl:flex items-center space-x-2">
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/new-books">New Books</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild>
-                <Link to="/old-books">Old Books</Link>
+                <Link to="/books">All Books</Link>
               </Button>
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/request">Request</Link>
               </Button>
             </div>
 
-            {/* Mobile Search Toggle */}
+            {/* Mobile Search Toggle - Simplified */}
             <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9 sm:h-10 sm:w-10" onClick={() => document.getElementById('mobile-search')?.focus()}>
               <Search className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
 
-            {/* Wishlist */}
+            {/* Wishlist - Essential */}
             <Button variant="ghost" size="icon" asChild className="relative h-9 w-9 sm:h-10 sm:w-10">
               <Link to="/wishlist">
                 <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
-                {wishlistCount > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 p-0 flex items-center justify-center text-[10px] sm:text-xs">
-                    {wishlistCount > 9 ? '9+' : wishlistCount}
+                {wishlistCount > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 p-0 flex items-center justify-center text-[10px] sm:text-xs font-medium">
+                    {wishlistCount > 99 ? '99+' : wishlistCount}
                   </Badge>}
               </Link>
             </Button>
 
-            {/* Cart */}
+            {/* Cart - Essential */}
             <Button variant="ghost" size="icon" asChild className="relative h-9 w-9 sm:h-10 sm:w-10">
               <Link to="/cart">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
-                {cartItems > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 p-0 flex items-center justify-center text-[10px] sm:text-xs font-medium">
-                    {cartItems > 9 ? '9+' : cartItems}
+                {cartItems > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 p-0 flex items-center justify-center text-[10px] sm:text-xs font-medium">
+                    {cartItems > 99 ? '99+' : cartItems}
                   </Badge>}
               </Link>
             </Button>
 
-            {/* User Account Dropdown */}
+            {/* User Account - Essential */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative h-9 w-9 sm:h-10 sm:w-10">
@@ -167,25 +164,13 @@ export function Header() {
                     <DropdownMenuItem asChild>
                       <Link to="/profile" className="flex items-center">
                         <Settings className="mr-2 h-4 w-4" />
-                        <span>Profile Settings</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/wishlist" className="flex items-center">
-                        <Heart className="mr-2 h-4 w-4" />
-                        <span>Wishlist</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/request" className="flex items-center">
-                        <FileText className="mr-2 h-4 w-4" />
-                        <span>Request Books</span>
+                        <span>Profile</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/orders" className="flex items-center">
                         <ShoppingCart className="mr-2 h-4 w-4" />
-                        <span>Order History</span>
+                        <span>Orders</span>
                       </Link>
                     </DropdownMenuItem>
                     {isAdmin && <>
@@ -193,7 +178,7 @@ export function Header() {
                         <DropdownMenuItem asChild>
                           <Link to="/admin" className="flex items-center">
                             <Shield className="mr-2 h-4 w-4" />
-                            <span>Admin Dashboard</span>
+                            <span>Admin</span>
                           </Link>
                         </DropdownMenuItem>
                       </>}
@@ -203,12 +188,10 @@ export function Header() {
                       <span>Sign Out</span>
                     </DropdownMenuItem>
                   </> : <>
-                    <DropdownMenuLabel>Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/auth" className="flex items-center">
                         <User className="mr-2 h-4 w-4" />
-                        <span>Sign In / Sign Up</span>
+                        <span>Sign In</span>
                       </Link>
                     </DropdownMenuItem>
                   </>}
@@ -239,60 +222,54 @@ export function Header() {
                     />
                   </form>
                   
-                  {/* Navigation Links */}
+                  {/* Essential Navigation Links */}
                   <div className="space-y-2">
                     <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
                       <Link to="/books">
                         <BookOpen className="mr-2 h-4 w-4" />
-                        All Books
-                      </Link>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
-                      <Link to="/new-books">
-                        <BookOpen className="mr-2 h-4 w-4" />
-                        New Books
-                      </Link>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
-                      <Link to="/old-books">
-                        <BookOpen className="mr-2 h-4 w-4" />
-                        Pre-owned Books
+                        Browse Books
                       </Link>
                     </Button>
                     <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
                       <Link to="/request">
                         <FileText className="mr-2 h-4 w-4" />
-                        Request a Book
+                        Request Book
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
+                      <Link to="/wishlist">
+                        <Heart className="mr-2 h-4 w-4" />
+                        Wishlist ({wishlistCount})
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
+                      <Link to="/cart">
+                        <ShoppingCart className="mr-2 h-4 w-4" />
+                        Cart ({cartItems})
                       </Link>
                     </Button>
                   </div>
                   
-                  {/* User Actions */}
+                  {/* User Actions - Simplified */}
                   {user ? (
                     <div className="space-y-2 pt-4 border-t">
                       <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
                         <Link to="/profile">
                           <Settings className="mr-2 h-4 w-4" />
-                          Profile Settings
+                          Profile
                         </Link>
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
                         <Link to="/orders">
                           <ShoppingCart className="mr-2 h-4 w-4" />
-                          Order History
-                        </Link>
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
-                        <Link to="/support">
-                          <FileText className="mr-2 h-4 w-4" />
-                          Support
+                          Orders
                         </Link>
                       </Button>
                       {isAdmin && (
                         <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setMobileMenuOpen(false)}>
                           <Link to="/admin">
                             <Shield className="mr-2 h-4 w-4" />
-                            Admin Dashboard
+                            Admin
                           </Link>
                         </Button>
                       )}
@@ -310,10 +287,10 @@ export function Header() {
                     </div>
                   ) : (
                     <div className="pt-4 border-t">
-                      <Button variant="hero" className="w-full" asChild onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="default" className="w-full" asChild onClick={() => setMobileMenuOpen(false)}>
                         <Link to="/auth">
                           <User className="mr-2 h-4 w-4" />
-                          Sign In / Sign Up
+                          Sign In
                         </Link>
                       </Button>
                     </div>
