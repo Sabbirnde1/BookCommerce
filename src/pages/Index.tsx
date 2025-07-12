@@ -91,7 +91,9 @@ const Index = () => {
                 alt="Nijercart Logo" 
                 className="h-20 w-auto drop-shadow-2xl hover:scale-110 transition-transform duration-300"
               />
-              <div className="text-3xl font-bold text-foreground">Nijercart</div>
+              <div className="text-4xl md:text-5xl font-bold bg-gradient-brand bg-clip-text text-transparent drop-shadow-brand hover:scale-105 transition-all duration-300">
+                Nijer Cart
+              </div>
               <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-transparent rounded-lg animate-pulse"></div>
             </div>
           </div>

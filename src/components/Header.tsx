@@ -87,7 +87,9 @@ export function Header() {
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 rounded-lg"></div>
             </div>
             <div className="hidden sm:block">
-              <div className="text-sm font-medium text-muted-foreground">Nijer Cart</div>
+              <div className="text-lg font-bold bg-gradient-brand bg-clip-text text-transparent drop-shadow-brand hover:scale-105 transition-all duration-300">
+                Nijer Cart
+              </div>
             </div>
           </Link>
 

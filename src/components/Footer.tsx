@@ -17,7 +17,7 @@ export function Footer() {
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary-foreground/5 rounded-lg"></div>
             </div>
             <div>
-              <div className="text-sm font-medium text-primary-foreground">Nijer Cart</div>
+              <div className="text-lg font-bold text-primary-foreground drop-shadow-lg">Nijer Cart</div>
             </div>
           </div>
             <p className="text-primary-foreground/80 max-w-xs">
@@ -106,7 +106,7 @@ export function Footer() {
         </div>
         
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/80">
-          <p>&copy; 2024 Nijer Cart. All rights reserved.</p>
+          <p>&copy; 2024 <span className="font-semibold text-primary-foreground">Nijer Cart</span>. All rights reserved.</p>
         </div>
       </div>
     </footer>
