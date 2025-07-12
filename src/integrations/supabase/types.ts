@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      order_items: {
+        Row: {
+          book_author: string
+          book_id: string
+          book_image: string | null
+          book_title: string
+          created_at: string
+          id: string
+          order_id: string
+          price: number
+          quantity: number
+        }
+        Insert: {
+          book_author: string
+          book_id: string
+          book_image?: string | null
+          book_title: string
+          created_at?: string
+          id?: string
+          order_id: string
+          price: number
+          quantity?: number
+        }
+        Update: {
+          book_author?: string
+          book_id?: string
+          book_image?: string | null
+          book_title?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+          price?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          currency: string
+          id: string
+          notes: string | null
+          order_number: string
+          payment_method: string | null
+          shipping_address: Json | null
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          order_number: string
+          payment_method?: string | null
+          shipping_address?: Json | null
+          status?: string
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          order_number?: string
+          payment_method?: string | null
+          shipping_address?: Json | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -52,7 +138,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_order_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
