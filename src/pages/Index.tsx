@@ -19,68 +19,49 @@ const Index = () => {
       <Header />
       
       {/* Book Categories Section */}
-      <section className="py-8 bg-secondary/20 border-b">
+      <section className="py-4 bg-secondary/20 border-b">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-6">Book Categories</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8">
             <Link 
               to="/books?category=fiction" 
-              className="group flex flex-col items-center p-4 rounded-lg bg-background hover:bg-primary/5 transition-colors duration-200 shadow-sm hover:shadow-md"
+              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
-                <BookOpen className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-sm font-medium text-center group-hover:text-primary transition-colors">Fiction</span>
+              Fiction
             </Link>
             
             <Link 
               to="/books?category=non-fiction" 
-              className="group flex flex-col items-center p-4 rounded-lg bg-background hover:bg-primary/5 transition-colors duration-200 shadow-sm hover:shadow-md"
+              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
             >
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-2 group-hover:bg-accent/20 transition-colors">
-                <BookOpen className="h-6 w-6 text-accent" />
-              </div>
-              <span className="text-sm font-medium text-center group-hover:text-accent transition-colors">Non-Fiction</span>
+              Non-Fiction
             </Link>
             
             <Link 
               to="/books?category=academic" 
-              className="group flex flex-col items-center p-4 rounded-lg bg-background hover:bg-primary/5 transition-colors duration-200 shadow-sm hover:shadow-md"
+              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
-                <BookOpen className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-sm font-medium text-center group-hover:text-primary transition-colors">Academic</span>
+              Academic
             </Link>
             
             <Link 
               to="/books?category=children" 
-              className="group flex flex-col items-center p-4 rounded-lg bg-background hover:bg-primary/5 transition-colors duration-200 shadow-sm hover:shadow-md"
+              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
             >
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-2 group-hover:bg-accent/20 transition-colors">
-                <BookOpen className="h-6 w-6 text-accent" />
-              </div>
-              <span className="text-sm font-medium text-center group-hover:text-accent transition-colors">Children's Books</span>
+              Children's Books
             </Link>
             
             <Link 
               to="/books?category=history" 
-              className="group flex flex-col items-center p-4 rounded-lg bg-background hover:bg-primary/5 transition-colors duration-200 shadow-sm hover:shadow-md"
+              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
-                <BookOpen className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-sm font-medium text-center group-hover:text-primary transition-colors">History</span>
+              History
             </Link>
             
             <Link 
               to="/books?category=science" 
-              className="group flex flex-col items-center p-4 rounded-lg bg-background hover:bg-primary/5 transition-colors duration-200 shadow-sm hover:shadow-md"
+              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
             >
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-2 group-hover:bg-accent/20 transition-colors">
-                <BookOpen className="h-6 w-6 text-accent" />
-              </div>
-              <span className="text-sm font-medium text-center group-hover:text-accent transition-colors">Science & Tech</span>
+              Science & Tech
             </Link>
           </div>
         </div>
