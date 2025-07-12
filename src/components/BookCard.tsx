@@ -77,7 +77,7 @@ export function BookCard(book: Book) {
   return (
     <Card className="group relative overflow-hidden bg-card hover:shadow-book transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
       {book.isPopular && (
-        <Badge className="absolute top-2 right-2 z-10 bg-accent text-accent-foreground text-xs">
+        <Badge className="absolute top-1 right-1 md:top-2 md:right-2 z-10 bg-accent text-accent-foreground text-xs">
           Popular
         </Badge>
       )}

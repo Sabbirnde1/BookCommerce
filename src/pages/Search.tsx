@@ -296,7 +296,7 @@ const Search = () => {
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue placeholder="Select Genre" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background border border-border z-50 max-h-60 overflow-y-auto">
                   {genres.map(genre => (
                     <SelectItem key={genre} value={genre}>{genre}</SelectItem>
                   ))}
@@ -307,7 +307,7 @@ const Search = () => {
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background border border-border z-50">
                   <SelectItem value="featured">Featured</SelectItem>
                   <SelectItem value="price-low">Price: Low to High</SelectItem>
                   <SelectItem value="price-high">Price: High to Low</SelectItem>
@@ -334,7 +334,7 @@ const Search = () => {
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">
           {filteredBooks.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
               {filteredBooks.map(book => (
                 <BookCard key={book.id} book={book} />
               ))}
