@@ -153,12 +153,12 @@ const Cart = () => {
                 </div>
                 
                 <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span className="text-green-600">Free</span>
+                  <span>Delivery Charge</span>
+                  <span>৳{(getTotalPrice() > 1000 ? 0 : 60).toFixed(2)}</span>
                 </div>
                 
                 <div className="flex justify-between">
-                  <span>Tax</span>
+                  <span>Tax (8%)</span>
                   <span>৳{(getTotalPrice() * 0.08).toFixed(2)}</span>
                 </div>
                 
@@ -166,7 +166,7 @@ const Cart = () => {
                 
                 <div className="flex justify-between text-lg font-semibold">
                   <span>Total</span>
-                  <span>৳{(getTotalPrice() * 1.08).toFixed(2)}</span>
+                  <span>৳{(getTotalPrice() + (getTotalPrice() > 1000 ? 0 : 60) + (getTotalPrice() * 0.08)).toFixed(2)}</span>
                 </div>
 
                 <Button className="w-full" size="lg" variant="hero" onClick={handleCheckout}>
