@@ -1,54 +1,12 @@
-import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BookRequestForm } from "@/components/BookRequestForm";
+import { RecentBookRequests } from "@/components/RecentBookRequests";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, Clock, CheckCircle, Search, ArrowLeft, Users, Zap, Shield, Star, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, Search, Shield, Star, MessageCircle, Sparkles, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 const BookRequest = () => {
-  const [submittedRequests] = useState([{
-    id: "1",
-    title: "The Art of Computer Programming",
-    author: "Donald Knuth",
-    condition: "both",
-    budget: "৳2500-5000",
-    status: "searching",
-    submittedAt: "2024-01-15",
-    notes: "Looking for volumes 1-3, any edition is fine"
-  }, {
-    id: "2",
-    title: "Clean Code",
-    author: "Robert Martin",
-    condition: "new",
-    budget: "৳1500-2500",
-    status: "found",
-    submittedAt: "2024-01-10",
-    notes: ""
-  }]);
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "searching":
-        return "bg-amber-100 text-amber-800 border-amber-200";
-      case "found":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "unavailable":
-        return "bg-red-100 text-red-800 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "searching":
-        return <Search className="h-4 w-4" />;
-      case "found":
-        return <CheckCircle className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
-    }
-  };
   return <div className="min-h-screen bg-background">
       <Header />
       
@@ -141,63 +99,7 @@ const BookRequest = () => {
           {/* Recent Requests & Testimonials - Full Width Below */}
           <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
             {/* Recent Requests */}
-            <div>
-              <h2 className="text-2xl font-bold mb-8">Your Recent Requests</h2>
-              
-              {submittedRequests.length > 0 ? <div className="space-y-6">
-                  {submittedRequests.map(request => <Card key={request.id} className="shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-r from-background to-secondary/10">
-                      <CardHeader className="pb-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <CardTitle className="text-xl mb-2">{request.title}</CardTitle>
-                            <CardDescription className="text-base">by {request.author}</CardDescription>
-                          </div>
-                          <Badge className={`flex items-center gap-2 px-3 py-1 ${getStatusColor(request.status)}`} variant="outline">
-                            {getStatusIcon(request.status)}
-                            {request.status === "searching" ? "Searching" : request.status === "found" ? "Found" : "Unavailable"}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground mb-4">
-                          <div className="space-y-2">
-                            <p><span className="font-medium text-foreground">Condition:</span> {request.condition === "both" ? "New or Pre-owned" : request.condition}</p>
-                            <p><span className="font-medium text-foreground">Budget:</span> {request.budget}</p>
-                          </div>
-                          <div className="space-y-2">
-                            <p><span className="font-medium text-foreground">Submitted:</span> {new Date(request.submittedAt).toLocaleDateString()}</p>
-                            {request.notes && <p><span className="font-medium text-foreground">Notes:</span> {request.notes}</p>}
-                          </div>
-                        </div>
-                        
-                        {request.status === "found" && <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                            <div className="flex items-start gap-3">
-                              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                              <div>
-                                <p className="font-medium text-green-800 mb-1">Book Found!</p>
-                                <p className="text-sm text-green-700">
-                                  Great news! We found your book. Check your email for details and purchase options.
-                                </p>
-                              </div>
-                            </div>
-                          </div>}
-                      </CardContent>
-                    </Card>)}
-                </div> : <Card className="shadow-lg border-0 bg-gradient-to-br from-secondary/20 to-accent/10">
-                  <CardContent className="pt-12 pb-12 text-center">
-                    <div className="relative mb-6">
-                      <div className="absolute inset-0 bg-primary/10 rounded-full blur-lg"></div>
-                      <div className="relative bg-background p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
-                        <BookOpen className="h-12 w-12 text-primary" />
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-3">No requests yet</h3>
-                    <p className="text-muted-foreground text-lg max-w-md mx-auto">
-                      Submit your first book request and let our expert team help you find exactly what you're looking for.
-                    </p>
-                  </CardContent>
-                </Card>}
-            </div>
+            <RecentBookRequests />
 
             {/* Success Stories */}
             <div>
