@@ -106,7 +106,7 @@ export function Footer() {
         </div>
         
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/80">
-          <p>&copy; 2024 <span className="font-semibold text-primary-foreground">Nijer Cart</span>. All rights reserved.</p>
+          <p>&copy; 2025 <span className="font-semibold text-primary-foreground">Nijer Cart</span>. All rights reserved.</p>
         </div>
       </div>
     </footer>
