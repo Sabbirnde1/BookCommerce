@@ -86,7 +86,7 @@ export function Header() {
           <Link to="/" className="flex items-center space-x-2 md:space-x-3 hover:scale-105 transition-transform duration-200">
             <div className="relative">
               <img src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" alt="Nijercart Logo" className="h-10 md:h-12 w-auto drop-shadow-lg hover:drop-shadow-xl transition-all duration-200" />
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 rounded-lg"></div>
+              <div classNFhame="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 rounded-lg"></div>
             </div>
             <div className="hidden sm:block">
               <div className="text-base md:text-lg font-bold bg-gradient-brand bg-clip-text text-transparent drop-shadow-brand hover:scale-105 transition-all duration-300">
