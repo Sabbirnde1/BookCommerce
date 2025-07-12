@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { useWishlistStore } from '@/lib/wishlistStore';
 
 interface Profile {
   id: string;
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const { fetchWishlist, clearWishlist } = useWishlistStore();
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -43,9 +45,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (session?.user) {
           setTimeout(() => {
             fetchUserProfile(session.user.id);
+            fetchWishlist(session.user.id);
           }, 0);
         } else {
           setProfile(null);
+          clearWishlist();
         }
         
         setLoading(false);
@@ -59,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (session?.user) {
         fetchUserProfile(session.user.id);
+        fetchWishlist(session.user.id);
       }
       setLoading(false);
     });

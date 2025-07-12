@@ -1,15 +1,25 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Heart } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
+import { useWishlistStore } from "@/lib/wishlistStore";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Book } from "@/lib/bookData";
 
 export function BookCard(book: Book) {
   const { addItem, getItemQuantity } = useCartStore();
+  const { user } = useAuth();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const { toast } = useToast();
   const cartQuantity = getItemQuantity(book.id);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  useEffect(() => {
+    setIsWishlisted(isInWishlist(book.id));
+  }, [book.id, isInWishlist]);
 
   const handleAddToCart = () => {
     if (cartQuantity >= book.inStock) {
@@ -27,6 +37,43 @@ export function BookCard(book: Book) {
       description: `${book.title} has been added to your cart.`,
     });
   };
+
+  const handleWishlistToggle = async () => {
+    if (!user) {
+      toast({
+        title: "Please sign in",
+        description: "You need to be logged in to add books to your wishlist.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (isWishlisted) {
+      const success = await removeFromWishlist(user.id, book.id);
+      if (success) {
+        setIsWishlisted(false);
+        toast({
+          title: "Removed from wishlist",
+          description: `${book.title} has been removed from your wishlist.`,
+        });
+      }
+    } else {
+      const success = await addToWishlist(user.id, book);
+      if (success) {
+        setIsWishlisted(true);
+        toast({
+          title: "Added to wishlist! ❤️",
+          description: `${book.title} has been saved to your wishlist.`,
+        });
+      } else {
+        toast({
+          title: "Already in wishlist",
+          description: `${book.title} is already in your wishlist.`,
+        });
+      }
+    }
+  };
+
   return (
     <Card className="group relative overflow-hidden bg-card hover:shadow-book transition-all duration-300 transform hover:-translate-y-1">
       {book.isPopular && (
@@ -50,8 +97,15 @@ export function BookCard(book: Book) {
           <Badge variant={book.condition === "new" ? "default" : "secondary"} className="text-xs">
             {book.condition === "new" ? "New" : "Pre-owned"}
           </Badge>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <Heart className="h-4 w-4" />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className={`h-8 w-8 transition-colors ${
+              isWishlisted ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-red-500'
+            }`}
+            onClick={handleWishlistToggle}
+          >
+            <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
           </Button>
         </div>
         
