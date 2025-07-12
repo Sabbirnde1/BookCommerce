@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Search, Shield, Star, MessageCircle, Sparkles, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 const BookRequest = () => {
+  // Component for handling book requests
   return <div className="min-h-screen bg-background">
       <Header />
       
