@@ -8,12 +8,19 @@ import { useCartStore } from "@/lib/cartStore";
 import { ShoppingCart, Minus, Plus, Trash2, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-
 const Cart = () => {
-  const { items, updateQuantity, removeItem, clearCart, getTotalPrice, getTotalItems } = useCartStore();
-  const { toast } = useToast();
+  const {
+    items,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    getTotalPrice,
+    getTotalItems
+  } = useCartStore();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
-
   const handleCheckout = () => {
     if (items.length === 0) {
       toast({
@@ -23,13 +30,10 @@ const Cart = () => {
       });
       return;
     }
-
     navigate("/payment");
   };
-
   if (items.length === 0) {
-    return (
-      <div className="min-h-screen bg-background">
+    return <div className="min-h-screen bg-background">
         <Header />
         
         <div className="container mx-auto px-4 py-12">
@@ -49,12 +53,9 @@ const Cart = () => {
             </div>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Header />
       
       <div className="container mx-auto px-4 py-8">
@@ -75,17 +76,12 @@ const Cart = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {items.map((item) => (
-              <Card key={item.book.id} className="shadow-page">
+            {items.map(item => <Card key={item.book.id} className="shadow-page">
                 <CardContent className="p-6">
                   <div className="flex gap-4">
                     {/* Book Image */}
                     <div className="w-20 h-28 flex-shrink-0 bg-muted rounded-md overflow-hidden">
-                      <img 
-                        src={item.book.image} 
-                        alt={item.book.title}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={item.book.image} alt={item.book.title} className="w-full h-full object-cover" />
                     </div>
 
                     {/* Book Details */}
@@ -96,19 +92,11 @@ const Cart = () => {
                             {item.book.title}
                           </h3>
                           <p className="text-sm text-muted-foreground">{item.book.author}</p>
-                          <Badge 
-                            variant={item.book.condition === "new" ? "default" : "secondary"} 
-                            className="text-xs mt-1"
-                          >
+                          <Badge variant={item.book.condition === "new" ? "default" : "secondary"} className="text-xs mt-1">
                             {item.book.condition === "new" ? "New" : "Pre-owned"}
                           </Badge>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-destructive hover:text-destructive"
-                          onClick={() => removeItem(item.book.id)}
-                        >
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => removeItem(item.book.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -116,33 +104,14 @@ const Cart = () => {
                       {/* Quantity and Price */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => updateQuantity(item.book.id, item.quantity - 1)}
-                            disabled={item.quantity <= 1}
-                          >
+                          <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.book.id, item.quantity - 1)} disabled={item.quantity <= 1}>
                             <Minus className="h-3 w-3" />
                           </Button>
-                          <Input
-                            type="number"
-                            value={item.quantity}
-                            onChange={(e) => {
-                              const qty = parseInt(e.target.value) || 1;
-                              updateQuantity(item.book.id, Math.max(1, Math.min(qty, item.book.inStock)));
-                            }}
-                            className="w-16 h-8 text-center"
-                            min="1"
-                            max={item.book.inStock}
-                          />
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => updateQuantity(item.book.id, item.quantity + 1)}
-                            disabled={item.quantity >= item.book.inStock}
-                          >
+                          <Input type="number" value={item.quantity} onChange={e => {
+                        const qty = parseInt(e.target.value) || 1;
+                        updateQuantity(item.book.id, Math.max(1, Math.min(qty, item.book.inStock)));
+                      }} className="w-16 h-8 text-center" min="1" max={item.book.inStock} />
+                          <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.book.id, item.quantity + 1)} disabled={item.quantity >= item.book.inStock}>
                             <Plus className="h-3 w-3" />
                           </Button>
                         </div>
@@ -153,16 +122,13 @@ const Cart = () => {
                         </div>
                       </div>
 
-                      {item.quantity >= item.book.inStock && (
-                        <p className="text-xs text-amber-600 mt-1">
+                      {item.quantity >= item.book.inStock && <p className="text-xs text-amber-600 mt-1">
                           Maximum quantity available: {item.book.inStock}
-                        </p>
-                      )}
+                        </p>}
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
 
             <div className="flex justify-between items-center pt-4">
               <Button variant="outline" onClick={clearCart}>
@@ -203,19 +169,12 @@ const Cart = () => {
                   <span>৳{(getTotalPrice() * 1.08).toFixed(2)}</span>
                 </div>
 
-                <Button 
-                  className="w-full" 
-                  size="lg" 
-                  variant="hero"
-                  onClick={handleCheckout}
-                >
+                <Button className="w-full" size="lg" variant="hero" onClick={handleCheckout}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Proceed to Checkout
                 </Button>
 
-                <div className="text-xs text-muted-foreground text-center">
-                  Secure checkout powered by Stripe
-                </div>
+                <div className="text-xs text-muted-foreground text-center">Secure checkout powered by BC</div>
               </CardContent>
             </Card>
           </div>
@@ -223,8 +182,6 @@ const Cart = () => {
       </div>
       
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Cart;
