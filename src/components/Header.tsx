@@ -84,6 +84,9 @@ export function Header() {
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/request">Request</Link>
               </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/support">Support</Link>
+              </Button>
             </div>
 
             {/* Wishlist */}
