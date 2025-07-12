@@ -33,12 +33,9 @@ const BookRequest = () => {
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="relative group">
               <div className="text-center p-8 rounded-2xl bg-background shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-2">
-                <div className="relative mb-6">
+                <div className="mb-6">
                   <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-foreground rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                     <MessageCircle className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-xs font-bold text-white">
-                    1
                   </div>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Submit Request</h3>
@@ -50,12 +47,9 @@ const BookRequest = () => {
             
             <div className="relative group">
               <div className="text-center p-8 rounded-2xl bg-background shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-2">
-                <div className="relative mb-6">
+                <div className="mb-6">
                   <div className="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-foreground rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                     <Search className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-xs font-bold text-white">
-                    2
                   </div>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Expert Search</h3>
@@ -65,12 +59,9 @@ const BookRequest = () => {
             
             <div className="relative group">
               <div className="text-center p-8 rounded-2xl bg-background shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-2">
-                <div className="relative mb-6">
+                <div className="mb-6">
                   <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent-foreground rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                     <Sparkles className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-xs font-bold text-white">
-                    3
                   </div>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Get Notified</h3>
