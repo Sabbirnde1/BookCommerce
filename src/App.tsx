@@ -13,6 +13,7 @@ import BookCommerce from "./pages/BookCommerce";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Orders";
+import Payment from "./pages/Payment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/payment" element={<Payment />} />
           <Route path="/new-books" element={<NewBooks />} />
           <Route path="/old-books" element={<OldBooks />} />
           <Route path="/books" element={<BookCommerce />} />

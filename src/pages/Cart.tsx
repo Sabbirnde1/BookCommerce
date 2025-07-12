@@ -6,12 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useCartStore } from "@/lib/cartStore";
 import { ShoppingCart, Minus, Plus, Trash2, ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const Cart = () => {
   const { items, updateQuantity, removeItem, clearCart, getTotalPrice, getTotalItems } = useCartStore();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleCheckout = () => {
     if (items.length === 0) {
@@ -23,19 +24,7 @@ const Cart = () => {
       return;
     }
 
-    toast({
-      title: "Checkout initiated! 🛒",
-      description: "Redirecting to secure payment...",
-    });
-
-    // Here you would integrate with your payment system
-    setTimeout(() => {
-      clearCart();
-      toast({
-        title: "Order placed successfully! 📚",
-        description: "Thank you for your purchase. You'll receive an email confirmation shortly.",
-      });
-    }, 2000);
+    navigate("/payment");
   };
 
   if (items.length === 0) {
