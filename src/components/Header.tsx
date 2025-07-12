@@ -10,35 +10,40 @@ import { useWishlistStore } from "@/lib/wishlistStore";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const { getTotalItems } = useCartStore();
-  const { items: wishlistItems } = useWishlistStore();
-  const { user, profile, signOut, loading } = useAuth();
-  const { toast } = useToast();
+  const {
+    getTotalItems
+  } = useCartStore();
+  const {
+    items: wishlistItems
+  } = useWishlistStore();
+  const {
+    user,
+    profile,
+    signOut,
+    loading
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
   const cartItems = getTotalItems();
   const wishlistCount = wishlistItems.length;
-
   useEffect(() => {
     checkAdminStatus();
   }, [user]);
-
   const checkAdminStatus = async () => {
     if (!user) {
       setIsAdmin(false);
       return;
     }
-
     try {
-      const { data, error } = await supabase
-        .from('admin_roles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
+      const {
+        data,
+        error
+      } = await supabase.from('admin_roles').select('id').eq('user_id', user.id).single();
       if (data && !error) {
         setIsAdmin(true);
       } else {
@@ -48,16 +53,16 @@ export function Header() {
       setIsAdmin(false);
     }
   };
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
-
   const handleSignOut = async () => {
-    const { error } = await signOut();
+    const {
+      error
+    } = await signOut();
     if (error) {
       toast({
         title: "Error",
@@ -67,28 +72,22 @@ export function Header() {
     } else {
       toast({
         title: "Signed out",
-        description: "You have been successfully signed out.",
+        description: "You have been successfully signed out."
       });
       navigate("/");
     }
   };
-
-  return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+  return <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 hover:scale-105 transition-transform duration-200">
             <div className="relative">
-              <img 
-                src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
-                alt="Nijercart Logo" 
-                className="h-12 w-auto drop-shadow-lg hover:drop-shadow-xl transition-all duration-200"
-              />
+              <img src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" alt="Nijercart Logo" className="h-12 w-auto drop-shadow-lg hover:drop-shadow-xl transition-all duration-200" />
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 rounded-lg"></div>
             </div>
             <div className="hidden sm:block">
-              <div className="text-sm font-medium text-muted-foreground">Old & New Books</div>
+              <div className="text-sm font-medium text-muted-foreground">Nijer Cart</div>
             </div>
           </Link>
 
@@ -96,13 +95,7 @@ export function Header() {
           <div className="hidden md:flex flex-1 max-w-md mx-4">
             <form onSubmit={handleSearch} className="relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search books, authors..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 w-full"
-              />
+              <Input type="search" placeholder="Search books, authors..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 w-full" />
             </form>
           </div>
 
@@ -125,14 +118,9 @@ export function Header() {
             <Button variant="ghost" size="icon" asChild className="relative">
               <Link to="/wishlist">
                 <Heart className="h-5 w-5" />
-                {wishlistCount > 0 && (
-                  <Badge 
-                    variant="destructive" 
-                    className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
-                  >
+                {wishlistCount > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
                     {wishlistCount}
-                  </Badge>
-                )}
+                  </Badge>}
               </Link>
             </Button>
 
@@ -140,14 +128,9 @@ export function Header() {
             <Button variant="ghost" size="icon" asChild className="relative">
               <Link to="/cart">
                 <ShoppingCart className="h-5 w-5" />
-                {cartItems > 0 && (
-                  <Badge 
-                    variant="destructive" 
-                    className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
-                  >
+                {cartItems > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
                     {cartItems}
-                  </Badge>
-                )}
+                  </Badge>}
               </Link>
             </Button>
 
@@ -156,14 +139,11 @@ export function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
                   <User className="h-5 w-5" />
-                  {user && (
-                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full" />
-                  )}
+                  {user && <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full" />}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 bg-background border border-border z-50">
-                {user ? (
-                  <>
+                {user ? <>
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
@@ -199,8 +179,7 @@ export function Header() {
                         <span>Order History</span>
                       </Link>
                     </DropdownMenuItem>
-                    {isAdmin && (
-                      <>
+                    {isAdmin && <>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link to="/admin" className="flex items-center">
@@ -208,16 +187,13 @@ export function Header() {
                             <span>Admin Dashboard</span>
                           </Link>
                         </DropdownMenuItem>
-                      </>
-                    )}
+                      </>}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Sign Out</span>
                     </DropdownMenuItem>
-                  </>
-                ) : (
-                  <>
+                  </> : <>
                     <DropdownMenuLabel>Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
@@ -226,8 +202,7 @@ export function Header() {
                         <span>Sign In / Sign Up</span>
                       </Link>
                     </DropdownMenuItem>
-                  </>
-                )}
+                  </>}
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -242,16 +217,9 @@ export function Header() {
         <div className="md:hidden pb-3">
           <form onSubmit={handleSearch} className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search books, authors..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-full"
-            />
+            <Input type="search" placeholder="Search books, authors..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 w-full" />
           </form>
         </div>
       </div>
-    </header>
-  );
+    </header>;
 }
