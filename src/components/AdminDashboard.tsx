@@ -1662,6 +1662,84 @@ export function AdminDashboard() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Support Footer Section */}
+      <div className="mt-12 pt-8 border-t border-border">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Admin Support & Help
+            </CardTitle>
+            <CardDescription>
+              Need assistance with the admin dashboard? Find resources and get help here.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Documentation */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  <h4 className="font-medium">Documentation</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Learn how to manage products, pricing, and inventory effectively.
+                </p>
+                <Button variant="outline" size="sm" className="w-full">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  View Docs
+                </Button>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Activity className="h-4 w-4 text-primary" />
+                  <h4 className="font-medium">Quick Actions</h4>
+                </div>
+                <div className="space-y-2">
+                  <Button variant="ghost" size="sm" className="w-full justify-start" onClick={fetchProducts}>
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh Data
+                  </Button>
+                  <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => setShowProductDialog(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Product
+                  </Button>
+                </div>
+              </div>
+
+              {/* Contact Support */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-primary" />
+                  <h4 className="font-medium">Need Help?</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Contact our support team for technical assistance or feature requests.
+                </p>
+                <Button variant="outline" size="sm" className="w-full">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Contact Support
+                </Button>
+              </div>
+            </div>
+
+            {/* System Status */}
+            <Separator className="my-6" />
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
+                System Status: All services operational
+              </div>
+              <div className="text-muted-foreground">
+                Last updated: {new Date().toLocaleString()}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
