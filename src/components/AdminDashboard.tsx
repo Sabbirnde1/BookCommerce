@@ -34,7 +34,7 @@ import {
   Search,
   Filter,
   Download,
-  Refresh,
+  RefreshCw,
   Star,
   Calendar,
   Activity,
@@ -727,7 +727,7 @@ export function AdminDashboard() {
                       size="sm"
                       onClick={fetchProducts}
                     >
-                      <Refresh className="h-4 w-4" />
+                      <RefreshCw className="h-4 w-4" />
                     </Button>
                   </div>
                   
@@ -890,6 +890,7 @@ export function AdminDashboard() {
                   </DialogContent>
                 </Dialog>
               </div>
+            </div>
             </CardHeader>
             <CardContent>
               {/* Search and Filter Controls */}
