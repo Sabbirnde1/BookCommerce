@@ -36,12 +36,14 @@ export function Footer() {
           </div>
           
           <div>
-            <h4 className="font-semibold mb-4">Categories</h4>
+            <h4 className="font-semibold mb-4">Book Categories</h4>
             <ul className="space-y-2 text-primary-foreground/80">
-              <li><Link to="/books?genre=fiction" className="hover:text-primary-foreground transition-colors">Fiction</Link></li>
-              <li><Link to="/books?genre=non-fiction" className="hover:text-primary-foreground transition-colors">Non-Fiction</Link></li>
-              <li><Link to="/books?genre=science" className="hover:text-primary-foreground transition-colors">Science</Link></li>
-              <li><Link to="/books?genre=biography" className="hover:text-primary-foreground transition-colors">Biography</Link></li>
+              <li><Link to="/books?category=fiction" className="hover:text-primary-foreground transition-colors">Fiction</Link></li>
+              <li><Link to="/books?category=non-fiction" className="hover:text-primary-foreground transition-colors">Non-Fiction</Link></li>
+              <li><Link to="/books?category=academic" className="hover:text-primary-foreground transition-colors">Academic</Link></li>
+              <li><Link to="/books?category=children" className="hover:text-primary-foreground transition-colors">Children's Books</Link></li>
+              <li><Link to="/books?category=history" className="hover:text-primary-foreground transition-colors">History</Link></li>
+              <li><Link to="/books?category=science" className="hover:text-primary-foreground transition-colors">Science & Tech</Link></li>
             </ul>
           </div>
           
