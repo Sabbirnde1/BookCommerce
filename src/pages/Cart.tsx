@@ -169,7 +169,7 @@ const Cart = () => {
                 Clear Cart
               </Button>
               <Button variant="ghost" asChild>
-                <Link to="/">Continue Shopping</Link>
+                <Link to="/books">Continue Shopping</Link>
               </Button>
             </div>
           </div>

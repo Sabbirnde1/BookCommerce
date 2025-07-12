@@ -149,7 +149,7 @@ const Payment = () => {
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">No items to checkout</h2>
             <Button asChild variant="hero">
-              <Link to="/">Continue Shopping</Link>
+              <Link to="/books">Continue Shopping</Link>
             </Button>
           </div>
         </div>
