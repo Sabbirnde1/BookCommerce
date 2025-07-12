@@ -52,11 +52,11 @@ export function Footer() {
             <ul className="space-y-2 text-primary-foreground/80">
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                support@nijercart.com
+                nijercart@gmail.com
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
-                +880 1234-567890
+                +880 18 259 29393
               </li>
               <li className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
@@ -70,7 +70,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Follow Us</h4>
             <div className="flex space-x-4">
               <a 
-                href="https://facebook.com" 
+                href="https://www.facebook.com/share/1GYpemSse3/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-primary-foreground/10 rounded-full flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200 group"
