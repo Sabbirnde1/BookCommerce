@@ -7,8 +7,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/lib/cartStore";
-import { ArrowLeft, CreditCard, Smartphone, Building2, Banknote, Phone } from "lucide-react";
+import { ArrowLeft, CreditCard, Smartphone, Building2, Banknote, Phone, MapPin, User, Shield, CheckCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -35,8 +36,9 @@ const Payment = () => {
       icon: Smartphone,
       description: "Pay with bKash mobile banking",
       color: "text-pink-600",
-      bgColor: "bg-pink-50",
-      borderColor: "border-pink-200"
+      bgColor: "bg-gradient-to-br from-pink-50 to-pink-100",
+      borderColor: "border-pink-200",
+      hoverColor: "hover:from-pink-100 hover:to-pink-200"
     },
     {
       id: "rocket",
@@ -44,8 +46,9 @@ const Payment = () => {
       icon: Phone,
       description: "Pay with Rocket mobile banking",
       color: "text-purple-600",
-      bgColor: "bg-purple-50",
-      borderColor: "border-purple-200"
+      bgColor: "bg-gradient-to-br from-purple-50 to-purple-100",
+      borderColor: "border-purple-200",
+      hoverColor: "hover:from-purple-100 hover:to-purple-200"
     },
     {
       id: "nagad",
@@ -53,17 +56,19 @@ const Payment = () => {
       icon: Smartphone,
       description: "Pay with Nagad mobile banking",
       color: "text-orange-600",
-      bgColor: "bg-orange-50",
-      borderColor: "border-orange-200"
+      bgColor: "bg-gradient-to-br from-orange-50 to-orange-100",
+      borderColor: "border-orange-200",
+      hoverColor: "hover:from-orange-100 hover:to-orange-200"
     },
     {
       id: "cod",
       name: "Cash on Delivery",
       icon: Banknote,
       description: "Pay when you receive your order",
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-      borderColor: "border-green-200"
+      color: "text-emerald-600",
+      bgColor: "bg-gradient-to-br from-emerald-50 to-emerald-100",
+      borderColor: "border-emerald-200",
+      hoverColor: "hover:from-emerald-100 hover:to-emerald-200"
     },
     {
       id: "bank",
@@ -71,8 +76,9 @@ const Payment = () => {
       icon: Building2,
       description: "Direct bank transfer",
       color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      borderColor: "border-blue-200"
+      bgColor: "bg-gradient-to-br from-blue-50 to-blue-100",
+      borderColor: "border-blue-200",
+      hoverColor: "hover:from-blue-100 hover:to-blue-200"
     },
     {
       id: "card",
@@ -80,8 +86,9 @@ const Payment = () => {
       icon: CreditCard,
       description: "Pay with your credit or debit card",
       color: "text-indigo-600",
-      bgColor: "bg-indigo-50",
-      borderColor: "border-indigo-200"
+      bgColor: "bg-gradient-to-br from-indigo-50 to-indigo-100",
+      borderColor: "border-indigo-200",
+      hoverColor: "hover:from-indigo-100 hover:to-indigo-200"
     }
   ];
 
@@ -152,112 +159,143 @@ const Payment = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
       <Header />
       
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center gap-3 mb-8">
-          <Button variant="ghost" size="icon" asChild>
+        {/* Header Section */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="ghost" size="icon" asChild className="rounded-full">
             <Link to="/cart">
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Payment Methods</h1>
-            <p className="text-muted-foreground">
-              Choose your preferred payment method
+          <div className="flex-1">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Secure Checkout
+            </h1>
+            <p className="text-muted-foreground mt-1 flex items-center gap-2">
+              <Shield className="h-4 w-4 text-emerald-500" />
+              Complete your order securely
             </p>
           </div>
+          <Badge variant="secondary" className="hidden sm:flex">
+            {getTotalItems()} {getTotalItems() === 1 ? 'item' : 'items'}
+          </Badge>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Shipping Address */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card className="shadow-page">
-              <CardHeader>
-                <CardTitle>Shipping Address</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid lg:grid-cols-12 gap-8">
+          {/* Left Column - Forms */}
+          <div className="lg:col-span-8 space-y-8">
+            {/* Shipping Address Card */}
+            <Card className="shadow-book border-0 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <MapPin className="h-5 w-5 text-primary" />
+                  </div>
                   <div>
-                    <Label htmlFor="fullName">Full Name *</Label>
+                    <CardTitle className="text-xl">Delivery Address</CardTitle>
+                    <p className="text-sm text-muted-foreground">Where should we deliver your books?</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName" className="text-sm font-medium flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Full Name *
+                    </Label>
                     <Input
                       id="fullName"
                       placeholder="Enter your full name"
                       value={shippingAddress.fullName}
                       onChange={(e) => setShippingAddress({...shippingAddress, fullName: e.target.value})}
-                      className="mt-1"
+                      className="h-12 border-muted-foreground/20 focus:border-primary"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="shippingPhone">Phone Number *</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="shippingPhone" className="text-sm font-medium flex items-center gap-2">
+                      <Phone className="h-4 w-4" />
+                      Phone Number *
+                    </Label>
                     <Input
                       id="shippingPhone"
                       placeholder="01xxxxxxxxx"
                       value={shippingAddress.phone}
                       onChange={(e) => setShippingAddress({...shippingAddress, phone: e.target.value})}
-                      className="mt-1"
+                      className="h-12 border-muted-foreground/20 focus:border-primary"
                     />
                   </div>
                 </div>
                 
-                <div>
-                  <Label htmlFor="shippingAddress">Street Address *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="shippingAddress" className="text-sm font-medium">Street Address *</Label>
                   <Textarea
                     id="shippingAddress"
                     placeholder="House/Building number, Street name"
                     value={shippingAddress.address}
                     onChange={(e) => setShippingAddress({...shippingAddress, address: e.target.value})}
-                    className="mt-1"
+                    className="min-h-[80px] border-muted-foreground/20 focus:border-primary resize-none"
                     rows={2}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="city">City *</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="city" className="text-sm font-medium">City *</Label>
                     <Input
                       id="city"
                       placeholder="e.g., Dhaka"
                       value={shippingAddress.city}
                       onChange={(e) => setShippingAddress({...shippingAddress, city: e.target.value})}
-                      className="mt-1"
+                      className="h-12 border-muted-foreground/20 focus:border-primary"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="area">Area/District</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="area" className="text-sm font-medium">Area/District</Label>
                     <Input
                       id="area"
                       placeholder="e.g., Dhanmondi"
                       value={shippingAddress.area}
                       onChange={(e) => setShippingAddress({...shippingAddress, area: e.target.value})}
-                      className="mt-1"
+                      className="h-12 border-muted-foreground/20 focus:border-primary"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="postalCode">Postal Code</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="postalCode" className="text-sm font-medium">Postal Code</Label>
                     <Input
                       id="postalCode"
                       placeholder="e.g., 1205"
                       value={shippingAddress.postalCode}
                       onChange={(e) => setShippingAddress({...shippingAddress, postalCode: e.target.value})}
-                      className="mt-1"
+                      className="h-12 border-muted-foreground/20 focus:border-primary"
                     />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Payment Methods */}
-            <Card className="shadow-page">
-              <CardHeader>
-                <CardTitle>Select Payment Method</CardTitle>
+            {/* Payment Methods Card */}
+            <Card className="shadow-book border-0 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-accent/10">
+                    <CreditCard className="h-5 w-5 text-accent" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Payment Method</CardTitle>
+                    <p className="text-sm text-muted-foreground">Choose how you'd like to pay</p>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <RadioGroup value={selectedMethod} onValueChange={setSelectedMethod}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {paymentMethods.map((method) => {
                       const Icon = method.icon;
+                      const isSelected = selectedMethod === method.id;
                       return (
                         <div key={method.id} className="relative">
                           <RadioGroupItem 
@@ -267,17 +305,20 @@ const Payment = () => {
                           />
                           <Label
                             htmlFor={method.id}
-                            className={`flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md peer-checked:border-primary peer-checked:bg-primary/5 ${method.borderColor} ${method.bgColor}`}
+                            className={`flex items-center space-x-4 p-6 rounded-xl border-2 cursor-pointer transition-all duration-200 ${method.bgColor} ${method.borderColor} ${method.hoverColor} peer-checked:border-primary peer-checked:shadow-lg peer-checked:scale-[1.02] ${isSelected ? 'ring-2 ring-primary/20' : ''}`}
                           >
-                            <div className={`p-2 rounded-full ${method.bgColor}`}>
-                              <Icon className={`h-5 w-5 ${method.color}`} />
+                            <div className={`p-3 rounded-full ${isSelected ? 'bg-primary/10' : 'bg-white/60'}`}>
+                              <Icon className={`h-6 w-6 ${isSelected ? 'text-primary' : method.color}`} />
                             </div>
                             <div className="flex-1">
-                              <div className="font-semibold">{method.name}</div>
-                              <div className="text-sm text-muted-foreground">
+                              <div className="font-semibold text-base">{method.name}</div>
+                              <div className="text-sm text-muted-foreground mt-1">
                                 {method.description}
                               </div>
                             </div>
+                            {isSelected && (
+                              <CheckCircle className="h-5 w-5 text-primary" />
+                            )}
                           </Label>
                         </div>
                       );
@@ -287,30 +328,33 @@ const Payment = () => {
 
                 {/* Additional fields based on selected method */}
                 {(selectedMethod === "bkash" || selectedMethod === "rocket" || selectedMethod === "nagad") && (
-                  <div className="mt-6 space-y-4">
-                    <div>
-                      <Label htmlFor="phone">Phone Number</Label>
+                  <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl border border-primary/10">
+                    <div className="space-y-4">
+                      <Label htmlFor="phone" className="text-sm font-medium flex items-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        Mobile Banking Phone Number
+                      </Label>
                       <Input
                         id="phone"
                         placeholder="01xxxxxxxxx"
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="mt-1"
+                        className="h-12 border-primary/20 focus:border-primary"
                       />
                     </div>
                   </div>
                 )}
 
                 {selectedMethod === "cod" && (
-                  <div className="mt-6 space-y-4">
-                    <div>
-                      <Label htmlFor="deliveryInstructions">Special Delivery Instructions</Label>
+                  <div className="mt-8 p-6 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200">
+                    <div className="space-y-4">
+                      <Label htmlFor="deliveryInstructions" className="text-sm font-medium">Special Delivery Instructions</Label>
                       <Textarea
                         id="deliveryInstructions"
                         placeholder="Any special instructions for delivery (optional)..."
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        className="mt-1"
+                        className="min-h-[80px] border-emerald-200 focus:border-emerald-400 resize-none"
                         rows={2}
                       />
                     </div>
@@ -318,72 +362,88 @@ const Payment = () => {
                 )}
 
                 {selectedMethod === "bank" && (
-                  <div className="mt-6 p-4 bg-muted rounded-lg">
-                    <h4 className="font-semibold mb-2">Bank Details</h4>
-                    <div className="text-sm space-y-1">
-                      <p><strong>Bank:</strong> Dutch Bangla Bank Limited</p>
-                      <p><strong>Account Name:</strong> BookStore Bangladesh</p>
-                      <p><strong>Account Number:</strong> 123-456-789012</p>
-                      <p><strong>Routing Number:</strong> 090267229</p>
+                  <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+                    <h4 className="font-semibold mb-4 text-blue-900">Bank Transfer Details</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div className="space-y-2">
+                        <p><strong className="text-blue-800">Bank:</strong> Dutch Bangla Bank Limited</p>
+                        <p><strong className="text-blue-800">Account Name:</strong> BookStore Bangladesh</p>
+                      </div>
+                      <div className="space-y-2">
+                        <p><strong className="text-blue-800">Account Number:</strong> 123-456-789012</p>
+                        <p><strong className="text-blue-800">Routing Number:</strong> 090267229</p>
+                      </div>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Please use your order number as reference when making the transfer.
+                    <p className="text-xs text-blue-600 mt-4 p-3 bg-blue-50 rounded-lg">
+                      💡 Please use your order number as reference when making the transfer.
                     </p>
                   </div>
                 )}
 
                 {selectedMethod === "card" && (
-                  <div className="mt-6 p-4 bg-muted rounded-lg">
-                    <p className="text-sm text-muted-foreground">
-                      You will be redirected to our secure payment gateway to complete your card payment.
-                    </p>
+                  <div className="mt-8 p-6 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-xl border border-indigo-200">
+                    <div className="flex items-center gap-3">
+                      <Shield className="h-5 w-5 text-indigo-600" />
+                      <p className="text-sm text-indigo-700">
+                        You will be redirected to our secure payment gateway to complete your card payment.
+                      </p>
+                    </div>
                   </div>
                 )}
               </CardContent>
             </Card>
           </div>
 
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <Card className="shadow-book sticky top-4">
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
+          {/* Right Column - Order Summary */}
+          <div className="lg:col-span-4">
+            <Card className="shadow-book sticky top-4 border-0 bg-gradient-to-br from-card via-card/95 to-primary/5 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <div className="p-2 rounded-full bg-accent/10">
+                    <CheckCircle className="h-5 w-5 text-accent" />
+                  </div>
+                  Order Summary
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span>Subtotal ({getTotalItems()} items)</span>
-                  <span>৳{getTotalPrice().toFixed(2)}</span>
-                </div>
-                
-                <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span className="text-green-600">Free</span>
-                </div>
-                
-                <div className="flex justify-between">
-                  <span>Tax</span>
-                  <span>৳{(getTotalPrice() * 0.08).toFixed(2)}</span>
-                </div>
-                
-                <hr />
-                
-                <div className="flex justify-between text-lg font-semibold">
-                  <span>Total</span>
-                  <span>৳{(getTotalPrice() * 1.08).toFixed(2)}</span>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-muted-foreground">Subtotal ({getTotalItems()} items)</span>
+                    <span className="font-medium">৳{getTotalPrice().toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-emerald-600 font-medium">Free</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-muted-foreground">Tax</span>
+                    <span className="font-medium">৳{(getTotalPrice() * 0.08).toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-semibold">Total</span>
+                      <span className="text-2xl font-bold text-primary">৳{(getTotalPrice() * 1.08).toFixed(2)}</span>
+                    </div>
+                  </div>
                 </div>
 
                 <Button 
-                  className="w-full" 
+                  className="w-full h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200" 
                   size="lg" 
                   variant="hero"
                   onClick={handleSubmit}
                   disabled={!selectedMethod}
                 >
-                  Place Order
+                  <CheckCircle className="mr-2 h-5 w-5" />
+                  Complete Order
                 </Button>
 
-                <div className="text-xs text-muted-foreground text-center">
-                  Secure payment processing
+                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                  <Shield className="h-3 w-3" />
+                  <span>Secure payment processing</span>
                 </div>
               </CardContent>
             </Card>
