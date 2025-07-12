@@ -197,135 +197,131 @@ const BookRequest = () => {
       {/* Main Content */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid xl:grid-cols-3 gap-12">
-            {/* Request Form */}
-            <div className="xl:col-span-1">
-              <div className="sticky top-8">
-                <div className="mb-6">
-                  <h2 className="text-2xl font-bold mb-3">Submit Your Request</h2>
-                  <p className="text-muted-foreground">
-                    Fill out the form and we'll start hunting for your book.
-                  </p>
-                </div>
-                <BookRequestForm />
-              </div>
+          {/* Centered Request Form */}
+          <div className="max-w-lg mx-auto mb-20">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4">Submit Your Request</h2>
+              <p className="text-muted-foreground text-lg">
+                Fill out the form and we'll start hunting for your book.
+              </p>
             </div>
+            <BookRequestForm />
+          </div>
 
-            {/* Recent Requests & Testimonials */}
-            <div className="xl:col-span-2 space-y-12">
-              {/* Recent Requests */}
-              <div>
-                <h2 className="text-3xl font-bold mb-8">Your Recent Requests</h2>
-                
-                {submittedRequests.length > 0 ? (
-                  <div className="space-y-6">
-                    {submittedRequests.map((request) => (
-                      <Card key={request.id} className="shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-r from-background to-secondary/10">
-                        <CardHeader className="pb-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <CardTitle className="text-xl mb-2">{request.title}</CardTitle>
-                              <CardDescription className="text-base">by {request.author}</CardDescription>
-                            </div>
-                            <Badge 
-                              className={`flex items-center gap-2 px-3 py-1 ${getStatusColor(request.status)}`}
-                              variant="outline"
-                            >
-                              {getStatusIcon(request.status)}
-                              {request.status === "searching" ? "Searching" : 
-                               request.status === "found" ? "Found" : "Unavailable"}
-                            </Badge>
+          {/* Recent Requests & Testimonials - Full Width Below */}
+          <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {/* Recent Requests */}
+            <div>
+              <h2 className="text-2xl font-bold mb-8">Your Recent Requests</h2>
+              
+              {submittedRequests.length > 0 ? (
+                <div className="space-y-6">
+                  {submittedRequests.map((request) => (
+                    <Card key={request.id} className="shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-r from-background to-secondary/10">
+                      <CardHeader className="pb-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-xl mb-2">{request.title}</CardTitle>
+                            <CardDescription className="text-base">by {request.author}</CardDescription>
                           </div>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground mb-4">
-                            <div className="space-y-2">
-                              <p><span className="font-medium text-foreground">Condition:</span> {request.condition === "both" ? "New or Pre-owned" : request.condition}</p>
-                              <p><span className="font-medium text-foreground">Budget:</span> {request.budget}</p>
-                            </div>
-                            <div className="space-y-2">
-                              <p><span className="font-medium text-foreground">Submitted:</span> {new Date(request.submittedAt).toLocaleDateString()}</p>
-                              {request.notes && (
-                                <p><span className="font-medium text-foreground">Notes:</span> {request.notes}</p>
-                              )}
-                            </div>
+                          <Badge 
+                            className={`flex items-center gap-2 px-3 py-1 ${getStatusColor(request.status)}`}
+                            variant="outline"
+                          >
+                            {getStatusIcon(request.status)}
+                            {request.status === "searching" ? "Searching" : 
+                             request.status === "found" ? "Found" : "Unavailable"}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground mb-4">
+                          <div className="space-y-2">
+                            <p><span className="font-medium text-foreground">Condition:</span> {request.condition === "both" ? "New or Pre-owned" : request.condition}</p>
+                            <p><span className="font-medium text-foreground">Budget:</span> {request.budget}</p>
                           </div>
-                          
-                          {request.status === "found" && (
-                            <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                              <div className="flex items-start gap-3">
-                                <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                                <div>
-                                  <p className="font-medium text-green-800 mb-1">Book Found!</p>
-                                  <p className="text-sm text-green-700">
-                                    Great news! We found your book. Check your email for details and purchase options.
-                                  </p>
-                                </div>
+                          <div className="space-y-2">
+                            <p><span className="font-medium text-foreground">Submitted:</span> {new Date(request.submittedAt).toLocaleDateString()}</p>
+                            {request.notes && (
+                              <p><span className="font-medium text-foreground">Notes:</span> {request.notes}</p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {request.status === "found" && (
+                          <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+                            <div className="flex items-start gap-3">
+                              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="font-medium text-green-800 mb-1">Book Found!</p>
+                                <p className="text-sm text-green-700">
+                                  Great news! We found your book. Check your email for details and purchase options.
+                                </p>
                               </div>
                             </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ) : (
-                  <Card className="shadow-lg border-0 bg-gradient-to-br from-secondary/20 to-accent/10">
-                    <CardContent className="pt-12 pb-12 text-center">
-                      <div className="relative mb-6">
-                        <div className="absolute inset-0 bg-primary/10 rounded-full blur-lg"></div>
-                        <div className="relative bg-background p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
-                          <BookOpen className="h-12 w-12 text-primary" />
-                        </div>
-                      </div>
-                      <h3 className="text-xl font-semibold mb-3">No requests yet</h3>
-                      <p className="text-muted-foreground text-lg max-w-md mx-auto">
-                        Submit your first book request and let our expert team help you find exactly what you're looking for.
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-
-              {/* Success Stories */}
-              <div>
-                <h3 className="text-2xl font-bold mb-6">Success Stories</h3>
-                <div className="grid gap-6">
-                  <Card className="border-0 shadow-md bg-gradient-to-r from-background to-primary/5">
-                    <CardContent className="pt-6">
-                      <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0">
-                          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                            <Star className="h-6 w-6 text-primary" />
                           </div>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground mb-3 italic">
-                            "They found a rare first edition of 'One Hundred Years of Solitude' that I'd been searching for years. Amazing service!"
-                          </p>
-                          <p className="font-medium">— Rashida K.</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="border-0 shadow-md bg-gradient-to-r from-background to-secondary/5">
-                    <CardContent className="pt-6">
-                      <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0">
-                          <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
-                            <Star className="h-6 w-6 text-secondary" />
-                          </div>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground mb-3 italic">
-                            "Needed textbooks for my engineering course. They found all 5 books within 2 days at great prices!"
-                          </p>
-                          <p className="font-medium">— Mahbub R.</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
+              ) : (
+                <Card className="shadow-lg border-0 bg-gradient-to-br from-secondary/20 to-accent/10">
+                  <CardContent className="pt-12 pb-12 text-center">
+                    <div className="relative mb-6">
+                      <div className="absolute inset-0 bg-primary/10 rounded-full blur-lg"></div>
+                      <div className="relative bg-background p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
+                        <BookOpen className="h-12 w-12 text-primary" />
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-3">No requests yet</h3>
+                    <p className="text-muted-foreground text-lg max-w-md mx-auto">
+                      Submit your first book request and let our expert team help you find exactly what you're looking for.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Success Stories */}
+            <div>
+              <h3 className="text-2xl font-bold mb-6">Success Stories</h3>
+              <div className="grid gap-6">
+                <Card className="border-0 shadow-md bg-gradient-to-r from-background to-primary/5">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                          <Star className="h-6 w-6 text-primary" />
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground mb-3 italic">
+                          "They found a rare first edition of 'One Hundred Years of Solitude' that I'd been searching for years. Amazing service!"
+                        </p>
+                        <p className="font-medium">— Rashida K.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-0 shadow-md bg-gradient-to-r from-background to-secondary/5">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+                          <Star className="h-6 w-6 text-secondary" />
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground mb-3 italic">
+                          "Needed textbooks for my engineering course. They found all 5 books within 2 days at great prices!"
+                        </p>
+                        <p className="font-medium">— Mahbub R.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
