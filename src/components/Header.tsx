@@ -79,11 +79,11 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <BookOpen className="h-8 w-8 text-primary" />
-            <div className="flex flex-col leading-none">
-              <span className="font-bold text-lg text-primary">Nijer Cart</span>
-              <span className="text-xs text-muted-foreground">Old & New Books</span>
-            </div>
+            <img 
+              src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
+              alt="Nijercart Logo" 
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Search Bar - Hidden on mobile */}
