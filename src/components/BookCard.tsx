@@ -62,7 +62,7 @@ export function BookCard(book: Book) {
       if (success) {
         setIsWishlisted(true);
         toast({
-          title: "Added to wishlist! ❤️",
+          title: "Added to wishlist! ",
           description: `${book.title} has been saved to your wishlist.`,
         });
       } else {
