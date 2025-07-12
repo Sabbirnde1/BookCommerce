@@ -60,74 +60,14 @@ const BookRequest = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <Button variant="ghost" size="icon" asChild className="absolute left-4 top-4">
-                <Link to="/">
-                  <ArrowLeft className="h-5 w-5" />
-                </Link>
-              </Button>
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/20 rounded-full blur-lg"></div>
-                <div className="relative bg-primary/10 p-4 rounded-full">
-                  <BookOpen className="h-12 w-12 text-primary" />
-                </div>
-              </div>
-            </div>
-            
-            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-6">
-              Find Any Book
-            </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
-              Can't find what you're looking for? Our expert team will track down any book 
-              through our extensive network of suppliers and publishers.
-            </p>
-            
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-primary" />
-                <span>24-hour response</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-primary" />
-                <span>100% free service</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-primary" />
-                <span>Expert book hunters</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-background border-b">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">1000+</div>
-              <div className="text-sm text-muted-foreground">Books Found</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">24h</div>
-              <div className="text-sm text-muted-foreground">Avg Response</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">95%</div>
-              <div className="text-sm text-muted-foreground">Success Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">500+</div>
-              <div className="text-sm text-muted-foreground">Happy Readers</div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Back Button */}
+      <div className="container mx-auto px-4 pt-4">
+        <Button variant="ghost" size="icon" asChild>
+          <Link to="/">
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+        </Button>
+      </div>
 
       {/* How It Works */}
       <section className="py-20 bg-secondary/20">
