@@ -208,7 +208,7 @@ const BookRequest = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Absolutely! We specialize in finding hard-to-find, out-of-print, and collectible books from around the world.
+                  Absolutely! We specialize in finding hard-to-find, out-of-print, and collectible books from around Bangladesh.
                 </p>
               </CardContent>
             </Card>
