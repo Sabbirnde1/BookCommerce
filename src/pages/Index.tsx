@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Search, Clock, Star, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { mockBooks } from "@/lib/bookData";
 import heroImage from "@/assets/books-hero.jpg";
 
@@ -42,13 +43,17 @@ const Index = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="hero" className="text-lg px-8">
-              <Search className="mr-2 h-5 w-5" />
-              Browse Books
+            <Button size="lg" variant="hero" className="text-lg px-8" asChild>
+              <Link to="/books">
+                <Search className="mr-2 h-5 w-5" />
+                Browse Books
+              </Link>
             </Button>
-            <Button size="lg" variant="accent" className="text-lg px-8">
-              <BookOpen className="mr-2 h-5 w-5" />
-              Request a Book
+            <Button size="lg" variant="accent" className="text-lg px-8" asChild>
+              <Link to="/request">
+                <BookOpen className="mr-2 h-5 w-5" />
+                Request a Book
+              </Link>
             </Button>
           </div>
         </div>
