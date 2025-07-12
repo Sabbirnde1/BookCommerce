@@ -141,7 +141,7 @@ const Auth = () => {
           <div className="flex justify-center">
             <div className="relative">
               <img 
-                src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
+                src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
                 alt="Nijercart Logo" 
                 className="h-16 w-auto drop-shadow-2xl"
               />

@@ -8,11 +8,11 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              <img 
-                src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
-                alt="Nijercart Logo" 
-                className="h-10 w-auto brightness-0 invert"
-              />
+            <img 
+              src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
+              alt="Nijercart Logo" 
+              className="h-10 w-auto brightness-0 invert"
+            />
             </div>
             <p className="text-primary-foreground/80 max-w-xs">
               Your trusted destination for both new and pre-owned books in Bangladesh. Discover, learn, and grow with Nijercart.
