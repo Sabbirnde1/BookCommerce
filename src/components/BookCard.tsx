@@ -74,9 +74,9 @@ export function BookCard(book: Book) {
       
       <CardFooter className="p-4 pt-0 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-primary">${book.price}</span>
+          <span className="text-lg font-bold text-primary">৳{book.price}</span>
           {book.originalPrice && book.originalPrice > book.price && (
-            <span className="text-sm text-muted-foreground line-through">${book.originalPrice}</span>
+            <span className="text-sm text-muted-foreground line-through">৳{book.originalPrice}</span>
           )}
         </div>
         <Button 

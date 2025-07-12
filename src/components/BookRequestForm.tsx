@@ -98,7 +98,7 @@ export function BookRequestForm() {
             <Label htmlFor="budget">Budget Range</Label>
             <Input
               id="budget"
-              placeholder="e.g., $10-25"
+              placeholder="e.g., ৳500-1500"
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
             />

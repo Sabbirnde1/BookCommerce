@@ -158,8 +158,8 @@ const Cart = () => {
                         </div>
                         
                         <div className="text-right">
-                          <div className="font-semibold">${(item.book.price * item.quantity).toFixed(2)}</div>
-                          <div className="text-sm text-muted-foreground">${item.book.price} each</div>
+                          <div className="font-semibold">৳{(item.book.price * item.quantity).toFixed(2)}</div>
+                          <div className="text-sm text-muted-foreground">৳{item.book.price} each</div>
                         </div>
                       </div>
 
@@ -193,7 +193,7 @@ const Cart = () => {
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
                   <span>Subtotal ({getTotalItems()} items)</span>
-                  <span>${getTotalPrice().toFixed(2)}</span>
+                  <span>৳{getTotalPrice().toFixed(2)}</span>
                 </div>
                 
                 <div className="flex justify-between">
@@ -203,14 +203,14 @@ const Cart = () => {
                 
                 <div className="flex justify-between">
                   <span>Tax</span>
-                  <span>${(getTotalPrice() * 0.08).toFixed(2)}</span>
+                  <span>৳{(getTotalPrice() * 0.08).toFixed(2)}</span>
                 </div>
                 
                 <hr />
                 
                 <div className="flex justify-between text-lg font-semibold">
                   <span>Total</span>
-                  <span>${(getTotalPrice() * 1.08).toFixed(2)}</span>
+                  <span>৳{(getTotalPrice() * 1.08).toFixed(2)}</span>
                 </div>
 
                 <Button 

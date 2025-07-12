@@ -14,7 +14,7 @@ const BookRequest = () => {
       title: "The Art of Computer Programming",
       author: "Donald Knuth",
       condition: "both",
-      budget: "$50-100",
+      budget: "৳2500-5000",
       status: "searching",
       submittedAt: "2024-01-15",
       notes: "Looking for volumes 1-3, any edition is fine"
@@ -24,7 +24,7 @@ const BookRequest = () => {
       title: "Clean Code",
       author: "Robert Martin",
       condition: "new",
-      budget: "$30-50",
+      budget: "৳1500-2500",
       status: "found",
       submittedAt: "2024-01-10",
       notes: ""
