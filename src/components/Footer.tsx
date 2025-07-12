@@ -7,12 +7,15 @@ export function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <BookOpen className="h-6 w-6" />
-              <span className="font-bold text-lg">Nijer Cart</span>
+            <div className="flex items-center space-x-3 mb-4">
+              <img 
+                src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
+                alt="Nijercart Logo" 
+                className="h-10 w-auto brightness-0 invert"
+              />
             </div>
-            <p className="text-primary-foreground/80">
-              Your trusted destination for both new and pre-owned books in Bangladesh.
+            <p className="text-primary-foreground/80 max-w-xs">
+              Your trusted destination for both new and pre-owned books in Bangladesh. Discover, learn, and grow with Nijercart.
             </p>
           </div>
           

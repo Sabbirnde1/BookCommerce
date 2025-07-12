@@ -572,13 +572,24 @@ export function AdminDashboard() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Settings className="h-6 w-6 text-primary" />
+        <div className="flex items-center gap-4 mb-4">
+          <div className="relative">
+            <img 
+              src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
+              alt="Nijercart Logo" 
+              className="h-10 w-auto drop-shadow-md"
+            />
           </div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Settings className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+              <p className="text-muted-foreground">Manage products, pricing, and inventory</p>
+            </div>
+          </div>
         </div>
-        <p className="text-muted-foreground">Manage products, pricing, and inventory</p>
       </div>
 
       {/* Dashboard Stats */}

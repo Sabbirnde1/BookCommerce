@@ -28,16 +28,28 @@ const Index = () => {
           />
         </div>
         <div className="relative container mx-auto px-4 text-center">
-          <Badge className="mb-6 bg-primary/10 text-primary border-primary/20">
+          {/* Floating Logo */}
+          <div className="flex justify-center mb-8">
+            <div className="relative animate-fade-in">
+              <img 
+                src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
+                alt="Nijercart Logo" 
+                className="h-20 w-auto drop-shadow-2xl hover:scale-110 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-transparent rounded-lg animate-pulse"></div>
+            </div>
+          </div>
+          
+          <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 animate-fade-in">
             ✨ Your Book Haven
           </Badge>
           
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground animate-fade-in">
             Old Books &amp; New Books
             <span className="block text-primary">All in One Place</span>
           </h1>
           
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in">
             Discover amazing deals on pre-owned classics and latest bestsellers. 
             Can't find what you're looking for? Simply request any book and we'll find it for you!
           </p>

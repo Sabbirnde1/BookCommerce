@@ -139,14 +139,19 @@ const Auth = () => {
           </Link>
           
           <div className="flex justify-center">
-            <div className="p-3 rounded-full bg-primary/10">
-              <BookOpen className="h-8 w-8 text-primary" />
+            <div className="relative">
+              <img 
+                src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
+                alt="Nijercart Logo" 
+                className="h-16 w-auto drop-shadow-2xl"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent rounded-lg"></div>
             </div>
           </div>
           
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Nijer Cart</h1>
-            <p className="text-muted-foreground">Your Book Haven</p>
+            <h1 className="text-3xl font-bold text-foreground">Welcome to Nijercart</h1>
+            <p className="text-muted-foreground">Your ultimate destination for books</p>
           </div>
         </div>
 

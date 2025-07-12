@@ -78,12 +78,18 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <img 
-              src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
-              alt="Nijercart Logo" 
-              className="h-10 w-auto"
-            />
+          <Link to="/" className="flex items-center space-x-3 hover:scale-105 transition-transform duration-200">
+            <div className="relative">
+              <img 
+                src="/lovable-uploads/9c3c8b58-a0c7-47d6-bfe6-405ea8ded08f.png" 
+                alt="Nijercart Logo" 
+                className="h-12 w-auto drop-shadow-lg hover:drop-shadow-xl transition-all duration-200"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 rounded-lg"></div>
+            </div>
+            <div className="hidden sm:block">
+              <div className="text-sm font-medium text-muted-foreground">Old & New Books</div>
+            </div>
           </Link>
 
           {/* Search Bar - Hidden on mobile */}
