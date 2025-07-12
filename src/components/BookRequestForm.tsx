@@ -86,6 +86,9 @@ export function BookRequestForm() {
       setWhatsappNumber("");
       setTelegramNumber("");
       setMobileNumber("");
+      
+      // Trigger a refresh of recent requests by broadcasting to other components
+      window.dispatchEvent(new CustomEvent('bookRequestSubmitted'));
     } catch (error) {
       console.error('Error submitting book request:', error);
       toast({

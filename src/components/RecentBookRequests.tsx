@@ -16,6 +16,27 @@ export function RecentBookRequests() {
   useEffect(() => {
     if (user) {
       fetchRecentRequests();
+      
+      // Set up real-time subscription for new requests
+      const channel = supabase
+        .channel('book_requests_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'book_requests',
+            filter: `user_id=eq.${user.id}`
+          },
+          () => {
+            fetchRecentRequests();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     } else {
       setLoading(false);
     }
