@@ -19,49 +19,55 @@ const Index = () => {
       <Header />
       
       {/* Book Categories Section */}
-      <section className="py-4 bg-secondary/20 border-b">
+      <section className="py-6 bg-secondary/30 border-b border-border/50">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8">
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
             <Link 
               to="/books?category=fiction" 
-              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
+              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
             >
-              Fiction
+              <span className="relative z-10">Fiction</span>
+              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
             
             <Link 
               to="/books?category=non-fiction" 
-              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
+              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
             >
-              Non-Fiction
+              <span className="relative z-10">Non-Fiction</span>
+              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
             
             <Link 
               to="/books?category=academic" 
-              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
+              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
             >
-              Academic
+              <span className="relative z-10">Academic</span>
+              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
             
             <Link 
               to="/books?category=children" 
-              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
+              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
             >
-              Children's Books
+              <span className="relative z-10">Children's Books</span>
+              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
             
             <Link 
               to="/books?category=history" 
-              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
+              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
             >
-              History
+              <span className="relative z-10">History</span>
+              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
             
             <Link 
               to="/books?category=science" 
-              className="text-sm md:text-base font-medium text-foreground hover:text-primary transition-colors duration-200 hover:underline"
+              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
             >
-              Science & Tech
+              <span className="relative z-10">Science & Tech</span>
+              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
           </div>
         </div>
