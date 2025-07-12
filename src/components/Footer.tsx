@@ -1,11 +1,11 @@
-import { BookOpen, Mail, Phone, Clock } from "lucide-react";
+import { BookOpen, Mail, Phone, Clock, Facebook, Linkedin, Youtube, Video } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
     <footer className="bg-primary text-primary-foreground py-12">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div>
           <div className="flex items-center space-x-3 mb-4 hover:scale-105 transition-transform duration-200">
             <div className="relative">
@@ -61,6 +61,45 @@ export function Footer() {
                 Daily: 9AM-9PM
               </li>
             </ul>
+          </div>
+          
+          {/* Social Media Section */}
+          <div>
+            <h4 className="font-semibold mb-4">Follow Us</h4>
+            <div className="flex space-x-4">
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-primary-foreground/10 rounded-full flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200 group"
+              >
+                <Facebook className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
+              </a>
+              <a 
+                href="https://linkedin.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-primary-foreground/10 rounded-full flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200 group"
+              >
+                <Linkedin className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
+              </a>
+              <a 
+                href="https://youtube.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-primary-foreground/10 rounded-full flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200 group"
+              >
+                <Youtube className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
+              </a>
+              <a 
+                href="https://tiktok.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-primary-foreground/10 rounded-full flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200 group"
+              >
+                <Video className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
+              </a>
+            </div>
           </div>
         </div>
         
