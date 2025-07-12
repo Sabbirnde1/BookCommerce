@@ -45,7 +45,7 @@ import {
   BookOpen,
   Copy,
   ExternalLink
-} from "lucide-react";
+} from "lucide-react"; // Fixed: RefreshCw instead of Refresh
 
 interface Product {
   id: string;
