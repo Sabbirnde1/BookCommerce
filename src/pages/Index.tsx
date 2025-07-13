@@ -21,10 +21,10 @@ const Index = () => {
       {/* Book Categories Section */}
       <section className="py-4 md:py-6 bg-secondary/30 border-b border-border/50">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 lg:gap-8">
+          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 md:gap-6 lg:gap-8">
             <Link 
               to="/books?category=fiction" 
-              className="relative text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
+              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
             >
               <span className="relative z-10">Fiction</span>
               <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -32,7 +32,7 @@ const Index = () => {
             
             <Link 
               to="/books?category=non-fiction" 
-              className="relative text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
+              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
             >
               <span className="relative z-10">Non-Fiction</span>
               <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -40,7 +40,7 @@ const Index = () => {
             
             <Link 
               to="/books?category=academic" 
-              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
+              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
             >
               <span className="relative z-10">Academic</span>
               <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -48,15 +48,15 @@ const Index = () => {
             
             <Link 
               to="/books?category=children" 
-              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
+              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
             >
-              <span className="relative z-10">Children's Books</span>
+              <span className="relative z-10 whitespace-nowrap">Children's</span>
               <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
             
             <Link 
               to="/books?category=history" 
-              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
+              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
             >
               <span className="relative z-10">History</span>
               <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -64,9 +64,9 @@ const Index = () => {
             
             <Link 
               to="/books?category=science" 
-              className="relative text-base md:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group"
+              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
             >
-              <span className="relative z-10">Science & Tech</span>
+              <span className="relative z-10 whitespace-nowrap">Science & Tech</span>
               <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
           </div>
@@ -74,7 +74,7 @@ const Index = () => {
       </section>
       
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 bg-gradient-hero overflow-hidden">
+      <section className="relative py-12 sm:py-16 md:py-20 lg:py-32 bg-gradient-hero overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <img 
             src={heroImage} 
@@ -102,24 +102,24 @@ const Index = () => {
             ✨ Your Book Haven
           </Badge>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 text-foreground animate-fade-in">
-            Old Books &amp; New Books
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 text-foreground animate-fade-in">
+            <span className="block sm:inline">Old Books</span> <span className="block sm:inline">&amp; New Books</span>
             <span className="block text-primary">All in One Place</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in px-4">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in px-4">
             Discover amazing deals on pre-owned classics and latest bestsellers. 
             Can't find what you're looking for? Simply request any book and we'll find it for you!
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center max-w-md mx-auto">
-            <Button size="lg" variant="hero" className="text-base md:text-lg px-6 md:px-8 w-full sm:w-auto" asChild>
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center max-w-sm sm:max-w-md mx-auto px-4">
+            <Button size="lg" variant="hero" className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 w-full sm:w-auto h-12 sm:h-auto" asChild>
               <Link to="/books">
                 <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                 Browse Books
               </Link>
             </Button>
-            <Button size="lg" variant="accent" className="text-base md:text-lg px-6 md:px-8 w-full sm:w-auto" asChild>
+            <Button size="lg" variant="accent" className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 w-full sm:w-auto h-12 sm:h-auto" asChild>
               <Link to="/request">
                 <BookOpen className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                 Request a Book
