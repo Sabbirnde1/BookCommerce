@@ -112,7 +112,12 @@ export function AdminDashboard() {
 
   // Image upload
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [showImageDialog, setShowImageDialog] = useState(false);
+  const [selectedImageProduct, setSelectedImageProduct] = useState<Product | null>(null);
 
   // Search and filtering
   const [searchTerm, setSearchTerm] = useState("");
@@ -368,7 +373,156 @@ export function AdminDashboard() {
     }
   };
 
-  const uploadProductImage = async (productId: string) => {
+  const uploadProductImage = async (productId: string, files?: File[]) => {
+    const filesToUpload = files || (selectedFile ? [selectedFile] : []);
+    if (!filesToUpload.length || !isAdmin) return;
+
+    setUploadingImage(true);
+
+    try {
+      const uploadPromises = filesToUpload.map(async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('product_id', productId);
+        formData.append('alt_text', '');
+        formData.append('is_primary', 'false');
+
+        return supabase.functions.invoke('admin-dashboard/upload-image', {
+          body: formData
+        });
+      });
+
+      const results = await Promise.all(uploadPromises);
+      const successful = results.filter(r => r.data?.success).length;
+      const failed = results.length - successful;
+
+      if (successful > 0) {
+        toast({
+          title: `Images Uploaded! 📸`,
+          description: `${successful} image${successful > 1 ? 's' : ''} uploaded successfully${failed > 0 ? `, ${failed} failed` : ''}`,
+        });
+        
+        setSelectedFile(null);
+        setSelectedFiles([]);
+        setImagePreview(null);
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload images",
+        variant: "destructive"
+      });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const deleteProductImage = async (imageId: string, productId: string) => {
+    if (!isAdmin) return;
+
+    const confirmed = confirm("Are you sure you want to delete this image?");
+    if (!confirmed) return;
+
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-dashboard/delete-image', {
+        body: { image_id: imageId }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "Image Deleted! 🗑️",
+          description: data.message,
+        });
+        
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete image",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const setImageAsPrimary = async (imageId: string, productId: string) => {
+    if (!isAdmin) return;
+
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-dashboard/update-image-order', {
+        body: { 
+          product_id: productId,
+          image_id: imageId,
+          is_primary: true
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "Primary Image Set! ⭐",
+          description: "Image set as primary successfully",
+        });
+        
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error('Error setting primary image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to set primary image",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+      setSelectedFiles(files);
+      
+      if (files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = (e) => setImagePreview(e.target?.result as string);
+        reader.readAsDataURL(files[0]);
+      }
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setSelectedFiles(files);
+      
+      if (files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = (e) => setImagePreview(e.target?.result as string);
+        reader.readAsDataURL(files[0]);
+      }
+    }
+  };
+
+  const uploadProductImage_old = async (productId: string) => {
     if (!selectedFile || !isAdmin) return;
 
     setUploadingImage(true);
@@ -1519,105 +1673,277 @@ export function AdminDashboard() {
                 <ImageIcon className="h-5 w-5" />
                 Image Management
               </CardTitle>
-              <CardDescription>Upload and manage product images</CardDescription>
+              <CardDescription>Upload and manage product images with drag & drop support</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8">
+                {/* Enhanced Upload Area */}
+                <div 
+                  className={`border-2 border-dashed rounded-lg p-8 transition-colors ${
+                    dragActive ? 'border-primary bg-primary/5' : 'border-gray-300'
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
                   <div className="text-center">
-                    <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Upload Product Images</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Select images to upload for your products
-                    </p>
+                    {imagePreview ? (
+                      <div className="space-y-4">
+                        <img 
+                          src={imagePreview} 
+                          alt="Preview" 
+                          className="mx-auto max-w-48 max-h-32 object-cover rounded-lg border"
+                        />
+                        <div>
+                          <p className="text-sm font-medium">
+                            {selectedFiles.length} file{selectedFiles.length > 1 ? 's' : ''} selected
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Total size: {(selectedFiles.reduce((acc, file) => acc + file.size, 0) / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold mb-2">Upload Product Images</h3>
+                        <p className="text-muted-foreground mb-4">
+                          Drag & drop images here or click to select multiple files
+                        </p>
+                      </>
+                    )}
+                    
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                      multiple
+                      onChange={handleFileSelect}
                       className="hidden"
                       id="image-upload"
                     />
-                    <Label htmlFor="image-upload" className="cursor-pointer">
-                      <Button type="button" variant="outline" size="lg">
-                        <Upload className="h-4 w-4 mr-2" />
-                        Choose Image
-                      </Button>
-                    </Label>
-                    {selectedFile && (
-                      <div className="mt-4 p-4 bg-muted/50 rounded-lg">
-                        <p className="text-sm font-medium">Selected: {selectedFile.name}</p>
+                    <div className="flex gap-3 justify-center">
+                      <Label htmlFor="image-upload" className="cursor-pointer">
+                        <Button type="button" variant="outline" size="lg">
+                          <Upload className="h-4 w-4 mr-2" />
+                          Choose Images
+                        </Button>
+                      </Label>
+                      {selectedFiles.length > 0 && (
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedFiles([]);
+                            setImagePreview(null);
+                          }}
+                        >
+                          Clear
+                        </Button>
+                      )}
+                    </div>
+                    
+                    {selectedFiles.length > 0 && (
+                      <div className="mt-4 space-y-2">
+                        <Select onValueChange={(productId) => uploadProductImage(productId, selectedFiles)}>
+                          <SelectTrigger className="w-64 mx-auto">
+                            <SelectValue placeholder="Select product to upload to" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {products.map((product) => (
+                              <SelectItem key={product.id} value={product.id}>
+                                {product.title}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <p className="text-xs text-muted-foreground">
-                          Size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                          Select a product to upload {selectedFiles.length} image{selectedFiles.length > 1 ? 's' : ''}
                         </p>
-                        <div className="flex gap-2 mt-3 justify-center">
-                          <Select onValueChange={(productId) => uploadProductImage(productId)}>
-                            <SelectTrigger className="w-64">
-                              <SelectValue placeholder="Select product to upload to" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {products.map((product) => (
-                                <SelectItem key={product.id} value={product.id}>
-                                  {product.title}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <Button
-                            variant="outline"
-                            onClick={() => setSelectedFile(null)}
-                          >
-                            Clear
-                          </Button>
-                        </div>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Product Images Gallery */}
+                {/* Image Statistics */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground">Total Images</p>
+                        <p className="text-2xl font-bold">
+                          {products.reduce((total, p) => total + (p.product_images?.length || 0), 0)}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground">Products with Images</p>
+                        <p className="text-2xl font-bold">
+                          {products.filter(p => p.product_images && p.product_images.length > 0).length}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground">No Images</p>
+                        <p className="text-2xl font-bold text-orange-600">
+                          {products.filter(p => !p.product_images || p.product_images.length === 0).length}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground">Avg Images/Product</p>
+                        <p className="text-2xl font-bold">
+                          {products.length > 0 
+                            ? (products.reduce((total, p) => total + (p.product_images?.length || 0), 0) / products.length).toFixed(1)
+                            : '0'
+                          }
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Enhanced Product Images Gallery */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Product Images</h3>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-semibold">Product Images Gallery</h3>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={fetchProducts}
+                      >
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Refresh
+                      </Button>
+                    </div>
+                  </div>
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {products.filter(p => p.product_images && p.product_images.length > 0).map((product) => (
-                      <Card key={product.id}>
+                    {products.map((product) => (
+                      <Card key={product.id} className="overflow-hidden">
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-sm">{product.title}</CardTitle>
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <CardTitle className="text-sm line-clamp-2">{product.title}</CardTitle>
+                              <p className="text-xs text-muted-foreground">by {product.author}</p>
+                            </div>
+                            <Badge variant={product.product_images?.length ? "default" : "secondary"}>
+                              {product.product_images?.length || 0} images
+                            </Badge>
+                          </div>
                         </CardHeader>
                         <CardContent>
-                          <div className="space-y-2">
-                            {product.product_images?.slice(0, 3).map((image: any, index: number) => (
-                              <div key={index} className="flex items-center gap-3 p-2 bg-muted/50 rounded">
-                                <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
-                                  <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                          {product.product_images && product.product_images.length > 0 ? (
+                            <div className="space-y-2">
+                              {product.product_images.slice(0, 3).map((image: any, index: number) => (
+                                <div key={index} className="flex items-center gap-3 p-2 bg-muted/50 rounded group hover:bg-muted/70 transition-colors">
+                                  <div className="relative w-12 h-12 bg-muted rounded border overflow-hidden">
+                                    {image.image_url ? (
+                                      <img 
+                                        src={image.image_url} 
+                                        alt={image.alt_text || `Image ${index + 1}`}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center">
+                                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                                      </div>
+                                    )}
+                                    {image.is_primary && (
+                                      <div className="absolute top-0 right-0 bg-yellow-500 text-white p-0.5 rounded-bl">
+                                        <Star className="h-2 w-2" />
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium truncate">
+                                      {image.alt_text || `Image ${index + 1}`}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {image.is_primary ? 'Primary' : 'Secondary'}
+                                    </p>
+                                  </div>
+                                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {!image.is_primary && (
+                                      <Button 
+                                        size="sm" 
+                                        variant="ghost"
+                                        onClick={() => setImageAsPrimary(image.id, product.id)}
+                                        title="Set as Primary"
+                                      >
+                                        <Star className="h-3 w-3" />
+                                      </Button>
+                                    )}
+                                    <Button 
+                                      size="sm" 
+                                      variant="ghost"
+                                      onClick={() => {
+                                        setSelectedImageProduct(product);
+                                        setShowImageDialog(true);
+                                      }}
+                                      title="View All Images"
+                                    >
+                                      <Eye className="h-3 w-3" />
+                                    </Button>
+                                    <Button 
+                                      size="sm" 
+                                      variant="ghost"
+                                      onClick={() => deleteProductImage(image.id, product.id)}
+                                      title="Delete Image"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </div>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-xs font-medium truncate">Image {index + 1}</p>
-                                  <p className="text-xs text-muted-foreground">
-                                    {image.is_primary ? 'Primary' : 'Secondary'}
-                                  </p>
-                                </div>
-                                <Button size="sm" variant="ghost">
-                                  <ExternalLink className="h-3 w-3" />
+                              ))}
+                              {(product.product_images?.length || 0) > 3 && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="w-full"
+                                  onClick={() => {
+                                    setSelectedImageProduct(product);
+                                    setShowImageDialog(true);
+                                  }}
+                                >
+                                  View All {product.product_images?.length} Images
                                 </Button>
-                              </div>
-                            ))}
-                            {(product.product_images?.length || 0) > 3 && (
-                              <p className="text-xs text-muted-foreground text-center">
-                                +{(product.product_images?.length || 0) - 3} more images
-                              </p>
-                            )}
-                          </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="text-center py-6">
+                              <ImageIcon className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                              <p className="text-sm text-muted-foreground mb-3">No images uploaded</p>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => document.getElementById('image-upload')?.click()}
+                              >
+                                <Upload className="h-3 w-3 mr-2" />
+                                Add Images
+                              </Button>
+                            </div>
+                          )}
                         </CardContent>
                       </Card>
                     ))}
                   </div>
                   
-                  {products.filter(p => p.product_images && p.product_images.length > 0).length === 0 && (
-                    <div className="text-center py-8">
-                      <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">No Images Yet</h3>
+                  {products.length === 0 && (
+                    <div className="text-center py-12">
+                      <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">No Products Yet</h3>
                       <p className="text-muted-foreground">
-                        Upload images to see them here
+                        Create products first to manage their images
                       </p>
                     </div>
                   )}
@@ -1998,6 +2324,102 @@ export function AdminDashboard() {
                 Cancel
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Image Gallery Dialog */}
+      <Dialog open={showImageDialog} onOpenChange={setShowImageDialog}>
+        <DialogContent className="bg-background border border-border z-50 max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Image Gallery - {selectedImageProduct?.title}</DialogTitle>
+            <DialogDescription>
+              Manage all images for this product
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {selectedImageProduct?.product_images && selectedImageProduct.product_images.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {selectedImageProduct.product_images.map((image: any, index: number) => (
+                  <div key={index} className="relative group">
+                    <div className="aspect-square rounded-lg border overflow-hidden bg-muted">
+                      {image.image_url ? (
+                        <img 
+                          src={image.image_url} 
+                          alt={image.alt_text || `Image ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                        </div>
+                      )}
+                      
+                      {/* Primary badge */}
+                      {image.is_primary && (
+                        <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                          <Star className="h-3 w-3" />
+                          Primary
+                        </div>
+                      )}
+                      
+                      {/* Action buttons */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <div className="flex gap-2">
+                          {!image.is_primary && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => setImageAsPrimary(image.id, selectedImageProduct.id)}
+                              title="Set as Primary"
+                            >
+                              <Star className="h-4 w-4" />
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => window.open(image.image_url, '_blank')}
+                            title="View Full Size"
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => deleteProductImage(image.id, selectedImageProduct.id)}
+                            title="Delete Image"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-2">
+                      <p className="text-sm font-medium truncate">
+                        {image.alt_text || `Image ${index + 1}`}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Sort order: {image.sort_order || index + 1}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No Images</h3>
+                <p className="text-muted-foreground mb-4">
+                  This product doesn't have any images yet
+                </p>
+                <Button onClick={() => setShowImageDialog(false)}>
+                  Upload Images
+                </Button>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
