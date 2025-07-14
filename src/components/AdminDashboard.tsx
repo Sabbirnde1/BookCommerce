@@ -82,6 +82,9 @@ export function AdminDashboard() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showProductDialog, setShowProductDialog] = useState(false);
   const [showPriceDialog, setShowPriceDialog] = useState(false);
+  const [showPriceHistoryDialog, setShowPriceHistoryDialog] = useState(false);
+  const [showBulkPriceDialog, setShowBulkPriceDialog] = useState(false);
+  const [priceHistory, setPriceHistory] = useState<any[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
   // Product form state
@@ -100,6 +103,12 @@ export function AdminDashboard() {
   // Price update form
   const [newPrice, setNewPrice] = useState("");
   const [priceReason, setPriceReason] = useState("");
+  
+  // Bulk price update
+  const [bulkPriceType, setBulkPriceType] = useState<"percentage" | "fixed">("percentage");
+  const [bulkPriceValue, setBulkPriceValue] = useState("");
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
+  const [bulkUpdateReason, setBulkUpdateReason] = useState("");
 
   // Image upload
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -266,6 +275,92 @@ export function AdminDashboard() {
       toast({
         title: "Error",
         description: "Failed to update price",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchPriceHistory = async (productId: string) => {
+    if (!isAdmin) return;
+
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-dashboard/get-price-history', {
+        body: { product_id: productId }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        setPriceHistory(data.history || []);
+      }
+    } catch (error) {
+      console.error('Error fetching price history:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch price history",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const bulkUpdatePrices = async () => {
+    if (!selectedProductIds.length || !bulkPriceValue) {
+      toast({
+        title: "Error",
+        description: "Please select products and enter a price value",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const updates = selectedProductIds.map(productId => {
+        const product = products.find(p => p.id === productId);
+        if (!product) return null;
+
+        let newPrice: number;
+        if (bulkPriceType === "percentage") {
+          const percentage = parseFloat(bulkPriceValue);
+          newPrice = product.price * (1 + percentage / 100);
+        } else {
+          newPrice = parseFloat(bulkPriceValue);
+        }
+
+        return {
+          product_id: productId,
+          new_price: Math.round(newPrice * 100) / 100, // Round to 2 decimal places
+          reason: bulkUpdateReason || `Bulk ${bulkPriceType} update: ${bulkPriceValue}${bulkPriceType === 'percentage' ? '%' : '৳'}`
+        };
+      }).filter(Boolean);
+
+      const results = await Promise.all(
+        updates.map(update => 
+          supabase.functions.invoke('admin-dashboard/update-price', { body: update })
+        )
+      );
+
+      const successful = results.filter(r => r.data?.success).length;
+      const failed = results.length - successful;
+
+      toast({
+        title: `Bulk Price Update Complete! 💰`,
+        description: `${successful} products updated successfully${failed > 0 ? `, ${failed} failed` : ''}`,
+      });
+
+      setBulkPriceValue("");
+      setBulkUpdateReason("");
+      setSelectedProductIds([]);
+      setShowBulkPriceDialog(false);
+      fetchProducts();
+    } catch (error) {
+      console.error('Error updating prices:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update prices",
         variant: "destructive"
       });
     } finally {
@@ -1293,10 +1388,46 @@ export function AdminDashboard() {
                   </Card>
                 </div>
 
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => setShowBulkPriceDialog(true)}
+                      disabled={selectedProductIds.length === 0}
+                      variant="outline"
+                    >
+                      <DollarSign className="h-4 w-4 mr-2" />
+                      Bulk Update ({selectedProductIds.length})
+                    </Button>
+                    {selectedProductIds.length > 0 && (
+                      <Button
+                        onClick={() => setSelectedProductIds([])}
+                        variant="ghost"
+                        size="sm"
+                      >
+                        Clear Selection
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
                 <div className="border rounded-lg">
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-12">
+                          <input
+                            type="checkbox"
+                            checked={selectedProductIds.length === products.length && products.length > 0}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedProductIds(products.map(p => p.id));
+                              } else {
+                                setSelectedProductIds([]);
+                              }
+                            }}
+                            className="rounded"
+                          />
+                        </TableHead>
                         <TableHead>Product</TableHead>
                         <TableHead>Current Price</TableHead>
                         <TableHead>Original Price</TableHead>
@@ -1313,6 +1444,20 @@ export function AdminDashboard() {
                         return (
                           <TableRow key={product.id}>
                             <TableCell>
+                              <input
+                                type="checkbox"
+                                checked={selectedProductIds.includes(product.id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedProductIds([...selectedProductIds, product.id]);
+                                  } else {
+                                    setSelectedProductIds(selectedProductIds.filter(id => id !== product.id));
+                                  }
+                                }}
+                                className="rounded"
+                              />
+                            </TableCell>
+                            <TableCell>
                               <div>
                                 <p className="font-medium">{product.title}</p>
                                 <p className="text-sm text-muted-foreground">by {product.author}</p>
@@ -1328,18 +1473,32 @@ export function AdminDashboard() {
                               </span>
                             </TableCell>
                             <TableCell>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => {
-                                  setSelectedProduct(product);
-                                  setNewPrice(product.price.toString());
-                                  setShowPriceDialog(true);
-                                }}
-                              >
-                                <DollarSign className="h-4 w-4 mr-1" />
-                                Update
-                              </Button>
+                              <div className="flex gap-1">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setSelectedProduct(product);
+                                    setNewPrice(product.price.toString());
+                                    setShowPriceDialog(true);
+                                  }}
+                                >
+                                  <DollarSign className="h-4 w-4 mr-1" />
+                                  Update
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => {
+                                    setSelectedProduct(product);
+                                    fetchPriceHistory(product.id);
+                                    setShowPriceHistoryDialog(true);
+                                  }}
+                                  title="View Price History"
+                                >
+                                  <BarChart3 className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </TableCell>
                           </TableRow>
                         );
@@ -1668,6 +1827,174 @@ export function AdminDashboard() {
                 {loading ? "Updating..." : "Update Price"}
               </Button>
               <Button variant="outline" onClick={() => setShowPriceDialog(false)}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Price History Dialog */}
+      <Dialog open={showPriceHistoryDialog} onOpenChange={setShowPriceHistoryDialog}>
+        <DialogContent className="bg-background border border-border z-50 max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Price History - {selectedProduct?.title}</DialogTitle>
+            <DialogDescription>
+              Track all price changes for this product
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="max-h-96 overflow-y-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Old Price</TableHead>
+                    <TableHead>New Price</TableHead>
+                    <TableHead>Change</TableHead>
+                    <TableHead>Reason</TableHead>
+                    <TableHead>Changed By</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {priceHistory.map((entry, index) => {
+                    const change = entry.new_price - entry.old_price;
+                    const changePercent = ((change / entry.old_price) * 100).toFixed(1);
+                    
+                    return (
+                      <TableRow key={index}>
+                        <TableCell className="text-sm">
+                          {new Date(entry.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </TableCell>
+                        <TableCell>৳{entry.old_price}</TableCell>
+                        <TableCell>৳{entry.new_price}</TableCell>
+                        <TableCell>
+                          <span className={change > 0 ? 'text-red-600' : change < 0 ? 'text-green-600' : 'text-gray-600'}>
+                            {change > 0 ? '+' : ''}৳{change.toFixed(2)} ({changePercent}%)
+                          </span>
+                        </TableCell>
+                        <TableCell className="max-w-xs truncate">
+                          {entry.reason || 'No reason provided'}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          Admin
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {priceHistory.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                        No price history available for this product
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Price Update Dialog */}
+      <Dialog open={showBulkPriceDialog} onOpenChange={setShowBulkPriceDialog}>
+        <DialogContent className="bg-background border border-border z-50">
+          <DialogHeader>
+            <DialogTitle>Bulk Price Update</DialogTitle>
+            <DialogDescription>
+              Update prices for {selectedProductIds.length} selected products
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Update Type</Label>
+              <Select value={bulkPriceType} onValueChange={(value: "percentage" | "fixed") => setBulkPriceType(value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="percentage">Percentage Change</SelectItem>
+                  <SelectItem value="fixed">Fixed Price</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="bulk-price-value">
+                {bulkPriceType === "percentage" ? "Percentage Change (%)" : "New Price (৳)"}
+              </Label>
+              <Input
+                id="bulk-price-value"
+                type="number"
+                value={bulkPriceValue}
+                onChange={(e) => setBulkPriceValue(e.target.value)}
+                placeholder={bulkPriceType === "percentage" ? "e.g., 10 for +10% or -5 for -5%" : "e.g., 500"}
+                required
+              />
+              {bulkPriceType === "percentage" && (
+                <p className="text-sm text-muted-foreground">
+                  Positive values increase prices, negative values decrease them
+                </p>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="bulk-reason">Reason (Optional)</Label>
+              <Textarea
+                id="bulk-reason"
+                value={bulkUpdateReason}
+                onChange={(e) => setBulkUpdateReason(e.target.value)}
+                placeholder="Reason for bulk price update..."
+                rows={3}
+              />
+            </div>
+
+            {/* Preview */}
+            {bulkPriceValue && (
+              <div className="border rounded-lg p-4 bg-muted/50">
+                <p className="text-sm font-medium mb-2">Preview Changes:</p>
+                <div className="max-h-32 overflow-y-auto space-y-1">
+                  {selectedProductIds.slice(0, 5).map(productId => {
+                    const product = products.find(p => p.id === productId);
+                    if (!product) return null;
+                    
+                    let newPrice: number;
+                    if (bulkPriceType === "percentage") {
+                      const percentage = parseFloat(bulkPriceValue);
+                      newPrice = product.price * (1 + percentage / 100);
+                    } else {
+                      newPrice = parseFloat(bulkPriceValue);
+                    }
+                    
+                    return (
+                      <div key={productId} className="text-sm flex justify-between">
+                        <span className="truncate">{product.title}</span>
+                        <span>৳{product.price} → ৳{Math.round(newPrice * 100) / 100}</span>
+                      </div>
+                    );
+                  })}
+                  {selectedProductIds.length > 5 && (
+                    <p className="text-sm text-muted-foreground">
+                      ... and {selectedProductIds.length - 5} more products
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            <div className="flex gap-3 pt-4">
+              <Button onClick={bulkUpdatePrices} disabled={loading || !bulkPriceValue} className="flex-1">
+                {loading ? "Updating..." : `Update ${selectedProductIds.length} Products`}
+              </Button>
+              <Button variant="outline" onClick={() => setShowBulkPriceDialog(false)}>
                 Cancel
               </Button>
             </div>
