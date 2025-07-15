@@ -76,6 +76,15 @@ interface DashboardStats {
 export function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Helper function to format file size
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  };
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -1864,14 +1873,20 @@ export function AdminDashboard() {
                                       </div>
                                     )}
                                   </div>
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-medium truncate">
-                                      {image.alt_text || `Image ${index + 1}`}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      {image.is_primary ? 'Primary' : 'Secondary'}
-                                    </p>
-                                  </div>
+                                   <div className="flex-1 min-w-0">
+                                     <p className="text-xs font-medium truncate">
+                                       {image.alt_text || `Image ${index + 1}`}
+                                     </p>
+                                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                       <span>{image.is_primary ? 'Primary' : 'Secondary'}</span>
+                                       {image.file_size && (
+                                         <>
+                                           <span>•</span>
+                                           <span>{formatFileSize(image.file_size)}</span>
+                                         </>
+                                       )}
+                                     </div>
+                                   </div>
                                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     {!image.is_primary && (
                                       <Button 
@@ -2397,14 +2412,20 @@ export function AdminDashboard() {
                       </div>
                     </div>
                     
-                    <div className="mt-2">
-                      <p className="text-sm font-medium truncate">
-                        {image.alt_text || `Image ${index + 1}`}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Sort order: {image.sort_order || index + 1}
-                      </p>
-                    </div>
+                     <div className="mt-2">
+                       <p className="text-sm font-medium truncate">
+                         {image.alt_text || `Image ${index + 1}`}
+                       </p>
+                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                         <span>Sort order: {image.sort_order || index + 1}</span>
+                         {image.file_size && (
+                           <>
+                             <span>•</span>
+                             <span>{formatFileSize(image.file_size)}</span>
+                           </>
+                         )}
+                       </div>
+                     </div>
                   </div>
                 ))}
               </div>
