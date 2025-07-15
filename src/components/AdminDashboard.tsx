@@ -1733,9 +1733,11 @@ export function AdminDashboard() {
                     />
                     <div className="flex gap-3 justify-center">
                       <Label htmlFor="image-upload" className="cursor-pointer">
-                        <Button type="button" variant="outline" size="lg">
-                          <Upload className="h-4 w-4 mr-2" />
-                          Choose Images
+                        <Button variant="outline" size="lg" asChild>
+                          <span>
+                            <Upload className="h-4 w-4 mr-2" />
+                            Choose Images
+                          </span>
                         </Button>
                       </Label>
                       {selectedFiles.length > 0 && (
