@@ -46,7 +46,10 @@ import {
   Copy,
   ExternalLink,
   Tag,
-  Percent
+  Percent,
+  BookText,
+  MessageSquare,
+  Phone
 } from "lucide-react"; // Fixed: RefreshCw instead of Refresh
 
 interface Product {
@@ -155,6 +158,11 @@ export function AdminDashboard() {
   const [validUntil, setValidUntil] = useState("");
   const [promoStatus, setPromoStatus] = useState("active");
 
+  // Book requests state
+  const [bookRequests, setBookRequests] = useState<any[]>([]);
+  const [showBookRequestDialog, setShowBookRequestDialog] = useState(false);
+  const [selectedBookRequest, setSelectedBookRequest] = useState<any>(null);
+
   useEffect(() => {
     checkAdminStatus();
   }, [user]);
@@ -164,6 +172,7 @@ export function AdminDashboard() {
       fetchProducts();
       fetchDashboardStats();
       fetchPromoCodes();
+      fetchBookRequests();
     }
   }, [isAdmin]);
 
@@ -346,6 +355,59 @@ export function AdminDashboard() {
       toast({
         title: "Error",
         description: "Failed to update promo code status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const fetchBookRequests = async () => {
+    if (!isAdmin) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('book_requests')
+        .select(`
+          *,
+          profiles:user_id (
+            display_name
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setBookRequests(data || []);
+    } catch (error) {
+      console.error('Error fetching book requests:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch book requests",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const updateBookRequestStatus = async (id: string, status: string) => {
+    if (!isAdmin) return;
+
+    try {
+      const { error } = await supabase
+        .from('book_requests')
+        .update({ status })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Book request status updated"
+      });
+
+      fetchBookRequests();
+    } catch (error) {
+      console.error('Error updating book request status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update book request status",
         variant: "destructive"
       });
     }
@@ -1040,13 +1102,14 @@ export function AdminDashboard() {
       )}
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="pricing">Pricing</TabsTrigger>
           <TabsTrigger value="images">Images</TabsTrigger>
           <TabsTrigger value="promo-codes">Promo Codes</TabsTrigger>
+          <TabsTrigger value="book-requests">Book Requests</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -2808,6 +2871,258 @@ export function AdminDashboard() {
         </DialogContent>
       </Dialog>
 
+        {/* Book Requests Tab */}
+        <TabsContent value="book-requests">
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookText className="h-5 w-5" />
+                    Book Requests Management
+                  </CardTitle>
+                  <CardDescription>
+                    View and manage customer book requests. Update status and communicate with customers.
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Book Requests List */}
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Customer</TableHead>
+                        <TableHead>Book Details</TableHead>
+                        <TableHead>Condition</TableHead>
+                        <TableHead>Budget</TableHead>
+                        <TableHead>Contact</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {bookRequests.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                            No book requests found
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        bookRequests.map((request) => (
+                          <TableRow key={request.id}>
+                            <TableCell>
+                              <div className="space-y-1">
+                                <div className="font-medium">
+                                  {request.profiles?.display_name || 'Anonymous'}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-y-1">
+                                <div className="font-medium">{request.title}</div>
+                                <div className="text-sm text-muted-foreground">by {request.author}</div>
+                                {request.notes && (
+                                  <div className="text-xs text-muted-foreground max-w-xs truncate">
+                                    {request.notes}
+                                  </div>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline">
+                                {request.condition_preference}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {request.budget ? `৳${request.budget}` : 'Not specified'}
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-y-1 text-xs">
+                                {request.mobile && (
+                                  <div className="flex items-center gap-1">
+                                    <Phone className="h-3 w-3" />
+                                    {request.mobile}
+                                  </div>
+                                )}
+                                {request.whatsapp && (
+                                  <div className="flex items-center gap-1">
+                                    <MessageSquare className="h-3 w-3" />
+                                    WhatsApp: {request.whatsapp}
+                                  </div>
+                                )}
+                                {request.telegram && (
+                                  <div className="flex items-center gap-1">
+                                    <MessageSquare className="h-3 w-3" />
+                                    Telegram: {request.telegram}
+                                  </div>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  request.status === 'pending' ? 'secondary' :
+                                  request.status === 'processing' ? 'default' :
+                                  request.status === 'fulfilled' ? 'default' :
+                                  request.status === 'cancelled' ? 'destructive' :
+                                  'outline'
+                                }
+                              >
+                                {request.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {new Date(request.created_at).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Select
+                                  value={request.status}
+                                  onValueChange={(value) => updateBookRequestStatus(request.id, value)}
+                                >
+                                  <SelectTrigger className="w-28">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="processing">Processing</SelectItem>
+                                    <SelectItem value="fulfilled">Fulfilled</SelectItem>
+                                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedBookRequest(request);
+                                    setShowBookRequestDialog(true);
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Book Request Details Dialog */}
+      <Dialog open={showBookRequestDialog} onOpenChange={setShowBookRequestDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Book Request Details</DialogTitle>
+            <DialogDescription>
+              View detailed information about this book request
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedBookRequest && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Customer</Label>
+                  <div className="text-sm">
+                    {selectedBookRequest.profiles?.display_name || 'Anonymous'}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Status</Label>
+                  <Select
+                    value={selectedBookRequest.status}
+                    onValueChange={(value) => {
+                      updateBookRequestStatus(selectedBookRequest.id, value);
+                      setSelectedBookRequest({ ...selectedBookRequest, status: value });
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="processing">Processing</SelectItem>
+                      <SelectItem value="fulfilled">Fulfilled</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Book Information</Label>
+                  <div className="p-4 bg-muted rounded-md space-y-2">
+                    <div><strong>Title:</strong> {selectedBookRequest.title}</div>
+                    <div><strong>Author:</strong> {selectedBookRequest.author}</div>
+                    <div><strong>Condition Preference:</strong> {selectedBookRequest.condition_preference}</div>
+                    {selectedBookRequest.budget && (
+                      <div><strong>Budget:</strong> ৳{selectedBookRequest.budget}</div>
+                    )}
+                  </div>
+                </div>
+
+                {selectedBookRequest.notes && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Additional Notes</Label>
+                    <div className="p-4 bg-muted rounded-md">
+                      {selectedBookRequest.notes}
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Contact Information</Label>
+                  <div className="p-4 bg-muted rounded-md space-y-2">
+                    {selectedBookRequest.mobile && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        <span>Mobile: {selectedBookRequest.mobile}</span>
+                      </div>
+                    )}
+                    {selectedBookRequest.whatsapp && (
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4" />
+                        <span>WhatsApp: {selectedBookRequest.whatsapp}</span>
+                      </div>
+                    )}
+                    {selectedBookRequest.telegram && (
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4" />
+                        <span>Telegram: {selectedBookRequest.telegram}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Request Date</Label>
+                  <div className="text-sm text-muted-foreground">
+                    {new Date(selectedBookRequest.created_at).toLocaleString()}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Button onClick={() => setShowBookRequestDialog(false)} className="flex-1">
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* Support Footer Section */}
       <div className="mt-12 pt-8 border-t border-border">
         <Card>
@@ -2888,3 +3203,5 @@ export function AdminDashboard() {
     </div>
   );
 }
+
+export default AdminDashboard;
