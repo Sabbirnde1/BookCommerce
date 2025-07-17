@@ -489,7 +489,7 @@ export function AdminDashboard() {
 
       // Save image record
       const imageData = {
-        product_id: imageProductId || null,
+        product_id: imageProductId && imageProductId !== "unassigned" ? imageProductId : null,
         image_path: filePath,
         image_url: urlData.publicUrl,
         alt_text: imageAltText,
@@ -1552,7 +1552,7 @@ export function AdminDashboard() {
                   <SelectValue placeholder="Select a product" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No product</SelectItem>
+                  <SelectItem value="unassigned">No product</SelectItem>
                   {products.map((product) => (
                     <SelectItem key={product.id} value={product.id}>
                       {product.title}
