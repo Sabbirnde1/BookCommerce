@@ -392,12 +392,7 @@ export function AdminDashboard() {
     try {
       const { data, error } = await supabase
         .from('book_requests')
-        .select(`
-          *,
-          profiles:user_id (
-            display_name
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
