@@ -117,6 +117,14 @@ export function AdminDashboard() {
   const [showBookRequestDialog, setShowBookRequestDialog] = useState(false);
   const [selectedBookRequest, setSelectedBookRequest] = useState<any>(null);
 
+  // Image management state
+  const [productImages, setProductImages] = useState<any[]>([]);
+  const [showImageDialog, setShowImageDialog] = useState(false);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imageProductId, setImageProductId] = useState("");
+  const [imageAltText, setImageAltText] = useState("");
+  const [imageIsPrimary, setImageIsPrimary] = useState(false);
+
   useEffect(() => {
     checkAdminStatus();
   }, [user]);
@@ -127,6 +135,7 @@ export function AdminDashboard() {
       fetchDashboardStats();
       fetchBookRequests();
       fetchPromoCodes();
+      fetchProductImages();
     }
   }, [isAdmin]);
 
@@ -430,6 +439,131 @@ export function AdminDashboard() {
     }
   };
 
+  // Image Management Functions
+  const fetchProductImages = async () => {
+    if (!isAdmin) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('product_images')
+        .select(`
+          *,
+          products!inner(title, author)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProductImages(data || []);
+    } catch (error) {
+      console.error('Error fetching product images:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch product images",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const uploadProductImage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdmin || !selectedImageFile) return;
+
+    setLoading(true);
+
+    try {
+      // Upload image to storage
+      const fileExt = selectedImageFile.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `products/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(filePath, selectedImageFile);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('products')
+        .getPublicUrl(filePath);
+
+      // Save image record
+      const imageData = {
+        product_id: imageProductId || null,
+        image_path: filePath,
+        image_url: urlData.publicUrl,
+        alt_text: imageAltText,
+        is_primary: imageIsPrimary
+      };
+
+      const { error: dbError } = await supabase
+        .from('product_images')
+        .insert([imageData]);
+
+      if (dbError) throw dbError;
+
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully"
+      });
+
+      resetImageForm();
+      setShowImageDialog(false);
+      fetchProductImages();
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteProductImage = async (id: string, imagePath: string) => {
+    if (!isAdmin) return;
+
+    try {
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from('products')
+        .remove([imagePath]);
+
+      if (storageError) throw storageError;
+
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('product_images')
+        .delete()
+        .eq('id', id);
+
+      if (dbError) throw dbError;
+
+      toast({
+        title: "Success",
+        description: "Image deleted successfully"
+      });
+
+      fetchProductImages();
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete image",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const resetImageForm = () => {
+    setSelectedImageFile(null);
+    setImageProductId("");
+    setImageAltText("");
+    setImageIsPrimary(false);
+  };
+
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -519,9 +653,10 @@ export function AdminDashboard() {
       )}
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="images">Image Management</TabsTrigger>
           <TabsTrigger value="book-requests">Book Requests</TabsTrigger>
           <TabsTrigger value="promo-codes">Promo Codes</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -633,6 +768,83 @@ export function AdminDashboard() {
                       )}
                     </TableBody>
                   </Table>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Image Management Tab */}
+        <TabsContent value="images">
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <ImageIcon className="h-5 w-5" />
+                    Image Management
+                  </CardTitle>
+                  <CardDescription>
+                    Manage product images and upload new ones
+                  </CardDescription>
+                </div>
+                <Button onClick={() => setShowImageDialog(true)}>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload Image
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {productImages.length === 0 ? (
+                    <div className="col-span-full text-center text-muted-foreground py-8">
+                      No images found
+                    </div>
+                  ) : (
+                    productImages.map((image) => (
+                      <Card key={image.id} className="overflow-hidden">
+                        <div className="aspect-square relative">
+                          <img 
+                            src={image.image_url} 
+                            alt={image.alt_text || 'Product image'}
+                            className="w-full h-full object-cover"
+                          />
+                          {image.is_primary && (
+                            <Badge className="absolute top-2 left-2" variant="default">
+                              Primary
+                            </Badge>
+                          )}
+                        </div>
+                        <CardContent className="p-3">
+                          <div className="space-y-2">
+                            <div className="text-sm font-medium truncate">
+                              {image.products?.title || 'No product assigned'}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {image.alt_text || 'No alt text'}
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => window.open(image.image_url, '_blank')}
+                              >
+                                <Eye className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => deleteProductImage(image.id, image.image_path)}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -1310,6 +1522,78 @@ export function AdminDashboard() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Image Upload Dialog */}
+      <Dialog open={showImageDialog} onOpenChange={setShowImageDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upload Product Image</DialogTitle>
+            <DialogDescription>
+              Upload a new image for your products
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={uploadProductImage} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="image-file">Image File</Label>
+              <Input
+                id="image-file"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setSelectedImageFile(e.target.files?.[0] || null)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="image-product">Product (Optional)</Label>
+              <Select value={imageProductId} onValueChange={setImageProductId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a product" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">No product</SelectItem>
+                  {products.map((product) => (
+                    <SelectItem key={product.id} value={product.id}>
+                      {product.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="image-alt">Alt Text</Label>
+              <Input
+                id="image-alt"
+                value={imageAltText}
+                onChange={(e) => setImageAltText(e.target.value)}
+                placeholder="Describe the image"
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="image-primary"
+                checked={imageIsPrimary}
+                onCheckedChange={setImageIsPrimary}
+              />
+              <Label htmlFor="image-primary">Set as primary image</Label>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setShowImageDialog(false);
+                  resetImageForm();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading || !selectedImageFile}>
+                {loading ? "Uploading..." : "Upload Image"}
+              </Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
