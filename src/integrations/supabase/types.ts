@@ -87,7 +87,15 @@ export type Database = {
           user_id?: string
           whatsapp?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "book_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       customer_communications: {
         Row: {
