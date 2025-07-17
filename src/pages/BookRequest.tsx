@@ -85,6 +85,59 @@ const BookRequest = () => {
           </div>
         </div>
       </section>
+      {/* How It Works */}
+      <section className="py-20 bg-secondary/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Our simple 3-step process connects you with hard-to-find books
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="relative group">
+              <div className="text-center p-8 rounded-2xl bg-background shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-2">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-foreground rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <MessageCircle className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-3">Submit Request</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Tell us about the book you're looking for with details like title, author, and preferred condition.
+                </p>
+              </div>
+            </div>
+            
+            <div className="relative group">
+              <div className="text-center p-8 rounded-2xl bg-background shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-2">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-foreground rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <Search className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-3">Expert Search</h3>
+                <p className="text-muted-foreground leading-relaxed">Our team searches through hundreds of suppliers, publishers, and rare book dealers Bangladesh.</p>
+              </div>
+            </div>
+            
+            <div className="relative group">
+              <div className="text-center p-8 rounded-2xl bg-background shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-2">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent-foreground rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <Sparkles className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-3">Get Notified</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Receive detailed information about availability, condition, and pricing within 24 hours.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* FAQ Section */}
       <section className="py-20 bg-gradient-to-br from-secondary/20 to-accent/10">
