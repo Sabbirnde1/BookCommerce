@@ -51,6 +51,7 @@ import {
   MessageSquare,
   Phone
 } from "lucide-react";
+import { ProductManagement } from "./ProductManagement";
 
 interface Product {
   id: string;
@@ -89,6 +90,7 @@ export function AdminDashboard() {
 
   // Product form state
   const [showProductDialog, setShowProductDialog] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [isbn, setIsbn] = useState("");
@@ -265,6 +267,7 @@ export function AdminDashboard() {
   };
 
   const resetProductForm = () => {
+    setEditingProduct(null);
     setTitle("");
     setAuthor("");
     setIsbn("");
@@ -276,6 +279,106 @@ export function AdminDashboard() {
     setStockQuantity("");
     setFeatured(false);
     setStatus("active");
+  };
+
+  const openEditDialog = (product: Product) => {
+    setEditingProduct(product);
+    setTitle(product.title);
+    setAuthor(product.author);
+    setIsbn(product.isbn || "");
+    setDescription(product.description || "");
+    setCategory(product.category);
+    setCondition(product.condition);
+    setPrice(product.price.toString());
+    setOriginalPrice(product.original_price?.toString() || "");
+    setStockQuantity(product.stock_quantity.toString());
+    setFeatured(product.featured);
+    setStatus(product.status);
+    setShowProductDialog(true);
+  };
+
+  const updateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdmin || !editingProduct) return;
+
+    setLoading(true);
+
+    try {
+      const productData = {
+        title,
+        author,
+        isbn: isbn || undefined,
+        description: description || undefined,
+        category,
+        condition,
+        price: parseFloat(price),
+        original_price: originalPrice ? parseFloat(originalPrice) : undefined,
+        stock_quantity: parseInt(stockQuantity),
+        featured,
+        status
+      };
+
+      const { data, error } = await supabase.functions.invoke('admin-dashboard/update-product', {
+        body: { 
+          id: editingProduct.id,
+          ...productData 
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "Success! ✅",
+          description: "Product updated successfully",
+        });
+        
+        resetProductForm();
+        setShowProductDialog(false);
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error('Error updating product:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update product",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteProduct = async (productId: string) => {
+    if (!isAdmin) return;
+    
+    if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-dashboard/delete-product', {
+        body: { id: productId }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "Success! 🗑️",
+          description: "Product deleted successfully",
+        });
+        
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete product",
+        variant: "destructive"
+      });
+    }
   };
 
   const createPromoCode = async (e: React.FormEvent) => {
@@ -708,65 +811,7 @@ export function AdminDashboard() {
 
         {/* Products Tab */}
         <TabsContent value="products">
-          <Card>
-            <CardHeader>
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Package className="h-5 w-5" />
-                    Product Management
-                  </CardTitle>
-                  <CardDescription>
-                    View and manage your product inventory
-                  </CardDescription>
-                </div>
-                <Button onClick={() => setShowProductDialog(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Product
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Title</TableHead>
-                        <TableHead>Author</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Stock</TableHead>
-                        <TableHead>Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {products.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                            No products found
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        products.slice(0, 10).map((product) => (
-                          <TableRow key={product.id}>
-                            <TableCell className="font-medium">{product.title}</TableCell>
-                            <TableCell>{product.author}</TableCell>
-                            <TableCell>৳{product.price}</TableCell>
-                            <TableCell>{product.stock_quantity}</TableCell>
-                            <TableCell>
-                              <Badge variant={product.status === 'active' ? 'default' : 'secondary'}>
-                                {product.status}
-                              </Badge>
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <ProductManagement />
         </TabsContent>
 
         {/* Image Management Tab */}
@@ -1134,13 +1179,13 @@ export function AdminDashboard() {
       <Dialog open={showProductDialog} onOpenChange={setShowProductDialog}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add New Product</DialogTitle>
+            <DialogTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
             <DialogDescription>
-              Create a new book listing for your inventory
+              {editingProduct ? 'Update the product information' : 'Create a new book listing for your inventory'}
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={createProduct} className="space-y-6">
+          <form onSubmit={editingProduct ? updateProduct : createProduct} className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="title">Title *</Label>
@@ -1292,9 +1337,12 @@ export function AdminDashboard() {
 
             <div className="flex gap-3 pt-4">
               <Button type="submit" disabled={loading} className="flex-1">
-                {loading ? "Creating..." : "Create Product"}
+                {loading ? (editingProduct ? "Updating..." : "Creating...") : (editingProduct ? "Update Product" : "Create Product")}
               </Button>
-              <Button type="button" variant="outline" onClick={() => setShowProductDialog(false)}>
+              <Button type="button" variant="outline" onClick={() => {
+                resetProductForm();
+                setShowProductDialog(false);
+              }}>
                 Cancel
               </Button>
             </div>
