@@ -220,7 +220,7 @@ export function ProductManagement() {
 
       const { data, error } = await supabase.functions.invoke('admin-dashboard/update-product', {
         body: { 
-          id: editingProduct.id,
+          product_id: editingProduct.id,
           ...productData 
         }
       });
@@ -256,7 +256,7 @@ export function ProductManagement() {
 
     try {
       const { data, error } = await supabase.functions.invoke('admin-dashboard/delete-product', {
-        body: { id: productId }
+        body: { product_id: productId }
       });
 
       if (error) throw error;
@@ -313,7 +313,7 @@ export function ProductManagement() {
 
       const { data, error } = await supabase.functions.invoke('admin-dashboard/update-product', {
         body: { 
-          id: quickEdit.productId,
+          product_id: quickEdit.productId,
           ...updateData
         }
       });
