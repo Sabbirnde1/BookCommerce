@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,44 +9,141 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Filter, Heart, Star, ShoppingCart, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
-import { mockBooks, genres, searchBooks, filterBooksByCondition, filterBooksByGenre, sortBooks, Book } from "@/lib/bookData";
 import { useCartStore } from "@/lib/cartStore";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+
+// Product interface that matches our database
+interface Product {
+  id: string;
+  title: string;
+  author: string;
+  price: number;
+  original_price?: number;
+  condition: string;
+  category: string;
+  description?: string;
+  isbn?: string;
+  publisher?: string;
+  publication_year?: number;
+  pages?: number;
+  stock_quantity: number;
+  status: string;
+  featured?: boolean;
+  product_images?: Array<{ image_url: string; alt_text?: string; is_primary?: boolean }>;
+}
 
 const BookCommerce = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All Genres");
   const [sortBy, setSortBy] = useState("featured");
   const [activeTab, setActiveTab] = useState("all");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const { addItem, getItemQuantity } = useCartStore();
   const { toast } = useToast();
 
-  const filteredBooks = useMemo(() => {
-    let books = mockBooks;
+  // Available categories from database
+  const categories = [
+    "All Genres",
+    "general",
+    "fiction",
+    "non-fiction", 
+    "science",
+    "technology",
+    "business",
+    "history",
+    "biography",
+    "self-help",
+    "romance",
+    "mystery",
+    "fantasy"
+  ];
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select(`
+          *,
+          product_images(image_url, alt_text, is_primary)
+        `)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setProducts(data || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch products",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredProducts = useMemo(() => {
+    let filtered = products;
     
     // Apply search
-    books = searchBooks(books, searchQuery);
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(product => 
+        product.title.toLowerCase().includes(query) ||
+        product.author.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query) ||
+        product.description?.toLowerCase().includes(query)
+      );
+    }
     
     // Apply condition filter based on active tab
     if (activeTab === "new") {
-      books = filterBooksByCondition(books, "new");
+      filtered = filtered.filter(product => product.condition === "new");
     } else if (activeTab === "old") {
-      books = filterBooksByCondition(books, "old");
+      filtered = filtered.filter(product => product.condition === "used");
     }
     
-    // Apply genre filter
-    books = filterBooksByGenre(books, selectedGenre);
+    // Apply category filter
+    if (selectedGenre !== "All Genres") {
+      filtered = filtered.filter(product => product.category === selectedGenre);
+    }
     
     // Apply sorting
-    books = sortBooks(books, sortBy);
+    switch (sortBy) {
+      case "price-low":
+        filtered = [...filtered].sort((a, b) => a.price - b.price);
+        break;
+      case "price-high":
+        filtered = [...filtered].sort((a, b) => b.price - a.price);
+        break;
+      case "title":
+        filtered = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "author":
+        filtered = [...filtered].sort((a, b) => a.author.localeCompare(b.author));
+        break;
+      case "featured":
+      default:
+        filtered = [...filtered].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        break;
+    }
     
-    return books;
-  }, [searchQuery, selectedGenre, sortBy, activeTab]);
+    return filtered;
+  }, [products, searchQuery, selectedGenre, sortBy, activeTab]);
 
-  const handleAddToCart = (book: Book) => {
-    const cartQuantity = getItemQuantity(book.id);
+  const handleAddToCart = (product: Product) => {
+    const cartQuantity = getItemQuantity(product.id);
     
-    if (cartQuantity >= book.inStock) {
+    if (cartQuantity >= product.stock_quantity) {
       toast({
         title: "Out of stock",
         description: "This book is currently out of stock.",
@@ -55,29 +152,52 @@ const BookCommerce = () => {
       return;
     }
 
-    addItem(book);
+    // Convert product to the cart format
+    const cartItem = {
+      id: product.id,
+      title: product.title,
+      author: product.author,
+      price: product.price,
+      originalPrice: product.original_price,
+      condition: product.condition as "new" | "old",
+      rating: 4, // Default rating since we don't have ratings in products table yet
+      image: product.product_images?.[0]?.image_url || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop",
+      description: product.description || "",
+      genre: product.category,
+      isbn: product.isbn || "",
+      publisher: product.publisher || "",
+      publishedYear: product.publication_year || 2024,
+      pages: product.pages || 0,
+      isPopular: product.featured,
+      inStock: product.stock_quantity
+    };
+
+    addItem(cartItem);
     toast({
       title: "Added to cart! 📚",
-      description: `${book.title} has been added to your cart.`,
+      description: `${product.title} has been added to your cart.`,
     });
   };
 
-  const BookCommercCard = ({ book }: { book: Book }) => {
-    const cartQuantity = getItemQuantity(book.id);
+  const ProductCard = ({ product }: { product: Product }) => {
+    const cartQuantity = getItemQuantity(product.id);
+    const primaryImage = product.product_images?.find(img => img.is_primary)?.image_url || 
+                        product.product_images?.[0]?.image_url || 
+                        "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop";
     
     return (
       <Card className="group relative overflow-hidden bg-card hover:shadow-book transition-all duration-300 transform hover:-translate-y-1">
-        {book.isPopular && (
+        {product.featured && (
           <Badge className="absolute top-3 left-3 z-10 bg-accent text-accent-foreground font-medium">
-            Popular
+            Featured
           </Badge>
         )}
         
         <CardHeader className="p-0">
           <div className="aspect-[3/4] overflow-hidden bg-muted">
             <img 
-              src={book.image} 
-              alt={book.title}
+              src={primaryImage} 
+              alt={product.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
@@ -86,10 +206,10 @@ const BookCommerce = () => {
         <CardContent className="p-4 space-y-3">
           <div className="flex items-start justify-between">
             <Badge 
-              variant={book.condition === "new" ? "default" : "secondary"} 
+              variant={product.condition === "new" ? "default" : "secondary"} 
               className="text-xs font-medium"
             >
-              {book.condition === "new" ? "New" : "Pre-owned"}
+              {product.condition === "new" ? "New" : "Used"}
             </Badge>
             <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-red-500">
               <Heart className="h-4 w-4" />
@@ -97,54 +217,71 @@ const BookCommerce = () => {
           </div>
           
           <CardTitle className="text-base font-semibold line-clamp-2 leading-tight">
-            {book.title}
+            {product.title}
           </CardTitle>
           
-          <p className="text-sm text-muted-foreground font-medium">{book.author}</p>
+          <p className="text-sm text-muted-foreground font-medium">{product.author}</p>
           
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
               <Star 
                 key={i} 
-                className={`h-4 w-4 ${i < book.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`} 
+                className={`h-4 w-4 ${i < 4 ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`} 
               />
             ))}
-            <span className="text-sm text-muted-foreground ml-1">({book.rating})</span>
+            <span className="text-sm text-muted-foreground ml-1">(4.0)</span>
           </div>
           
-          {/* Enhanced Book Information */}
+          {/* Enhanced Product Information */}
           <div className="text-xs text-muted-foreground space-y-1">
-            <p><strong>Genre:</strong> {book.genre}</p>
-            <p><strong>Publisher:</strong> {book.publisher}</p>
-            <p><strong>Year:</strong> {book.publishedYear} • <strong>Pages:</strong> {book.pages}</p>
-            <p className={`font-medium ${book.inStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-              <strong>Stock:</strong> {book.inStock > 0 ? `${book.inStock} available` : 'Out of stock'}
+            <p><strong>Category:</strong> {product.category}</p>
+            {product.publisher && <p><strong>Publisher:</strong> {product.publisher}</p>}
+            {product.publication_year && product.pages && (
+              <p><strong>Year:</strong> {product.publication_year} • <strong>Pages:</strong> {product.pages}</p>
+            )}
+            <p className={`font-medium ${product.stock_quantity > 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <strong>Stock:</strong> {product.stock_quantity > 0 ? `${product.stock_quantity} available` : 'Out of stock'}
             </p>
           </div>
         </CardContent>
         
         <CardFooter className="p-4 pt-0 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-primary">৳{book.price}</span>
-            {book.originalPrice && book.originalPrice > book.price && (
-              <span className="text-sm text-muted-foreground line-through">৳{book.originalPrice}</span>
+            <span className="text-xl font-bold text-primary">৳{product.price}</span>
+            {product.original_price && product.original_price > product.price && (
+              <span className="text-sm text-muted-foreground line-through">৳{product.original_price}</span>
             )}
           </div>
           <Button 
             size="sm" 
             variant="default" 
-            onClick={() => handleAddToCart(book)}
-            disabled={cartQuantity >= book.inStock}
+            onClick={() => handleAddToCart(product)}
+            disabled={cartQuantity >= product.stock_quantity}
             className="gap-2"
           >
             <ShoppingCart className="h-4 w-4" />
-            {cartQuantity >= book.inStock ? "Out of Stock" : 
+            {cartQuantity >= product.stock_quantity ? "Out of Stock" : 
              cartQuantity > 0 ? `In Cart (${cartQuantity})` : "Add to Cart"}
           </Button>
         </CardFooter>
       </Card>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center py-32">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading products...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -188,11 +325,11 @@ const BookCommerce = () => {
               <Select value={selectedGenre} onValueChange={setSelectedGenre}>
                 <SelectTrigger className="w-[180px]">
                   <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Select Genre" />
+                  <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {genres.map(genre => (
-                    <SelectItem key={genre} value={genre}>{genre}</SelectItem>
+                  {categories.map(category => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -213,7 +350,7 @@ const BookCommerce = () => {
             </div>
             
             <div className="text-sm text-muted-foreground">
-              Showing {filteredBooks.length} books
+              Showing {filteredProducts.length} products
             </div>
           </div>
         </div>
@@ -222,10 +359,10 @@ const BookCommerce = () => {
       {/* Books Grid */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          {filteredBooks.length > 0 ? (
+          {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {filteredBooks.map(book => (
-                <BookCommercCard key={book.id} book={book} />
+              {filteredProducts.map(product => (
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : (
