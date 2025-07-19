@@ -235,7 +235,8 @@ export function ProductManagement() {
         
         resetProductForm();
         setShowProductDialog(false);
-        fetchProducts();
+        await fetchProducts(); // Ensure refresh happens
+        setEditingProduct(null);
       }
     } catch (error) {
       console.error('Error updating product:', error);
@@ -267,7 +268,7 @@ export function ProductManagement() {
           description: "Product deleted successfully",
         });
         
-        fetchProducts();
+        await fetchProducts(); // Ensure refresh happens
       }
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -326,7 +327,7 @@ export function ProductManagement() {
           description: `${quickEdit.field} updated successfully`,
         });
         
-        fetchProducts();
+        await fetchProducts(); // Ensure refresh happens
         cancelQuickEdit();
       }
     } catch (error) {
