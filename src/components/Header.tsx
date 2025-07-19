@@ -108,6 +108,9 @@ export function Header() {
             {/* Categories - Hidden on mobile, replaced with hamburger menu */}
             <div className="hidden lg:flex items-center space-x-2">
               <Button variant="ghost" size="sm" asChild>
+                <Link to="/books">All Books</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
                 <Link to="/new-books">New Books</Link>
               </Button>
               <Button variant="ghost" size="sm" asChild>
