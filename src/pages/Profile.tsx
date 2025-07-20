@@ -129,7 +129,7 @@ const Profile = () => {
         
         <div className="container mx-auto px-4 py-8">
           {/* Navigation */}
-          <div className="mb-6">
+          <div className="mb-8">
             <Link 
               to="/" 
               className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
@@ -139,235 +139,238 @@ const Profile = () => {
             </Link>
           </div>
 
-          <div className="max-w-2xl mx-auto space-y-6">
-            {/* Page Header */}
-            <div className="text-center space-y-2">
-              <h1 className="text-3xl font-bold text-foreground">Profile Settings</h1>
-              <p className="text-muted-foreground">
-                Manage your account information and preferences
-              </p>
-            </div>
-
-            {/* Account Info Card */}
-            <Card className="shadow-page">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <User className="h-5 w-5 mr-2" />
-                  Account Information
-                </CardTitle>
-                <CardDescription>
-                  Your basic account details and verification status
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Mail className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">{user?.email}</p>
-                      <p className="text-sm text-muted-foreground">Email Address</p>
-                    </div>
-                  </div>
-                  <Badge variant={user?.email_confirmed_at ? "default" : "secondary"}>
-                    {user?.email_confirmed_at ? "Verified" : "Unverified"}
-                  </Badge>
-                </div>
-                
-                <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <User className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">Account Created</p>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(user?.created_at || "").toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Profile Information Card */}
-            <Card className="shadow-page">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <FileText className="h-5 w-5 mr-2" />
-                  Profile Information
-                </CardTitle>
-                <CardDescription>
-                  Update your personal information and how others see you
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSave} className="space-y-6">
-                  <div className="grid gap-6">
-                    {/* Display Name */}
-                    <div className="space-y-2">
-                      <Label htmlFor="display-name">Display Name</Label>
-                      <Input
-                        id="display-name"
-                        placeholder="How should we call you?"
-                        value={displayName}
-                        onChange={(e) => setDisplayName(e.target.value)}
-                      />
-                      <p className="text-sm text-muted-foreground">
-                        This is how your name will appear to others
-                      </p>
-                    </div>
-
-                    {/* Phone Number */}
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="flex items-center">
-                        <Phone className="h-4 w-4 mr-2" />
-                        Phone Number
-                      </Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="e.g., +880 1234567890"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                      />
-                      <p className="text-sm text-muted-foreground">
-                        We'll use this for order updates and delivery
-                      </p>
-                    </div>
-
-                    {/* Avatar URL */}
-                    <div className="space-y-2">
-                      <Label htmlFor="avatar">Profile Picture URL</Label>
-                      <Input
-                        id="avatar"
-                        type="url"
-                        placeholder="https://example.com/your-photo.jpg"
-                        value={avatarUrl}
-                        onChange={(e) => setAvatarUrl(e.target.value)}
-                      />
-                      <p className="text-sm text-muted-foreground">
-                        Link to your profile picture (optional)
-                      </p>
-                    </div>
-
-                    {/* Bio */}
-                    <div className="space-y-2">
-                      <Label htmlFor="bio">Bio</Label>
-                      <Textarea
-                        id="bio"
-                        placeholder="Tell us a bit about yourself and your reading interests..."
-                        value={bio}
-                        onChange={(e) => setBio(e.target.value)}
-                        rows={4}
-                      />
-                      <p className="text-sm text-muted-foreground">
-                        Share your reading preferences, favorite genres, or anything about yourself
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Save Button */}
-                  <div className="flex justify-end space-x-4">
-                    <Button type="button" variant="outline" asChild>
-                      <Link to="/">Cancel</Link>
-                    </Button>
-                    <Button type="submit" disabled={loading} variant="hero">
-                      <Save className="h-4 w-4 mr-2" />
-                      {loading ? "Saving..." : "Save Changes"}
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-
-            {/* Book Requests Section */}
-            <Card className="shadow-page">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <BookOpen className="h-5 w-5 mr-2" />
-                  My Book Requests
-                </CardTitle>
-                <CardDescription>
-                  Track the status of your book requests
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {bookRequests.length === 0 ? (
-                  <div className="text-center py-8">
-                    <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground mb-4">
-                      No book requests yet
-                    </p>
-                    <Button variant="outline" asChild>
-                      <Link to="/request">Submit Your First Request</Link>
-                    </Button>
-                  </div>
+          <div className="max-w-4xl mx-auto">
+            {/* Page Header with Avatar */}
+            <div className="text-center space-y-6 mb-8">
+              <div className="relative">
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt="Profile"
+                    className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-primary/10"
+                  />
                 ) : (
-                  <div className="space-y-4">
-                    {bookRequests.map((request) => (
-                      <div key={request.id} className="border rounded-lg p-4 space-y-3">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-semibold text-lg">{request.title}</h4>
-                            <p className="text-muted-foreground">by {request.author}</p>
-                          </div>
-                          <Badge 
-                            className={`flex items-center gap-1 ${getStatusColor(request.status)}`}
-                            variant="outline"
-                          >
-                            {getStatusIcon(request.status)}
-                            {request.status.replace('_', ' ').toUpperCase()}
-                          </Badge>
-                        </div>
-                        
-                        <div className="grid gap-2 text-sm text-muted-foreground">
-                          <div className="flex justify-between">
-                            <span>Condition:</span>
-                            <span className="font-medium">{request.condition_preference}</span>
-                          </div>
-                          {request.budget && (
-                            <div className="flex justify-between">
-                              <span>Budget:</span>
-                              <span className="font-medium">৳{request.budget}</span>
-                            </div>
-                          )}
-                          <div className="flex justify-between">
-                            <span>Requested:</span>
-                            <span className="font-medium">
-                              {new Date(request.created_at).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                        
-                        {request.notes && (
-                          <div className="pt-2 border-t">
-                            <p className="text-sm text-muted-foreground">
-                              <span className="font-medium">Notes:</span> {request.notes}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                  <div className="w-24 h-24 rounded-full mx-auto bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center">
+                    <User className="h-10 w-10 text-primary" />
                   </div>
                 )}
-              </CardContent>
-            </Card>
-
-            {/* Account Actions */}
-            <Card className="shadow-page border-destructive/20">
-              <CardHeader>
-                <CardTitle className="text-destructive">Danger Zone</CardTitle>
-                <CardDescription>
-                  These actions are permanent and cannot be undone
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Need to delete your account? Contact our support team for assistance.
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-foreground">
+                  {displayName || user?.email?.split('@')[0] || 'Reader'}
+                </h1>
+                <p className="text-muted-foreground">
+                  Manage your profile and track your reading journey
                 </p>
-                <Button variant="outline" className="text-destructive border-destructive/50 hover:bg-destructive/10">
-                  Contact Support
-                </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Profile Information - Main Column */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Quick Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="p-4 text-center">
+                    <BookOpen className="h-8 w-8 mx-auto text-primary mb-2" />
+                    <p className="text-2xl font-bold">{bookRequests.length}</p>
+                    <p className="text-sm text-muted-foreground">Book Requests</p>
+                  </Card>
+                  <Card className="p-4 text-center">
+                    <CheckCircle className="h-8 w-8 mx-auto text-green-600 mb-2" />
+                    <p className="text-2xl font-bold">
+                      {bookRequests.filter(r => r.status === 'found').length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Found Books</p>
+                  </Card>
+                  <Card className="p-4 text-center">
+                    <Clock className="h-8 w-8 mx-auto text-yellow-600 mb-2" />
+                    <p className="text-2xl font-bold">
+                      {bookRequests.filter(r => r.status === 'pending').length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Pending</p>
+                  </Card>
+                </div>
+
+                {/* Profile Form */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <FileText className="h-5 w-5 mr-2" />
+                      Edit Profile
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleSave} className="space-y-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="display-name">Display Name</Label>
+                          <Input
+                            id="display-name"
+                            placeholder="Your name"
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="phone">Phone Number</Label>
+                          <Input
+                            id="phone"
+                            type="tel"
+                            placeholder="+880 1234567890"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="avatar">Profile Picture URL</Label>
+                        <Input
+                          id="avatar"
+                          type="url"
+                          placeholder="https://example.com/your-photo.jpg"
+                          value={avatarUrl}
+                          onChange={(e) => setAvatarUrl(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="bio">About Me</Label>
+                        <Textarea
+                          id="bio"
+                          placeholder="Tell us about your reading interests..."
+                          value={bio}
+                          onChange={(e) => setBio(e.target.value)}
+                          rows={3}
+                        />
+                      </div>
+
+                      <div className="flex justify-end space-x-3">
+                        <Button type="button" variant="outline" asChild>
+                          <Link to="/">Cancel</Link>
+                        </Button>
+                        <Button type="submit" disabled={loading}>
+                          <Save className="h-4 w-4 mr-2" />
+                          {loading ? "Saving..." : "Save Changes"}
+                        </Button>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+
+                {/* Book Requests */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span className="flex items-center">
+                        <BookOpen className="h-5 w-5 mr-2" />
+                        My Book Requests
+                      </span>
+                      <Button variant="outline" size="sm" asChild>
+                        <Link to="/request">New Request</Link>
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {bookRequests.length === 0 ? (
+                      <div className="text-center py-8">
+                        <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                        <p className="text-muted-foreground mb-4">No book requests yet</p>
+                        <Button variant="outline" asChild>
+                          <Link to="/request">Submit Your First Request</Link>
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {bookRequests.slice(0, 5).map((request) => (
+                          <div key={request.id} className="flex items-center justify-between p-3 border rounded-lg">
+                            <div className="flex-1">
+                              <h4 className="font-medium">{request.title}</h4>
+                              <p className="text-sm text-muted-foreground">by {request.author}</p>
+                            </div>
+                            <div className="text-right">
+                              <Badge 
+                                className={`flex items-center gap-1 ${getStatusColor(request.status)}`}
+                                variant="outline"
+                              >
+                                {getStatusIcon(request.status)}
+                                {request.status.replace('_', ' ').toUpperCase()}
+                              </Badge>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {new Date(request.created_at).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                        {bookRequests.length > 5 && (
+                          <p className="text-center text-sm text-muted-foreground pt-2">
+                            And {bookRequests.length - 5} more requests...
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Sidebar */}
+              <div className="space-y-6">
+                {/* Account Info */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Account Info</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{user?.email}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {user?.email_confirmed_at ? "Verified" : "Unverified"}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Member since</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(user?.created_at || "").toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Quick Actions */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Quick Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      <Link to="/request">
+                        <BookOpen className="h-4 w-4 mr-2" />
+                        Request a Book
+                      </Link>
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      <Link to="/orders">
+                        <FileText className="h-4 w-4 mr-2" />
+                        View Orders
+                      </Link>
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      <Link to="/support">
+                        <Mail className="h-4 w-4 mr-2" />
+                        Contact Support
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         </div>
 
