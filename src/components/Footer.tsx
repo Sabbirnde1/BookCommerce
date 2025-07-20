@@ -83,14 +83,7 @@ export function Footer() {
               >
                 <Linkedin className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
               </a>
-              <a 
-                href="https://youtube.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-primary-foreground/10 rounded-full flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200 group"
-              >
-                <Youtube className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
-              </a>
+             
               <a 
                 href="https://wa.me/8801825929393" 
                 target="_blank" 
