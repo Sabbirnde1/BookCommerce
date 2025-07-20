@@ -1,4 +1,4 @@
-import { BookOpen, Mail, Phone, Clock, Facebook, Linkedin, Youtube, Video } from "lucide-react";
+import { BookOpen, Mail, Phone, Clock, Facebook, Linkedin, Youtube, Video, MessageCircle, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function Footer() {
@@ -94,12 +94,20 @@ export function Footer() {
                 <Youtube className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
               </a>
               <a 
-                href="https://tiktok.com" 
+                href="https://wa.me/8801825929393" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-primary-foreground/10 rounded-full flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200 group"
               >
-                <Video className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
+                <MessageCircle className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
+              </a>
+              <a 
+                href="https://t.me/nijercart" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-primary-foreground/10 rounded-full flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200 group"
+              >
+                <Send className="h-5 w-5 text-primary-foreground group-hover:scale-110 transition-transform duration-200" />
               </a>
             </div>
           </div>
