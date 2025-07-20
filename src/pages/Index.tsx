@@ -54,21 +54,6 @@ const Index = () => {
               <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
             
-            <Link 
-              to="/books?category=history" 
-              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
-            >
-              <span className="relative z-10">History</span>
-              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-            </Link>
-            
-            <Link 
-              to="/books?category=science" 
-              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
-            >
-              <span className="relative z-10 whitespace-nowrap">Science & Tech</span>
-              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-            </Link>
           </div>
         </div>
       </section>

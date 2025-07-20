@@ -42,8 +42,6 @@ export function Footer() {
               <li><Link to="/books?category=non-fiction" className="hover:text-primary-foreground transition-colors">Non-Fiction</Link></li>
               <li><Link to="/books?category=academic" className="hover:text-primary-foreground transition-colors">Academic</Link></li>
               <li><Link to="/books?category=children" className="hover:text-primary-foreground transition-colors">Children's Books</Link></li>
-              <li><Link to="/books?category=history" className="hover:text-primary-foreground transition-colors">History</Link></li>
-              <li><Link to="/books?category=science" className="hover:text-primary-foreground transition-colors">Science & Tech</Link></li>
             </ul>
           </div>
           
