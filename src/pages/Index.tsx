@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { BookCard } from "@/components/BookCard";
 import { BookRequestForm } from "@/components/BookRequestForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,8 +8,38 @@ import { Badge } from "@/components/ui/badge";
 import { BookOpen, Search, Clock, Star, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/books-hero.jpg";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
+  const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedBooks = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select(`
+            *,
+            product_images(image_url, alt_text, is_primary)
+          `)
+          .eq('featured', true)
+          .eq('status', 'active')
+          .limit(4)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setFeaturedBooks(data || []);
+      } catch (error) {
+        console.error('Error fetching featured books:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedBooks();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -107,6 +138,71 @@ const Index = () => {
               </Link>
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Featured Books */}
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
+            <div className="text-center sm:text-left">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Featured Books</h2>
+              <p className="text-sm md:text-base text-muted-foreground">Discover our handpicked selection</p>
+            </div>
+            <Button variant="ghost" className="group self-center sm:self-auto" asChild>
+              <Link to="/books">
+                View All
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </Button>
+          </div>
+          
+          {loading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="animate-pulse">
+                  <div className="bg-muted rounded-lg aspect-[3/4] mb-3"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-3 bg-muted rounded w-1/2"></div>
+                    <div className="h-3 bg-muted rounded w-1/4"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : featuredBooks.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+              {featuredBooks.map((book) => (
+                <BookCard 
+                  key={book.id} 
+                  id={book.id}
+                  title={book.title}
+                  author={book.author}
+                  price={book.price}
+                  originalPrice={book.original_price}
+                  condition={book.condition as "new" | "old"}
+                  rating={4}
+                  image={book.product_images?.[0]?.image_url || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop"}
+                  description={book.description}
+                  genre={book.category}
+                  isbn={book.isbn || ""}
+                  publisher={book.publisher || ""}
+                  publishedYear={book.publication_year || 2024}
+                  pages={book.pages || 200}
+                  inStock={book.stock_quantity}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Featured Books Yet</h3>
+              <p className="text-muted-foreground mb-4">Check back soon for our handpicked selection!</p>
+              <Button variant="outline" asChild>
+                <Link to="/books">Browse All Books</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
