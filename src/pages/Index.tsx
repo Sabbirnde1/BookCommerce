@@ -1,18 +1,14 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { BookCard } from "@/components/BookCard";
 import { BookRequestForm } from "@/components/BookRequestForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Search, Clock, Star, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { mockBooks } from "@/lib/bookData";
 import heroImage from "@/assets/books-hero.jpg";
 
 const Index = () => {
-  // Use actual book data from the mock database
-  const featuredBooks = mockBooks.slice(0, 4);
 
   return (
     <div className="min-h-screen bg-background">
@@ -113,30 +109,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      
-      {/* Featured Books */}
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
-            <div className="text-center sm:text-left">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Featured Books</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Discover our handpicked selection</p>
-            </div>
-            <Button variant="ghost" className="group self-center sm:self-auto">
-              View All
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-            {featuredBooks.map((book) => (
-              <BookCard key={book.id} {...book} />
-            ))}
-          </div>
-        </div>
-      </section>
-
 
       {/* Unique Selling Points */}
       <section className="py-12 md:py-16 bg-secondary/30">
