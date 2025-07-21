@@ -1,4 +1,4 @@
-import { BookOpen, Mail, Phone, Clock, Facebook, Linkedin, Send } from "lucide-react";
+import { BookOpen, Mail, Phone, Clock, Facebook, Linkedin, Send, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function Footer() {
