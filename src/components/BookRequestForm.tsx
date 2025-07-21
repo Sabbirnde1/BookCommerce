@@ -26,7 +26,10 @@ export function BookRequestForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log("Form submitted, user:", user);
+    
     if (!user) {
+      console.log("No user found, showing auth required toast");
       toast({
         title: "Authentication Required",
         description: "Please log in to submit a book request.",
@@ -54,23 +57,31 @@ export function BookRequestForm() {
     }
 
     setIsSubmitting(true);
+    console.log("Starting request submission...");
 
     try {
+      const requestData = {
+        user_id: user.id,
+        title,
+        author,
+        condition_preference: condition,
+        budget: budget ? parseFloat(budget.replace(/[^\d.]/g, '')) : null,
+        notes,
+        whatsapp: whatsappNumber,
+        telegram: telegramNumber,
+        mobile: mobileNumber,
+      };
+      
+      console.log("Request data:", requestData);
+      
       const { error } = await supabase
         .from('book_requests')
-        .insert({
-          user_id: user.id,
-          title,
-          author,
-          condition_preference: condition,
-          budget: budget ? parseFloat(budget.replace(/[^\d.]/g, '')) : null,
-          notes,
-          whatsapp: whatsappNumber,
-          telegram: telegramNumber,
-          mobile: mobileNumber,
-        });
+        .insert(requestData);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
 
       toast({
         title: "Request Submitted! 📚",
@@ -93,10 +104,11 @@ export function BookRequestForm() {
       console.error('Error submitting book request:', error);
       toast({
         title: "Submission Failed",
-        description: "There was a problem submitting your request. Please try again.",
+        description: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive"
       });
     } finally {
+      console.log("Request submission finished");
       setIsSubmitting(false);
     }
   };
