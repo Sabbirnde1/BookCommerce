@@ -115,6 +115,12 @@ export function BookCard(book: Book) {
         
         <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">{book.author}</p>
         
+        {book.description && (
+          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+            {book.description}
+          </p>
+        )}
+        
         <div className="flex items-center gap-1">
           {[...Array(5)].map((_, i) => (
             <Star 
