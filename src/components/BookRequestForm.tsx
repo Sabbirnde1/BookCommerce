@@ -28,15 +28,15 @@ export function BookRequestForm() {
     
     console.log("Form submitted, user:", user);
     
-    if (!user) {
-      console.log("No user found, showing auth required toast");
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to submit a book request.",
-        variant: "destructive"
-      });
-      return;
-    }
+    // if (!user) {
+    //   console.log("No user found, showing auth required toast");
+    //   toast({
+    //     title: "Authentication Required",
+    //     description: "Please log in to submit a book request.",
+    //     variant: "destructive"
+    //   });
+    //   return;
+    // }
     
     if (!title || !author || !condition) {
       toast({
