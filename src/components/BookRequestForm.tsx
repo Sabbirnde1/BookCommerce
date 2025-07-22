@@ -61,7 +61,7 @@ export function BookRequestForm() {
 
     try {
       const requestData = {
-        user_id: user.id,
+        user_id: user?.id || null,
         title,
         author,
         condition_preference: condition,
