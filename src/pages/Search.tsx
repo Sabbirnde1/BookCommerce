@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search as SearchIcon, Filter, Heart, Star, ShoppingCart, BookOpen, ArrowRight } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -128,85 +129,212 @@ const Search = () => {
     const inWishlist = isInWishlist(book.id);
     
     return (
-      <Card className="group relative overflow-hidden bg-card hover:shadow-book transition-all duration-300 transform hover:-translate-y-1">
-        {book.isPopular && (
-          <Badge className="absolute top-3 left-3 z-10 bg-accent text-accent-foreground font-medium">
-            Popular
-          </Badge>
-        )}
-        
-        <CardHeader className="p-0">
-          <div className="aspect-[3/4] overflow-hidden bg-muted">
-            <img 
-              src={book.image} 
-              alt={book.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-        </CardHeader>
-        
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-start justify-between">
-            <Badge 
-              variant={book.condition === "new" ? "default" : "secondary"} 
-              className="text-xs font-medium"
-            >
-              {book.condition === "new" ? "New" : "Pre-owned"}
-            </Badge>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className={`h-8 w-8 ${inWishlist ? 'text-red-500' : 'hover:text-red-500'}`}
-              onClick={() => handleAddToWishlist(book)}
-            >
-              <Heart className={`h-4 w-4 ${inWishlist ? 'fill-current' : ''}`} />
-            </Button>
-          </div>
-          
-          <CardTitle className="text-base font-semibold line-clamp-2 leading-tight">
-            {book.title}
-          </CardTitle>
-          
-          <p className="text-sm text-muted-foreground font-medium">{book.author}</p>
-          
-          <div className="flex items-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star 
-                key={i} 
-                className={`h-4 w-4 ${i < book.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`} 
-              />
-            ))}
-            <span className="text-sm text-muted-foreground ml-1">({book.rating})</span>
-          </div>
-          
-          <div className="text-xs text-muted-foreground">
-            <p><strong>Publisher:</strong> {book.publisher}</p>
-            <p><strong>Year:</strong> {book.publishedYear}</p>
-            <p><strong>Pages:</strong> {book.pages}</p>
-            <p><strong>In Stock:</strong> {book.inStock}</p>
-          </div>
-        </CardContent>
-        
-        <CardFooter className="p-4 pt-0 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-primary">৳{book.price}</span>
-            {book.originalPrice && book.originalPrice > book.price && (
-              <span className="text-sm text-muted-foreground line-through">৳{book.originalPrice}</span>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Card className="group relative overflow-hidden bg-card hover:shadow-book transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+            {book.isPopular && (
+              <Badge className="absolute top-3 left-3 z-10 bg-accent text-accent-foreground font-medium">
+                Popular
+              </Badge>
             )}
+            
+            <CardHeader className="p-0">
+              <div className="aspect-[3/4] overflow-hidden bg-muted">
+                <img 
+                  src={book.image} 
+                  alt={book.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            </CardHeader>
+            
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-start justify-between">
+                <Badge 
+                  variant={book.condition === "new" ? "default" : "secondary"} 
+                  className="text-xs font-medium"
+                >
+                  {book.condition === "new" ? "New" : "Pre-owned"}
+                </Badge>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className={`h-8 w-8 ${inWishlist ? 'text-red-500' : 'hover:text-red-500'}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToWishlist(book);
+                  }}
+                >
+                  <Heart className={`h-4 w-4 ${inWishlist ? 'fill-current' : ''}`} />
+                </Button>
+              </div>
+              
+              <CardTitle className="text-base font-semibold line-clamp-2 leading-tight">
+                {book.title}
+              </CardTitle>
+              
+              <p className="text-sm text-muted-foreground font-medium">{book.author}</p>
+              
+              {book.description && (
+                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                  {book.description}
+                </p>
+              )}
+              
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star 
+                    key={i} 
+                    className={`h-4 w-4 ${i < book.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`} 
+                  />
+                ))}
+                <span className="text-sm text-muted-foreground ml-1">({book.rating})</span>
+              </div>
+            </CardContent>
+            
+            <CardFooter className="p-4 pt-0 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold text-primary">৳{book.price}</span>
+                {book.originalPrice && book.originalPrice > book.price && (
+                  <span className="text-sm text-muted-foreground line-through">৳{book.originalPrice}</span>
+                )}
+              </div>
+              <Button 
+                size="sm" 
+                variant="default" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddToCart(book);
+                }}
+                disabled={cartQuantity >= book.inStock}
+                className="gap-2"
+              >
+                <ShoppingCart className="h-4 w-4" />
+                {cartQuantity >= book.inStock ? "Out of Stock" : 
+                 cartQuantity > 0 ? `In Cart (${cartQuantity})` : "Add to Cart"}
+              </Button>
+            </CardFooter>
+          </Card>
+        </DialogTrigger>
+        
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              {book.title}
+            </DialogTitle>
+            <DialogDescription>
+              by {book.author}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="aspect-[3/4] overflow-hidden bg-muted rounded-lg">
+                <img 
+                  src={book.image} 
+                  alt={book.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Badge variant={book.condition === "new" ? "default" : "secondary"}>
+                  {book.condition === "new" ? "New" : "Pre-owned"}
+                </Badge>
+                {book.isPopular && (
+                  <Badge className="bg-accent text-accent-foreground">
+                    Popular
+                  </Badge>
+                )}
+              </div>
+              
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star 
+                    key={i} 
+                    className={`h-4 w-4 ${i < book.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`} 
+                  />
+                ))}
+                <span className="text-sm text-muted-foreground ml-1">({book.rating})</span>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold mb-2">Description</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {book.description || "No description available."}
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-medium">Genre:</span>
+                  <p className="text-muted-foreground">{book.genre}</p>
+                </div>
+                <div>
+                  <span className="font-medium">Pages:</span>
+                  <p className="text-muted-foreground">{book.pages}</p>
+                </div>
+                <div>
+                  <span className="font-medium">Publisher:</span>
+                  <p className="text-muted-foreground">{book.publisher}</p>
+                </div>
+                <div>
+                  <span className="font-medium">Year:</span>
+                  <p className="text-muted-foreground">{book.publishedYear}</p>
+                </div>
+                <div>
+                  <span className="font-medium">In Stock:</span>
+                  <p className="text-muted-foreground">{book.inStock}</p>
+                </div>
+                {book.isbn && (
+                  <div>
+                    <span className="font-medium">ISBN:</span>
+                    <p className="text-muted-foreground">{book.isbn}</p>
+                  </div>
+                )}
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-primary">৳{book.price}</span>
+                  {book.originalPrice && book.originalPrice > book.price && (
+                    <span className="text-sm text-muted-foreground line-through">৳{book.originalPrice}</span>
+                  )}
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddToCart(book);
+                    }}
+                    disabled={cartQuantity >= book.inStock}
+                    className="flex-1 gap-2"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    {cartQuantity >= book.inStock ? "Out of Stock" : 
+                     cartQuantity > 0 ? `In Cart (${cartQuantity})` : "Add to Cart"}
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddToWishlist(book);
+                    }}
+                    className={inWishlist ? 'text-red-500 border-red-500' : ''}
+                  >
+                    <Heart className={`h-4 w-4 ${inWishlist ? 'fill-current' : ''}`} />
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
-          <Button 
-            size="sm" 
-            variant="default" 
-            onClick={() => handleAddToCart(book)}
-            disabled={cartQuantity >= book.inStock}
-            className="gap-2"
-          >
-            <ShoppingCart className="h-4 w-4" />
-            {cartQuantity >= book.inStock ? "Out of Stock" : 
-             cartQuantity > 0 ? `In Cart (${cartQuantity})` : "Add to Cart"}
-          </Button>
-        </CardFooter>
-      </Card>
+        </DialogContent>
+      </Dialog>
     );
   };
 
