@@ -48,10 +48,18 @@ const Search = () => {
   }, [searchParams]);
 
   const filteredBooks = useMemo(() => {
+    console.log("Filtering books - mockBooks count:", mockBooks.length);
+    console.log("Search query:", searchQuery);
+    console.log("Selected genre:", selectedGenre);
+    console.log("Active tab:", activeTab);
+    console.log("Sort by:", sortBy);
+    
     let books = mockBooks;
+    console.log("Initial books:", books.length);
     
     // Apply search
     books = searchBooks(books, searchQuery);
+    console.log("After search:", books.length);
     
     // Apply condition filter based on active tab
     if (activeTab === "new") {
@@ -59,9 +67,11 @@ const Search = () => {
     } else if (activeTab === "old") {
       books = filterBooksByCondition(books, "old");
     }
+    console.log("After condition filter:", books.length);
     
     // Apply genre filter
     books = filterBooksByGenre(books, selectedGenre);
+    console.log("After genre filter:", books.length);
     
     // Apply sorting
     books = sortBooks(books, sortBy);
