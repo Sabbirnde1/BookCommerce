@@ -48,6 +48,7 @@ export type Database = {
           condition_preference: string
           created_at: string
           id: string
+          is_guest: boolean | null
           mobile: string | null
           notes: string | null
           status: string
@@ -63,6 +64,7 @@ export type Database = {
           condition_preference: string
           created_at?: string
           id?: string
+          is_guest?: boolean | null
           mobile?: string | null
           notes?: string | null
           status?: string
@@ -78,6 +80,7 @@ export type Database = {
           condition_preference?: string
           created_at?: string
           id?: string
+          is_guest?: boolean | null
           mobile?: string | null
           notes?: string | null
           status?: string
