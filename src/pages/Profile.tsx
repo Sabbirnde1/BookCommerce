@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Save, User, Mail, Phone, FileText, BookOpen, Clock, CheckCircle, XCircle } from "lucide-react";
+import { ArrowLeft, Save, User, Mail, Phone, FileText, BookOpen, Clock, CheckCircle, XCircle, Upload, Camera } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,7 +29,9 @@ const Profile = () => {
   const { user, profile, updateProfile } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [bookRequests, setBookRequests] = useState<BookRequest[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Form state
   const [displayName, setDisplayName] = useState("");
@@ -66,6 +68,70 @@ const Profile = () => {
     } catch (error) {
       console.error('Error fetching book requests:', error);
     }
+  };
+
+  const uploadAvatar = async (file: File) => {
+    try {
+      setUploading(true);
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}_${Math.random()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      setAvatarUrl(urlData.publicUrl);
+      
+      toast({
+        title: "Image Uploaded! 📸",
+        description: "Your profile picture has been uploaded successfully.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid File Type",
+        description: "Please select an image file (JPG, PNG, etc.)",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "Please select an image smaller than 5MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    uploadAvatar(file);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -224,14 +290,50 @@ const Profile = () => {
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="avatar">Profile Picture URL</Label>
-                        <Input
-                          id="avatar"
-                          type="url"
-                          placeholder="https://example.com/your-photo.jpg"
-                          value={avatarUrl}
-                          onChange={(e) => setAvatarUrl(e.target.value)}
-                        />
+                        <Label htmlFor="avatar">Profile Picture</Label>
+                        <div className="flex items-center space-x-4">
+                          <div className="flex-1">
+                            <Input
+                              ref={fileInputRef}
+                              type="file"
+                              accept="image/*"
+                              onChange={handleFileSelect}
+                              className="hidden"
+                              id="avatar-upload"
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => fileInputRef.current?.click()}
+                              disabled={uploading}
+                              className="w-full"
+                            >
+                              {uploading ? (
+                                <>
+                                  <Upload className="h-4 w-4 mr-2 animate-spin" />
+                                  Uploading...
+                                </>
+                              ) : (
+                                <>
+                                  <Camera className="h-4 w-4 mr-2" />
+                                  Choose Photo
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                          {avatarUrl && (
+                            <div className="flex-shrink-0">
+                              <img
+                                src={avatarUrl}
+                                alt="Avatar preview"
+                                className="w-12 h-12 rounded-full object-cover border-2 border-border"
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Upload an image file (JPG, PNG, etc.) up to 5MB
+                        </p>
                       </div>
 
                       <div className="space-y-2">
