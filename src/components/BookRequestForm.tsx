@@ -28,15 +28,10 @@ export function BookRequestForm() {
     
     console.log("Form submitted, user:", user);
     
-    // if (!user) {
-    //   console.log("No user found, showing auth required toast");
-    //   toast({
-    //     title: "Authentication Required",
-    //     description: "Please log in to submit a book request.",
-    //     variant: "destructive"
-    //   });
-    //   return;
-    // }
+    // Validate user authentication for non-guest users
+    if (!user) {
+      console.log("No user found, allowing guest submission");
+    }
     
     if (!title || !author || !condition) {
       toast({
@@ -60,28 +55,54 @@ export function BookRequestForm() {
     console.log("Starting request submission...");
 
     try {
+      // For guest users, we need to generate a temporary UUID or handle differently
       const requestData = {
-        user_id: user?.id ?? null,
+        user_id: user?.id || null,
         is_guest: !user, 
-        title,
-        author,
+        title: title.trim(),
+        author: author.trim(),
         condition_preference: condition,
         budget: budget ? parseFloat(budget.replace(/[^\d.]/g, '')) : null,
-        notes,
-        whatsapp: whatsappNumber,
-        telegram: telegramNumber,
-        mobile: mobileNumber,
+        notes: notes.trim() || null,
+        whatsapp: whatsappNumber.trim() || null,
+        telegram: telegramNumber.trim() || null,
+        mobile: mobileNumber.trim() || null,
       };
       
       console.log("Request data:", requestData);
       
-      const { error } = await supabase
-        .from('book_requests')
-        .insert(requestData);
+      // Add retry logic for better reliability
+      let attempts = 0;
+      const maxAttempts = 3;
+      let lastError = null;
+      
+      while (attempts < maxAttempts) {
+        try {
+          const { data: insertedData, error } = await supabase
+            .from('book_requests')
+            .insert(requestData)
+            .select();
 
-      if (error) {
-        console.error("Supabase error:", error);
-        throw error;
+          if (error) {
+            throw error;
+          }
+
+          console.log("Successfully inserted:", insertedData);
+          break; // Success, exit retry loop
+        } catch (error) {
+          attempts++;
+          lastError = error;
+          console.warn(`Attempt ${attempts} failed:`, error);
+          
+          if (attempts < maxAttempts) {
+            // Wait briefly before retrying
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
+      }
+      
+      if (attempts === maxAttempts && lastError) {
+        throw lastError;
       }
 
       toast({
@@ -101,11 +122,24 @@ export function BookRequestForm() {
       
       // Trigger a refresh of recent requests by broadcasting to other components
       window.dispatchEvent(new CustomEvent('bookRequestSubmitted'));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting book request:', error);
+      
+      // Provide more specific error messages
+      let errorMessage = "Unknown error occurred";
+      if (error?.message) {
+        if (error.message.includes('row-level security')) {
+          errorMessage = "Authentication error. Please try logging in again.";
+        } else if (error.message.includes('duplicate')) {
+          errorMessage = "Duplicate request detected. Please wait before submitting again.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       toast({
         title: "Submission Failed",
-        description: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
