@@ -694,16 +694,6 @@ export function AdminDashboard() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="relative flex items-center space-x-3">
-            <img 
-              src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
-              alt="Nijercart Logo" 
-              className="h-10 w-auto drop-shadow-md"
-            />
-            <div className="text-xl font-bold text-foreground">Nijercart</div>
-          </div>
-        </div>
         <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
         <p className="text-muted-foreground">Manage your books, inventory, and business operations</p>
       </div>
