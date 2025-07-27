@@ -52,6 +52,7 @@ import {
   Phone
 } from "lucide-react";
 import { ProductManagement } from "./ProductManagement";
+import { AdvancedAnalytics } from "./analytics/AdvancedAnalytics";
 
 interface Product {
   id: string;
