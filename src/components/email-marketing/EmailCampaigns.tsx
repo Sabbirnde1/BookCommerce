@@ -13,7 +13,8 @@ import {
   Trash2,
   Play,
   Pause,
-  Copy
+  Copy,
+  Mail
 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
