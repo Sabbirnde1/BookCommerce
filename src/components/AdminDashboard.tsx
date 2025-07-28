@@ -1147,22 +1147,7 @@ export function AdminDashboard() {
 
         {/* Analytics Tab */}
         <TabsContent value="analytics">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" />
-                Analytics & Reports
-              </CardTitle>
-              <CardDescription>
-                View performance metrics and business insights
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                Analytics dashboard coming soon...
-              </div>
-            </CardContent>
-          </Card>
+          <AdvancedAnalytics />
         </TabsContent>
       </Tabs>
 
