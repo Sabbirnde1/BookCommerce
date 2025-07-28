@@ -53,6 +53,9 @@ import {
 } from "lucide-react";
 import { ProductManagement } from "./ProductManagement";
 import { AdvancedAnalytics } from "./analytics/AdvancedAnalytics";
+import { OrderManagement } from "./admin/OrderManagement";
+import { CustomerSupport } from "./admin/CustomerSupport";
+import { UserManagement } from "./admin/UserManagement";
 
 interface Product {
   id: string;
@@ -742,12 +745,15 @@ export function AdminDashboard() {
       )}
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
-          <TabsTrigger value="images">Image Management</TabsTrigger>
-          <TabsTrigger value="book-requests">Book Requests</TabsTrigger>
-          <TabsTrigger value="promo-codes">Promo Codes</TabsTrigger>
+          <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="support">Support</TabsTrigger>
+          <TabsTrigger value="images">Images</TabsTrigger>
+          <TabsTrigger value="book-requests">Requests</TabsTrigger>
+          <TabsTrigger value="promo-codes">Promos</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
@@ -1143,6 +1149,21 @@ export function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Orders Tab */}
+        <TabsContent value="orders">
+          <OrderManagement />
+        </TabsContent>
+
+        {/* Users Tab */}
+        <TabsContent value="users">
+          <UserManagement />
+        </TabsContent>
+
+        {/* Support Tab */}
+        <TabsContent value="support">
+          <CustomerSupport />
         </TabsContent>
 
         {/* Analytics Tab */}
