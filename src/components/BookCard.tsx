@@ -75,88 +75,104 @@ export function BookCard(book: Book) {
     }
   };
 
+  const hasDiscount = book.originalPrice && book.originalPrice > book.price;
+  const discountPercent = hasDiscount ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100) : 0;
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Card className="group relative overflow-hidden bg-card hover:shadow-book transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col cursor-pointer">
-          {book.isPopular && (
-            <Badge className="absolute top-1 right-1 md:top-2 md:right-2 z-10 bg-accent text-accent-foreground text-xs">
-              Popular
-            </Badge>
-          )}
+        <Card className="product-card h-full flex flex-col cursor-pointer group relative">
+          {/* Badges */}
+          <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+            {book.isPopular && (
+              <Badge className="sale-badge text-[10px] px-1.5 py-0.5">
+                Popular
+              </Badge>
+            )}
+            {hasDiscount && (
+              <Badge className="discount-badge text-[10px] px-1.5 py-0.5">
+                -{discountPercent}%
+              </Badge>
+            )}
+          </div>
+          
+          {/* Wishlist Button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className={`absolute top-2 right-2 z-10 h-7 w-7 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all ${
+              isWishlisted ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-red-500'
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleWishlistToggle();
+            }}
+          >
+            <Heart className={`h-3.5 w-3.5 ${isWishlisted ? 'fill-current' : ''}`} />
+          </Button>
           
           <CardHeader className="p-0 flex-shrink-0">
-            <div className="aspect-[3/4] overflow-hidden bg-muted rounded-t-lg">
+            <div className="aspect-[3/4] overflow-hidden bg-muted rounded-t-lg relative">
               <img 
                 src={book.image} 
                 alt={book.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
+              {cartQuantity >= book.inStock && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <Badge variant="destructive">Out of Stock</Badge>
+                </div>
+              )}
             </div>
           </CardHeader>
           
-          <CardContent className="p-3 md:p-4 space-y-2 flex-grow">
-            <div className="flex items-start justify-between">
-              <Badge variant={book.condition === "new" ? "default" : "secondary"} className="text-xs">
+          <CardContent className="p-3 space-y-2 flex-grow">
+            <div className="flex items-center justify-between">
+              <Badge 
+                variant={book.condition === "new" ? "default" : "secondary"} 
+                className="text-[10px] px-2 py-0.5"
+              >
                 {book.condition === "new" ? "New" : "Pre-owned"}
               </Badge>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className={`h-7 w-7 md:h-8 md:w-8 transition-colors ${
-                  isWishlisted ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-red-500'
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleWishlistToggle();
-                }}
-              >
-                <Heart className={`h-3 w-3 md:h-4 md:w-4 ${isWishlisted ? 'fill-current' : ''}`} />
-              </Button>
+              <div className="flex items-center gap-1">
+                <Star className="h-3 w-3 fill-rating-star text-rating-star" />
+                <span className="text-xs font-medium">{book.rating}</span>
+              </div>
             </div>
             
-            <CardTitle className="text-sm md:text-base font-medium line-clamp-2 leading-tight">
+            <CardTitle className="text-sm font-semibold line-clamp-2 leading-tight group-hover:text-primary transition-colors">
               {book.title}
             </CardTitle>
             
-            <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">{book.author}</p>
+            <p className="text-xs text-muted-foreground line-clamp-1">{book.author}</p>
             
             {book.description && (
               <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                 {book.description}
               </p>
             )}
-            
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <Star 
-                  key={i} 
-                  className={`h-3 w-3 ${i < book.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`} 
-                />
-              ))}
-              <span className="text-xs text-muted-foreground ml-1">({book.rating})</span>
-            </div>
           </CardContent>
           
-          <CardFooter className="p-3 md:p-4 pt-0 flex flex-col gap-2 md:flex-row md:items-center md:justify-between mt-auto">
-            <div className="flex items-center gap-2 justify-center md:justify-start">
-              <span className="text-base md:text-lg font-bold text-primary">৳{book.price}</span>
-              {book.originalPrice && book.originalPrice > book.price && (
-                <span className="text-xs md:text-sm text-muted-foreground line-through">৳{book.originalPrice}</span>
+          <CardFooter className="p-3 pt-0 flex flex-col gap-2 mt-auto">
+            <div className="flex items-center gap-2 w-full">
+              <span className="price-text text-lg font-bold">৳{book.price}</span>
+              {hasDiscount && (
+                <span className="text-sm text-muted-foreground line-through">৳{book.originalPrice}</span>
               )}
             </div>
+            
             <Button 
               size="sm" 
-              variant="default" 
+              variant={cartQuantity > 0 ? "accent" : "default"}
               onClick={(e) => {
                 e.stopPropagation();
                 handleAddToCart();
               }}
               disabled={cartQuantity >= book.inStock}
-              className="text-xs md:text-sm px-2 md:px-3 w-full md:w-auto"
+              className="w-full text-xs font-medium"
             >
               {cartQuantity >= book.inStock ? "Out of Stock" : 
-               cartQuantity > 0 ? `In Cart (${cartQuantity})` : "Add to Cart"}
+               cartQuantity > 0 ? `Added (${cartQuantity})` : "Add to Cart"}
             </Button>
           </CardFooter>
         </Card>

@@ -18,6 +18,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Inter', 'Roboto', 'system-ui', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -26,10 +29,12 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
+					hover: 'hsl(var(--primary-hover))',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
+					hover: 'hsl(var(--secondary-hover))',
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				destructive: {
@@ -42,6 +47,7 @@ export default {
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
+					hover: 'hsl(var(--accent-hover))',
 					foreground: 'hsl(var(--accent-foreground))'
 				},
 				popover: {
@@ -61,7 +67,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// E-commerce specific colors
+				'price-color': 'hsl(var(--price-color))',
+				'discount-color': 'hsl(var(--discount-color))',
+				'sale-badge': 'hsl(var(--sale-badge))',
+				'out-of-stock': 'hsl(var(--out-of-stock))',
+				'rating-star': 'hsl(var(--rating-star))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -70,18 +82,21 @@ export default {
 			},
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-secondary': 'var(--gradient-secondary)',
 				'gradient-hero': 'var(--gradient-hero)',
-				'gradient-accent': 'var(--gradient-accent)',
-				'gradient-brand': 'var(--gradient-brand)',
-				'gradient-brand-light': 'var(--gradient-brand-light)'
+				'gradient-card': 'var(--gradient-card)',
+				'gradient-accent': 'var(--gradient-accent)'
 			},
 			boxShadow: {
-				'book': 'var(--shadow-book)',
-				'page': 'var(--shadow-page)',
-				'brand': 'var(--shadow-brand)'
+				'card': 'var(--shadow-card)',
+				'hover': 'var(--shadow-hover)',
+				'button': 'var(--shadow-button)',
+				'product': 'var(--shadow-product)',
+				'modal': 'var(--shadow-modal)'
 			},
 			transitionTimingFunction: {
-				'smooth': 'var(--transition-smooth)'
+				'smooth': 'var(--transition-smooth)',
+				'bounce': 'var(--transition-bounce)'
 			},
 			keyframes: {
 				'accordion-down': {
