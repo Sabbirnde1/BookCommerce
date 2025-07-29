@@ -55,18 +55,19 @@ export function UserManagement() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      // Get user profiles and admin roles
+      // Get user profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          admin_roles (
-            role,
-            permissions
-          )
-        `);
+        .select('*');
 
       if (profilesError) throw profilesError;
+
+      // Get admin roles
+      const { data: adminRoles, error: adminError } = await supabase
+        .from('admin_roles')
+        .select('*');
+
+      if (adminError) throw adminError;
 
       // Get order statistics for each user
       const { data: orderStats, error: orderError } = await supabase
@@ -86,6 +87,12 @@ export function UserManagement() {
         return acc;
       }, {}) || {};
 
+      // Create admin roles lookup
+      const adminRolesMap = adminRoles?.reduce((acc: any, role: any) => {
+        acc[role.user_id] = role;
+        return acc;
+      }, {}) || {};
+
       // Format user data
       const formattedUsers = profiles?.map((profile: any) => ({
         id: profile.user_id,
@@ -96,9 +103,9 @@ export function UserManagement() {
           phone: profile.phone,
           avatar_url: profile.avatar_url,
         },
-        admin_role: profile.admin_roles?.[0] ? {
-          role: profile.admin_roles[0].role,
-          permissions: profile.admin_roles[0].permissions
+        admin_role: adminRolesMap[profile.user_id] ? {
+          role: adminRolesMap[profile.user_id].role,
+          permissions: adminRolesMap[profile.user_id].permissions
         } : undefined,
         order_count: userStats[profile.user_id]?.count || 0,
         total_spent: userStats[profile.user_id]?.total || 0,
