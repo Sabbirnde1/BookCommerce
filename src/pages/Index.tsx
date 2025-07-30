@@ -9,6 +9,7 @@ import { BookOpen, Search, Clock, Star, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/books-hero.jpg";
 import { useState, useEffect } from "react";
+import HeroSlider from "@/components/HeroSlider";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -44,6 +45,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      
+      {/* Hero Slider */}
+      <HeroSlider />
       
       {/* Book Categories Section */}
       <section className="py-4 md:py-6 bg-secondary/30 border-b border-border/50">
@@ -81,62 +85,6 @@ const Index = () => {
               <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
             </Link>
             
-          </div>
-        </div>
-      </section>
-      
-      {/* Hero Section */}
-      <section className="relative py-12 sm:py-16 md:py-20 lg:py-32 bg-gradient-hero overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <img 
-            src={heroImage} 
-            alt="Books collection" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="relative container mx-auto px-4 text-center">
-          {/* Floating Logo */}
-          <div className="flex justify-center mb-6 md:mb-8">
-            <div className="relative animate-fade-in flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
-              <img 
-                src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
-                alt="Nijercart Logo" 
-                className="h-16 md:h-20 w-auto drop-shadow-2xl hover:scale-110 transition-transform duration-300"
-              />
-              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-brand bg-clip-text text-transparent drop-shadow-brand hover:scale-105 transition-all duration-300">
-                Nijer Cart
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-transparent rounded-lg animate-pulse"></div>
-            </div>
-          </div>
-          
-          <Badge className="mb-4 md:mb-6 bg-primary/10 text-primary border-primary/20 animate-fade-in">
-            ✨ Your Book Haven
-          </Badge>
-          
-          <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 text-foreground animate-fade-in">
-            <span className="block sm:inline">Old Books</span> <span className="block sm:inline">&amp; New Books</span>
-            <span className="block text-primary">All in One Place</span>
-          </h1>
-          
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in px-4">
-            Discover amazing deals on pre-owned classics and latest bestsellers. 
-            Can't find what you're looking for? Simply request any book and we'll find it for you!
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center max-w-sm sm:max-w-md mx-auto px-4">
-            <Button size="lg" variant="hero" className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 w-full sm:w-auto h-12 sm:h-auto" asChild>
-              <Link to="/books">
-                <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                Browse Books
-              </Link>
-            </Button>
-            <Button size="lg" variant="accent" className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 w-full sm:w-auto h-12 sm:h-auto" asChild>
-              <Link to="/request">
-                <BookOpen className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                Request a Book
-              </Link>
-            </Button>
           </div>
         </div>
       </section>
