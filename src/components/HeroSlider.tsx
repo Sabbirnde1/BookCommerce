@@ -4,12 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
+import heroBanner1 from "@/assets/hero-banner-1.jpg";
+import heroBanner2 from "@/assets/hero-banner-2.jpg";
+import heroBanner3 from "@/assets/hero-banner-3.jpg";
 
 const HeroSlider = () => {
   const slides = [
     {
       id: 1,
-      image: "/lovable-uploads/e35704ff-fe32-4020-bca1-f7ad00e8e207.png",
+      image: heroBanner1,
       alt: "DIU Students Free Thursday Delivery",
       title: "Exclusive for DIU Students",
       subtitle: "FREE Thursday Delivery!",
@@ -18,7 +21,7 @@ const HeroSlider = () => {
     },
     {
       id: 2,
-      image: "/lovable-uploads/cb0336a4-da1a-44e0-9755-95d34a95ac56.png",
+      image: heroBanner2,
       alt: "Flash Sale - Up to 50% OFF",
       title: "Flash Sale",
       subtitle: "Get up to 50% OFF",
@@ -27,7 +30,7 @@ const HeroSlider = () => {
     },
     {
       id: 3,
-      image: "/lovable-uploads/453ee6b9-c919-40ff-9c39-d75c07df2fa6.png",
+      image: heroBanner3,
       alt: "Request Any Book - We'll Find It",
       title: "Can't Find Your Book?",
       subtitle: "We'll find it for you!",
