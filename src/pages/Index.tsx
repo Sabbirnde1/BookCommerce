@@ -51,7 +51,7 @@ const Index = () => {
       
       {/* Book Categories Section */}
       <section className="py-4 md:py-6 bg-secondary/30 border-b border-border/50">
-        <div className="container mx-auto px-4">
+        <div className="max-w-screen-2xl mx-auto px-6">
           <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 md:gap-6 lg:gap-8">
             <Link 
               to="/books?category=fiction" 
@@ -91,7 +91,7 @@ const Index = () => {
 
       {/* Featured Books */}
       <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
+        <div className="max-w-screen-2xl mx-auto px-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
             <div className="text-center sm:text-left">
               <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Featured Books</h2>
@@ -119,7 +119,7 @@ const Index = () => {
               ))}
             </div>
           ) : featuredBooks.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 md:gap-6">
               {featuredBooks.map((book) => (
                 <BookCard 
                   key={book.id} 
@@ -156,7 +156,7 @@ const Index = () => {
 
       {/* Unique Selling Points */}
       <section className="py-12 md:py-16 bg-secondary/30">
-        <div className="container mx-auto px-4">
+        <div className="max-w-screen-2xl mx-auto px-6">
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             <Card className="text-center shadow-page">
               <CardContent className="pt-6 px-4">
@@ -199,7 +199,7 @@ const Index = () => {
 
       {/* Book Request Section */}
       <section className="py-12 md:py-16 bg-gradient-hero">
-        <div className="container mx-auto px-4">
+        <div className="max-w-screen-2xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="text-center lg:text-left">
               <Badge className="mb-4 bg-accent/10 text-accent border-accent/20">
@@ -239,7 +239,7 @@ const Index = () => {
 
       {/* Categories */}
       <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
+        <div className="max-w-screen-2xl mx-auto px-6">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">Shop by Category</h2>
           
           <div className="grid gap-6 md:grid-cols-2 md:gap-8">
