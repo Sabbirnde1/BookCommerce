@@ -288,8 +288,8 @@ const BookCommerce = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-primary text-primary-foreground py-16">
-        <div className="container mx-auto px-4 text-center">
+      <section className="bg-gradient-primary text-primary-foreground py-20">
+        <div className="max-w-screen-2xl mx-auto px-6 text-center">
           <h1 className="text-4xl font-bold mb-4">Discover Your Next Great Read</h1>
           <p className="text-xl text-primary-foreground/80 mb-8">
             Browse our extensive collection of new and pre-owned books
@@ -311,7 +311,7 @@ const BookCommerce = () => {
 
       {/* Filters and Tabs */}
       <section className="py-8 border-b">
-        <div className="container mx-auto px-4">
+        <div className="max-w-screen-2xl mx-auto px-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
             <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
               <TabsTrigger value="all">All Books</TabsTrigger>
@@ -358,9 +358,9 @@ const BookCommerce = () => {
 
       {/* Books Grid */}
       <section className="py-12">
-        <div className="container mx-auto px-4">
+        <div className="max-w-screen-2xl mx-auto px-6">
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7 gap-6">
               {filteredProducts.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
