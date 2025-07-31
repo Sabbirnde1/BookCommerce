@@ -647,6 +647,54 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_images: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          created_by: string | null
+          cta_link: string | null
+          cta_text: string | null
+          id: string
+          image_path: string
+          image_url: string
+          is_active: boolean | null
+          sort_order: number | null
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_link?: string | null
+          cta_text?: string | null
+          id?: string
+          image_path: string
+          image_url: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_link?: string | null
+          cta_text?: string | null
+          id?: string
+          image_path?: string
+          image_url?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           book_author: string

@@ -4,12 +4,27 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
+import { supabase } from "@/integrations/supabase/client";
 import heroBanner1 from "@/assets/hero-banner-1.jpg";
 import heroBanner2 from "@/assets/hero-banner-2.jpg";
 import heroBanner3 from "@/assets/hero-banner-3.jpg";
 
+interface HeroSlide {
+  id: string | number;
+  image: string;
+  alt: string;
+  title: string;
+  subtitle: string;
+  cta: string;
+  link: string;
+}
+
 const HeroSlider = () => {
-  const slides = [
+  const [slides, setSlides] = useState<HeroSlide[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fallback slides with imported images
+  const fallbackSlides: HeroSlide[] = [
     {
       id: 1,
       image: heroBanner1,
@@ -38,6 +53,46 @@ const HeroSlider = () => {
       link: "/request"
     }
   ];
+
+  // Fetch hero images from database
+  useEffect(() => {
+    const fetchHeroImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('hero_images')
+          .select('*')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          // Transform database data to slide format
+          const heroSlides: HeroSlide[] = data.map((hero) => ({
+            id: hero.id,
+            image: hero.image_url,
+            alt: hero.alt_text || hero.title,
+            title: hero.title,
+            subtitle: hero.subtitle || "",
+            cta: hero.cta_text || "Learn More",
+            link: hero.cta_link || "/books"
+          }));
+          setSlides(heroSlides);
+        } else {
+          // Use fallback slides if no database images
+          setSlides(fallbackSlides);
+        }
+      } catch (error) {
+        console.error('Error fetching hero images:', error);
+        // Use fallback slides on error
+        setSlides(fallbackSlides);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeroImages();
+  }, []);
 
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);

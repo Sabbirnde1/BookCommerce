@@ -76,6 +76,19 @@ interface Product {
   product_images?: any[];
 }
 
+interface HeroImage {
+  id?: string;
+  title: string;
+  subtitle?: string;
+  cta_text?: string;
+  cta_link?: string;
+  alt_text?: string;
+  sort_order: number;
+  is_active: boolean;
+  image_url?: string;
+  image_path?: string;
+}
+
 interface DashboardStats {
   totalProducts: number;
   activeProducts: number;
@@ -131,6 +144,19 @@ export function AdminDashboard() {
   const [imageAltText, setImageAltText] = useState("");
   const [imageIsPrimary, setImageIsPrimary] = useState(false);
 
+  // Hero image management state
+  const [heroImages, setHeroImages] = useState<HeroImage[]>([]);
+  const [showHeroImageDialog, setShowHeroImageDialog] = useState(false);
+  const [editingHeroImage, setEditingHeroImage] = useState<HeroImage | null>(null);
+  const [selectedHeroImageFile, setSelectedHeroImageFile] = useState<File | null>(null);
+  const [heroTitle, setHeroTitle] = useState("");
+  const [heroSubtitle, setHeroSubtitle] = useState("");
+  const [heroCtaText, setHeroCtaText] = useState("");
+  const [heroCtaLink, setHeroCtaLink] = useState("");
+  const [heroAltText, setHeroAltText] = useState("");
+  const [heroSortOrder, setHeroSortOrder] = useState("");
+  const [heroIsActive, setHeroIsActive] = useState(true);
+
   useEffect(() => {
     checkAdminStatus();
   }, [user]);
@@ -142,6 +168,7 @@ export function AdminDashboard() {
       fetchBookRequests();
       fetchPromoCodes();
       fetchProductImages();
+      fetchHeroImages();
     }
   }, [isAdmin]);
 
@@ -666,6 +693,197 @@ export function AdminDashboard() {
     setImageIsPrimary(false);
   };
 
+  // Hero Image Management Functions
+  const fetchHeroImages = async () => {
+    if (!isAdmin) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('hero_images')
+        .select('*')
+        .order('sort_order', { ascending: true });
+
+      if (error) throw error;
+      setHeroImages(data || []);
+    } catch (error) {
+      console.error('Error fetching hero images:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch hero images",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const uploadHeroImage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdmin || !selectedHeroImageFile) return;
+
+    setLoading(true);
+
+    try {
+      // Upload image to storage
+      const fileExt = selectedHeroImageFile.name.split('.').pop();
+      const fileName = `hero-${Date.now()}.${fileExt}`;
+      const filePath = `heroes/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(filePath, selectedHeroImageFile);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('products')
+        .getPublicUrl(filePath);
+
+      // Save image record
+      const heroImageData = {
+        title: heroTitle,
+        subtitle: heroSubtitle || null,
+        cta_text: heroCtaText || null,
+        cta_link: heroCtaLink || null,
+        alt_text: heroAltText || null,
+        sort_order: parseInt(heroSortOrder) || 0,
+        is_active: heroIsActive,
+        image_path: filePath,
+        image_url: urlData.publicUrl,
+        created_by: user?.id
+      };
+
+      if (editingHeroImage) {
+        // Update existing hero image
+        const { error: dbError } = await supabase
+          .from('hero_images')
+          .update(heroImageData)
+          .eq('id', editingHeroImage.id);
+
+        if (dbError) throw dbError;
+
+        toast({
+          title: "Success",
+          description: "Hero image updated successfully"
+        });
+      } else {
+        // Create new hero image
+        const { error: dbError } = await supabase
+          .from('hero_images')
+          .insert([heroImageData]);
+
+        if (dbError) throw dbError;
+
+        toast({
+          title: "Success",
+          description: "Hero image uploaded successfully"
+        });
+      }
+
+      resetHeroImageForm();
+      setShowHeroImageDialog(false);
+      fetchHeroImages();
+    } catch (error) {
+      console.error('Error uploading hero image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload hero image",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteHeroImage = async (id: string, imagePath: string) => {
+    if (!isAdmin) return;
+
+    if (!confirm('Are you sure you want to delete this hero image?')) {
+      return;
+    }
+
+    try {
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from('products')
+        .remove([imagePath]);
+
+      if (storageError) throw storageError;
+
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('hero_images')
+        .delete()
+        .eq('id', id);
+
+      if (dbError) throw dbError;
+
+      toast({
+        title: "Success",
+        description: "Hero image deleted successfully"
+      });
+
+      fetchHeroImages();
+    } catch (error) {
+      console.error('Error deleting hero image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete hero image",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const toggleHeroImageStatus = async (id: string, currentStatus: boolean) => {
+    if (!isAdmin) return;
+
+    try {
+      const { error } = await supabase
+        .from('hero_images')
+        .update({ is_active: !currentStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Hero image ${!currentStatus ? 'activated' : 'deactivated'}`
+      });
+
+      fetchHeroImages();
+    } catch (error) {
+      console.error('Error updating hero image status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update hero image status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openEditHeroImageDialog = (heroImage: HeroImage) => {
+    setEditingHeroImage(heroImage);
+    setHeroTitle(heroImage.title);
+    setHeroSubtitle(heroImage.subtitle || "");
+    setHeroCtaText(heroImage.cta_text || "");
+    setHeroCtaLink(heroImage.cta_link || "");
+    setHeroAltText(heroImage.alt_text || "");
+    setHeroSortOrder(heroImage.sort_order.toString());
+    setHeroIsActive(heroImage.is_active);
+    setShowHeroImageDialog(true);
+  };
+
+  const resetHeroImageForm = () => {
+    setEditingHeroImage(null);
+    setSelectedHeroImageFile(null);
+    setHeroTitle("");
+    setHeroSubtitle("");
+    setHeroCtaText("");
+    setHeroCtaLink("");
+    setHeroAltText("");
+    setHeroSortOrder("");
+    setHeroIsActive(true);
+  };
+
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -745,13 +963,14 @@ export function AdminDashboard() {
       )}
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-10">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="support">Support</TabsTrigger>
           <TabsTrigger value="images">Images</TabsTrigger>
+          <TabsTrigger value="hero-images">Hero</TabsTrigger>
           <TabsTrigger value="book-requests">Requests</TabsTrigger>
           <TabsTrigger value="promo-codes">Promos</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -876,6 +1095,116 @@ export function AdminDashboard() {
                               >
                                 <Trash2 className="h-3 w-3" />
                               </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Hero Images Management Tab */}
+        <TabsContent value="hero-images">
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <ImageIcon className="h-5 w-5" />
+                    Hero Images Management
+                  </CardTitle>
+                  <CardDescription>
+                    Manage hero slider images for the homepage
+                  </CardDescription>
+                </div>
+                <Button onClick={() => {
+                  resetHeroImageForm();
+                  setShowHeroImageDialog(true);
+                }}>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Add Hero Image
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {heroImages.length === 0 ? (
+                    <div className="col-span-full text-center text-muted-foreground py-8">
+                      No hero images found
+                    </div>
+                  ) : (
+                    heroImages.map((heroImage) => (
+                      <Card key={heroImage.id} className="overflow-hidden">
+                        <div className="aspect-video relative">
+                          <img 
+                            src={heroImage.image_url} 
+                            alt={heroImage.alt_text || 'Hero image'}
+                            className="w-full h-full object-cover"
+                          />
+                          {!heroImage.is_active && (
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                              <Badge variant="secondary">Inactive</Badge>
+                            </div>
+                          )}
+                          <Badge className="absolute top-2 left-2" variant="outline">
+                            Order: {heroImage.sort_order}
+                          </Badge>
+                        </div>
+                        <CardContent className="p-3">
+                          <div className="space-y-2">
+                            <div className="text-sm font-medium truncate">
+                              {heroImage.title}
+                            </div>
+                            {heroImage.subtitle && (
+                              <div className="text-xs text-muted-foreground">
+                                {heroImage.subtitle}
+                              </div>
+                            )}
+                            {heroImage.cta_text && (
+                              <div className="text-xs">
+                                <Badge variant="outline" className="text-xs">
+                                  {heroImage.cta_text}
+                                </Badge>
+                              </div>
+                            )}
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex gap-1">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => window.open(heroImage.image_url, '_blank')}
+                                >
+                                  <Eye className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => openEditHeroImageDialog(heroImage)}
+                                >
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                              </div>
+                              <div className="flex gap-1">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => toggleHeroImageStatus(heroImage.id!, heroImage.is_active)}
+                                >
+                                  {heroImage.is_active ? <XCircle className="h-3 w-3" /> : <CheckCircle className="h-3 w-3" />}
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => deleteHeroImage(heroImage.id!, heroImage.image_path!)}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </CardContent>
@@ -1631,6 +1960,128 @@ export function AdminDashboard() {
               </Button>
               <Button type="submit" disabled={loading || !selectedImageFile}>
                 {loading ? "Uploading..." : "Upload Image"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Hero Image Dialog */}
+      <Dialog open={showHeroImageDialog} onOpenChange={setShowHeroImageDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{editingHeroImage ? 'Edit Hero Image' : 'Add Hero Image'}</DialogTitle>
+            <DialogDescription>
+              {editingHeroImage ? 'Update the hero image details' : 'Upload a new hero image for the homepage slider'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={uploadHeroImage} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="hero-title">Title *</Label>
+                <Input
+                  id="hero-title"
+                  value={heroTitle}
+                  onChange={(e) => setHeroTitle(e.target.value)}
+                  placeholder="Enter hero image title"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="hero-subtitle">Subtitle</Label>
+                <Input
+                  id="hero-subtitle"
+                  value={heroSubtitle}
+                  onChange={(e) => setHeroSubtitle(e.target.value)}
+                  placeholder="Enter subtitle (optional)"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="hero-cta-text">CTA Text</Label>
+                <Input
+                  id="hero-cta-text"
+                  value={heroCtaText}
+                  onChange={(e) => setHeroCtaText(e.target.value)}
+                  placeholder="e.g., Shop Now"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="hero-cta-link">CTA Link</Label>
+                <Input
+                  id="hero-cta-link"
+                  value={heroCtaLink}
+                  onChange={(e) => setHeroCtaLink(e.target.value)}
+                  placeholder="e.g., /books"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="hero-sort-order">Sort Order</Label>
+                <Input
+                  id="hero-sort-order"
+                  type="number"
+                  value={heroSortOrder}
+                  onChange={(e) => setHeroSortOrder(e.target.value)}
+                  placeholder="0"
+                  min="0"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="hero-alt-text">Alt Text</Label>
+                <Input
+                  id="hero-alt-text"
+                  value={heroAltText}
+                  onChange={(e) => setHeroAltText(e.target.value)}
+                  placeholder="Describe the image"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="hero-image">Image *</Label>
+              <Input
+                id="hero-image"
+                type="file"
+                onChange={(e) => setSelectedHeroImageFile(e.target.files?.[0] || null)}
+                accept="image/*"
+                required={!editingHeroImage}
+              />
+              <p className="text-sm text-muted-foreground">
+                Recommended size: 1920x480px (16:4 aspect ratio)
+              </p>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="hero-active"
+                checked={heroIsActive}
+                onCheckedChange={setHeroIsActive}
+              />
+              <Label htmlFor="hero-active">Active</Label>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setShowHeroImageDialog(false);
+                  resetHeroImageForm();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading || (!editingHeroImage && !selectedHeroImageFile)}>
+                {loading ? "Processing..." : editingHeroImage ? "Update" : "Upload"}
               </Button>
             </div>
           </form>
