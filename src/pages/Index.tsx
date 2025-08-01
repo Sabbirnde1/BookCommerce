@@ -49,60 +49,76 @@ const Index = () => {
       {/* Hero Slider */}
       <HeroSlider />
       
-      {/* Book Categories Section */}
-      <section className="py-4 md:py-6 bg-secondary/30 border-b border-border/50">
+      {/* Quick Navigation Bar */}
+      <section className="py-6 md:py-8 bg-gradient-to-r from-primary/5 via-secondary/10 to-accent/5 border-b border-border/30">
         <div className="max-w-screen-2xl mx-auto px-6">
-          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 md:gap-6 lg:gap-8">
+          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
             <Link 
               to="/books?category=fiction" 
-              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
+              className="group relative bg-background/80 backdrop-blur-sm hover:bg-primary/10 rounded-xl px-4 py-3 md:px-6 md:py-4 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md border border-border/50 hover:border-primary/30"
             >
-              <span className="relative z-10">Fiction</span>
-              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-primary rounded-full group-hover:scale-125 transition-transform"></div>
+                <span className="text-sm md:text-base font-medium text-foreground group-hover:text-primary transition-colors">Fiction</span>
+              </div>
             </Link>
             
             <Link 
               to="/books?category=non-fiction" 
-              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
+              className="group relative bg-background/80 backdrop-blur-sm hover:bg-accent/10 rounded-xl px-4 py-3 md:px-6 md:py-4 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md border border-border/50 hover:border-accent/30"
             >
-              <span className="relative z-10">Non-Fiction</span>
-              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-accent rounded-full group-hover:scale-125 transition-transform"></div>
+                <span className="text-sm md:text-base font-medium text-foreground group-hover:text-accent transition-colors">Non-Fiction</span>
+              </div>
             </Link>
             
             <Link 
               to="/books?category=academic" 
-              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
+              className="group relative bg-background/80 backdrop-blur-sm hover:bg-secondary/10 rounded-xl px-4 py-3 md:px-6 md:py-4 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md border border-border/50 hover:border-secondary/30"
             >
-              <span className="relative z-10">Academic</span>
-              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-secondary rounded-full group-hover:scale-125 transition-transform"></div>
+                <span className="text-sm md:text-base font-medium text-foreground group-hover:text-secondary transition-colors">Academic</span>
+              </div>
             </Link>
             
             <Link 
               to="/books?category=children" 
-              className="relative text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-foreground/80 hover:text-primary transition-all duration-300 hover:scale-105 group px-2 py-1"
+              className="group relative bg-background/80 backdrop-blur-sm hover:bg-primary/10 rounded-xl px-4 py-3 md:px-6 md:py-4 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md border border-border/50 hover:border-primary/30"
             >
-              <span className="relative z-10 whitespace-nowrap">Children's</span>
-              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-primary rounded-full group-hover:scale-125 transition-transform"></div>
+                <span className="text-sm md:text-base font-medium text-foreground group-hover:text-primary transition-colors whitespace-nowrap">Children's</span>
+              </div>
             </Link>
-            
           </div>
         </div>
       </section>
 
       {/* Featured Books */}
-      <section className="py-12 md:py-16">
-        <div className="max-w-screen-2xl mx-auto px-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
-            <div className="text-center sm:text-left">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Featured Books</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Discover our handpicked selection</p>
+      <section className="py-16 md:py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
+        <div className="max-w-screen-2xl mx-auto px-6 relative">
+          <div className="text-center mb-12 md:mb-16">
+            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 text-sm font-medium">
+              ✨ Handpicked Collection
+            </Badge>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+              Featured Books
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Discover our carefully curated selection of bestsellers, new releases, and hidden gems
+            </p>
+            <div className="flex justify-center mt-8">
+              <Button size="lg" className="group bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all" asChild>
+                <Link to="/books">
+                  <Search className="mr-2 h-5 w-5" />
+                  Browse All Books
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
             </div>
-            <Button variant="ghost" className="group self-center sm:self-auto" asChild>
-              <Link to="/books">
-                View All
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
           </div>
           
           {loading ? (
@@ -154,45 +170,56 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Unique Selling Points */}
-      <section className="py-12 md:py-16 bg-secondary/30">
-        <div className="max-w-screen-2xl mx-auto px-6">
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-            <Card className="text-center shadow-page">
-              <CardContent className="pt-6 px-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                  <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+      {/* Why Choose Us */}
+      <section className="py-16 md:py-20 bg-gradient-to-br from-secondary/20 via-background to-accent/10 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-50">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5"></div>
+        </div>
+        <div className="max-w-screen-2xl mx-auto px-6 relative">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Why Book Lovers Choose Us</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Experience the difference with our premium book shopping features</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+            <div className="group text-center">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
+                  <BookOpen className="h-10 w-10 text-primary-foreground" />
                 </div>
-                <h3 className="text-lg md:text-xl font-semibold mb-2">Vast Collection</h3>
-                <p className="text-sm md:text-base text-muted-foreground">
-                  Thousands of new and pre-owned books across all genres and categories.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="absolute -inset-4 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold mb-4 text-foreground">Vast Collection</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Over 50,000+ books spanning every genre imaginable. From bestsellers to rare finds, we have something for every reader.
+              </p>
+            </div>
             
-            <Card className="text-center shadow-page">
-              <CardContent className="pt-6 px-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                  <Clock className="h-5 w-5 md:h-6 md:w-6 text-accent" />
+            <div className="group text-center">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-accent to-accent/80 rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
+                  <Clock className="h-10 w-10 text-accent-foreground" />
                 </div>
-                <h3 className="text-lg md:text-xl font-semibold mb-2">Easy Book Requests</h3>
-                <p className="text-sm md:text-base text-muted-foreground">
-                  Can't find a book? Request it and we'll locate it for you within 24 hours.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="absolute -inset-4 bg-accent/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold mb-4 text-foreground">Lightning Fast Service</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                24-hour book requests, same-day processing, and express delivery options. Your next great read is just hours away.
+              </p>
+            </div>
             
-            <Card className="text-center shadow-page sm:col-span-2 md:col-span-1">
-              <CardContent className="pt-6 px-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                  <Star className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+            <div className="group text-center">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
+                  <Star className="h-10 w-10 text-secondary-foreground" />
                 </div>
-                <h3 className="text-lg md:text-xl font-semibold mb-2">Best Prices</h3>
-                <p className="text-sm md:text-base text-muted-foreground">
-                  Competitive prices on both new releases and carefully curated pre-owned books.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="absolute -inset-4 bg-secondary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold mb-4 text-foreground">Unbeatable Value</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Best prices guaranteed with exclusive deals, bulk discounts, and reward points. Quality books at affordable prices.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -237,41 +264,90 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="py-12 md:py-16">
+      {/* Shop by Collection */}
+      <section className="py-16 md:py-20 bg-gradient-to-t from-primary/5 to-transparent">
         <div className="max-w-screen-2xl mx-auto px-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">Shop by Category</h2>
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Shop by Collection</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Whether you prefer the newest releases or love discovering pre-owned treasures</p>
+          </div>
           
-          <div className="grid gap-6 md:grid-cols-2 md:gap-8">
-            <Card className="group relative overflow-hidden bg-gradient-primary text-primary-foreground shadow-book hover:shadow-xl transition-all duration-300">
-              <CardContent className="p-6 md:p-8 text-center">
-                <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">New Books</h3>
-                <p className="text-primary-foreground/80 mb-4 md:mb-6 text-sm md:text-base">
-                  Latest releases, bestsellers, and fresh arrivals straight from publishers.
+          <div className="grid gap-8 lg:grid-cols-2">
+            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-primary/80 p-8 lg:p-12 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02]">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 text-primary-foreground">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-primary-foreground/20 rounded-2xl flex items-center justify-center">
+                    <BookOpen className="h-6 w-6 text-primary-foreground" />
+                  </div>
+                  <Badge className="bg-primary-foreground/20 text-primary-foreground border-primary-foreground/30">
+                    Latest Arrivals
+                  </Badge>
+                </div>
+                <h3 className="text-2xl lg:text-3xl font-bold mb-4">New Books Collection</h3>
+                <p className="text-primary-foreground/90 mb-8 text-lg leading-relaxed">
+                  Discover the latest bestsellers, fresh releases, and trending titles. Stay ahead with the newest additions to our extensive collection.
                 </p>
-                <Button variant="secondary" size="lg" asChild className="w-full sm:w-auto">
+                <div className="space-y-3 mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-primary-foreground rounded-full"></div>
+                    <span className="text-primary-foreground/90">Latest releases from top publishers</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-primary-foreground rounded-full"></div>
+                    <span className="text-primary-foreground/90">Bestsellers and award winners</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-primary-foreground rounded-full"></div>
+                    <span className="text-primary-foreground/90">Pre-order upcoming titles</span>
+                  </div>
+                </div>
+                <Button size="lg" variant="secondary" className="w-full lg:w-auto group-hover:scale-105 transition-transform" asChild>
                   <Link to="/new-books">
-                    Browse New Books
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    Explore New Books
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
             
-            <Card className="group relative overflow-hidden bg-gradient-accent text-accent-foreground shadow-book hover:shadow-xl transition-all duration-300">
-              <CardContent className="p-6 md:p-8 text-center">
-                <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Pre-owned Books</h3>
-                <p className="text-accent-foreground/80 mb-4 md:mb-6 text-sm md:text-base">
-                  Carefully curated pre-owned books at amazing prices. Every book tells a story.
+            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent via-accent/90 to-accent/80 p-8 lg:p-12 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02]">
+              <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 text-accent-foreground">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-accent-foreground/20 rounded-2xl flex items-center justify-center">
+                    <Star className="h-6 w-6 text-accent-foreground" />
+                  </div>
+                  <Badge className="bg-accent-foreground/20 text-accent-foreground border-accent-foreground/30">
+                    Great Value
+                  </Badge>
+                </div>
+                <h3 className="text-2xl lg:text-3xl font-bold mb-4">Pre-owned Treasures</h3>
+                <p className="text-accent-foreground/90 mb-8 text-lg leading-relaxed">
+                  Uncover literary gems at unbeatable prices. Every pre-owned book has a story and offers incredible value for book lovers.
                 </p>
-                <Button variant="secondary" size="lg" asChild className="w-full sm:w-auto">
+                <div className="space-y-3 mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-foreground rounded-full"></div>
+                    <span className="text-accent-foreground/90">Carefully inspected quality books</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-foreground rounded-full"></div>
+                    <span className="text-accent-foreground/90">Up to 70% off original prices</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-foreground rounded-full"></div>
+                    <span className="text-accent-foreground/90">Rare and out-of-print finds</span>
+                  </div>
+                </div>
+                <Button size="lg" variant="secondary" className="w-full lg:w-auto group-hover:scale-105 transition-transform" asChild>
                   <Link to="/old-books">
-                    Browse Old Books
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    Browse Pre-owned
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </section>
