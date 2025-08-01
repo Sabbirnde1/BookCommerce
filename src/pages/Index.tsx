@@ -14,7 +14,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
+  const [allBooks, setAllBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [allBooksLoading, setAllBooksLoading] = useState(true);
 
   useEffect(() => {
     const fetchFeaturedBooks = async () => {
@@ -39,7 +41,29 @@ const Index = () => {
       }
     };
 
+    const fetchAllBooks = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select(`
+            *,
+            product_images(image_url, alt_text, is_primary)
+          `)
+          .eq('status', 'active')
+          .limit(12)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setAllBooks(data || []);
+      } catch (error) {
+        console.error('Error fetching all books:', error);
+      } finally {
+        setAllBooksLoading(false);
+      }
+    };
+
     fetchFeaturedBooks();
+    fetchAllBooks();
   }, []);
 
   return (
@@ -164,6 +188,82 @@ const Index = () => {
               <p className="text-muted-foreground mb-4">Check back soon for our handpicked selection!</p>
               <Button variant="outline" asChild>
                 <Link to="/books">Browse All Books</Link>
+              </Button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* All Books Section */}
+      <section className="py-16 md:py-20 bg-gradient-to-br from-background via-secondary/5 to-background">
+        <div className="max-w-screen-2xl mx-auto px-6">
+          <div className="text-center mb-12 md:mb-16">
+            <Badge className="mb-4 bg-secondary/10 text-secondary border-secondary/20 text-sm font-medium">
+              📚 Complete Collection
+            </Badge>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+              All Books
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Browse our entire collection of books from various genres, authors, and categories
+            </p>
+          </div>
+          
+          {allBooksLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 md:gap-6">
+              {Array.from({ length: 12 }).map((_, index) => (
+                <div key={index} className="animate-pulse">
+                  <div className="bg-muted rounded-lg aspect-[3/4] mb-3"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-3 bg-muted rounded w-1/2"></div>
+                    <div className="h-3 bg-muted rounded w-1/4"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : allBooks.length > 0 ? (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 md:gap-6">
+                {allBooks.map((book) => (
+                  <BookCard 
+                    key={book.id} 
+                    id={book.id}
+                    title={book.title}
+                    author={book.author}
+                    price={book.price}
+                    originalPrice={book.original_price}
+                    condition={book.condition as "new" | "old"}
+                    rating={4}
+                    image={book.product_images?.[0]?.image_url || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop"}
+                    description={book.description}
+                    genre={book.category}
+                    isbn={book.isbn || ""}
+                    publisher={book.publisher || ""}
+                    publishedYear={book.publication_year || 2024}
+                    pages={book.pages || 200}
+                    inStock={book.stock_quantity}
+                  />
+                ))}
+              </div>
+              
+              <div className="text-center mt-12">
+                <Button size="lg" variant="outline" className="group bg-background hover:bg-secondary/10 border-2 hover:border-secondary/30 shadow-lg hover:shadow-xl transition-all" asChild>
+                  <Link to="/books">
+                    <BookOpen className="mr-2 h-5 w-5" />
+                    View All Books
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-12">
+              <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Books Available</h3>
+              <p className="text-muted-foreground mb-4">Check back soon for our latest collection!</p>
+              <Button variant="outline" asChild>
+                <Link to="/book-request">Request a Book</Link>
               </Button>
             </div>
           )}
