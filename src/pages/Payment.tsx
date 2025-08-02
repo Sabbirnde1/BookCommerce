@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/lib/cartStore";
-import { ArrowLeft, CreditCard, Smartphone, Building2, Banknote, Phone, MapPin, User, Shield, CheckCircle } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, CreditCard, Smartphone, Building2, Banknote, Phone, MapPin, User, Shield, CheckCircle, Tag } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +18,8 @@ import { supabase } from "@/integrations/supabase/client";
 const Payment = () => {
   const { items, getTotalPrice, getTotalItems, clearCart } = useCartStore();
   const { user } = useAuth();
+  const location = useLocation();
+  const appliedPromo = location.state?.appliedPromo || null;
   const [selectedMethod, setSelectedMethod] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
@@ -145,8 +147,20 @@ const Payment = () => {
     try {
       // Calculate totals
       const subtotal = getTotalPrice();
+      const deliveryCharge = subtotal > 1000 ? 0 : 60;
       const tax = subtotal * 0.08;
-      const totalAmount = subtotal + tax;
+      
+      // Calculate discount
+      let discount = 0;
+      if (appliedPromo) {
+        if (appliedPromo.discount_type === 'percentage') {
+          discount = subtotal * (appliedPromo.discount_value / 100);
+        } else {
+          discount = Math.min(appliedPromo.discount_value, subtotal);
+        }
+      }
+      
+      const totalAmount = subtotal + deliveryCharge + tax - discount;
 
       // Create the order
       const { data: orderData, error: orderError } = await supabase
@@ -159,7 +173,9 @@ const Payment = () => {
           status: selectedMethod === 'cod' ? 'pending' : 'completed',
           payment_method: paymentMethods.find(m => m.id === selectedMethod)?.name || selectedMethod,
           shipping_address: shippingAddress,
-          notes: address || null
+          notes: address || null,
+          promo_code: appliedPromo?.code || null,
+          discount_amount: discount
         })
         .select()
         .single();
@@ -187,6 +203,14 @@ const Payment = () => {
       if (itemsError) {
         console.error('Order items creation error:', itemsError);
         throw new Error('Failed to create order items');
+      }
+
+      // Update promo code usage if applied
+      if (appliedPromo) {
+        await supabase
+          .from('promo_codes')
+          .update({ used_count: appliedPromo.used_count + 1 })
+          .eq('id', appliedPromo.id);
       }
 
       // Clear cart and redirect
@@ -472,6 +496,23 @@ const Payment = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Applied Promo Code Display */}
+                {appliedPromo && (
+                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Tag className="h-4 w-4 text-green-600" />
+                      <span className="text-sm font-medium text-green-800">
+                        Promo Code Applied: {appliedPromo.code}
+                      </span>
+                    </div>
+                    <p className="text-xs text-green-600 mt-1">
+                      {appliedPromo.discount_type === 'percentage' 
+                        ? `${appliedPromo.discount_value}% discount` 
+                        : `৳${appliedPromo.discount_value} off`}
+                    </p>
+                  </div>
+                )}
+
                 <div className="space-y-4">
                   <div className="flex justify-between items-center py-2">
                     <span className="text-muted-foreground">Subtotal ({getTotalItems()} items)</span>
@@ -479,19 +520,48 @@ const Payment = () => {
                   </div>
                   
                   <div className="flex justify-between items-center py-2">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span className="text-emerald-600 font-medium">Free</span>
+                    <span className="text-muted-foreground">Delivery Charge</span>
+                    <span className={getTotalPrice() > 1000 ? "text-emerald-600 font-medium" : "font-medium"}>
+                      {getTotalPrice() > 1000 ? "Free" : "৳60.00"}
+                    </span>
                   </div>
                   
                   <div className="flex justify-between items-center py-2">
-                    <span className="text-muted-foreground">Tax</span>
+                    <span className="text-muted-foreground">Tax (8%)</span>
                     <span className="font-medium">৳{(getTotalPrice() * 0.08).toFixed(2)}</span>
                   </div>
+
+                  {appliedPromo && (
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-green-600">Discount ({appliedPromo.discount_type === 'percentage' ? `${appliedPromo.discount_value}%` : `৳${appliedPromo.discount_value}`})</span>
+                      <span className="font-medium text-green-600">-৳{(() => {
+                        const subtotal = getTotalPrice();
+                        if (appliedPromo.discount_type === 'percentage') {
+                          return (subtotal * (appliedPromo.discount_value / 100)).toFixed(2);
+                        } else {
+                          return Math.min(appliedPromo.discount_value, subtotal).toFixed(2);
+                        }
+                      })()}</span>
+                    </div>
+                  )}
                   
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-semibold">Total</span>
-                      <span className="text-2xl font-bold text-primary">৳{(getTotalPrice() * 1.08).toFixed(2)}</span>
+                      <span className="text-2xl font-bold text-primary">৳{(() => {
+                        const subtotal = getTotalPrice();
+                        const deliveryCharge = subtotal > 1000 ? 0 : 60;
+                        const tax = subtotal * 0.08;
+                        let discount = 0;
+                        if (appliedPromo) {
+                          if (appliedPromo.discount_type === 'percentage') {
+                            discount = subtotal * (appliedPromo.discount_value / 100);
+                          } else {
+                            discount = Math.min(appliedPromo.discount_value, subtotal);
+                          }
+                        }
+                        return (subtotal + deliveryCharge + tax - discount).toFixed(2);
+                      })()}</span>
                     </div>
                   </div>
                 </div>

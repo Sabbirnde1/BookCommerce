@@ -5,9 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useCartStore } from "@/lib/cartStore";
-import { ShoppingCart, Minus, Plus, Trash2, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Trash2, ArrowLeft, Tag } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 const Cart = () => {
   const {
     items,
@@ -21,6 +23,11 @@ const Cart = () => {
     toast
   } = useToast();
   const navigate = useNavigate();
+  
+  // Promo code state
+  const [promoCode, setPromoCode] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<any>(null);
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
   const handleCheckout = () => {
     if (items.length === 0) {
       toast({
@@ -30,7 +37,102 @@ const Cart = () => {
       });
       return;
     }
-    navigate("/payment");
+    // Pass applied promo to payment page
+    navigate("/payment", { state: { appliedPromo } });
+  };
+
+  const applyPromoCode = async () => {
+    if (!promoCode.trim()) {
+      toast({
+        title: "Please enter a promo code",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsApplyingPromo(true);
+    
+    try {
+      const { data, error } = await supabase
+        .from('promo_codes')
+        .select('*')
+        .eq('code', promoCode.toUpperCase())
+        .eq('status', 'active')
+        .single();
+
+      if (error || !data) {
+        toast({
+          title: "Invalid promo code",
+          description: "Please check your code and try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Check if promo code is still valid
+      const now = new Date();
+      if (data.valid_until && new Date(data.valid_until) < now) {
+        toast({
+          title: "Promo code expired",
+          description: "This promo code has expired.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Check usage limit
+      if (data.usage_limit && data.used_count >= data.usage_limit) {
+        toast({
+          title: "Promo code limit reached",
+          description: "This promo code has reached its usage limit.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+
+      setAppliedPromo(data);
+      toast({
+        title: "Promo code applied!",
+        description: `You saved ${data.discount_type === 'percentage' ? `${data.discount_value}%` : `৳${data.discount_value}`}`,
+      });
+    } catch (error) {
+      console.error('Error applying promo code:', error);
+      toast({
+        title: "Error applying promo code",
+        description: "Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsApplyingPromo(false);
+    }
+  };
+
+  const removePromoCode = () => {
+    setAppliedPromo(null);
+    setPromoCode("");
+    toast({
+      title: "Promo code removed",
+    });
+  };
+
+  const calculateDiscount = () => {
+    if (!appliedPromo) return 0;
+    
+    const subtotal = getTotalPrice();
+    if (appliedPromo.discount_type === 'percentage') {
+      return subtotal * (appliedPromo.discount_value / 100);
+    } else {
+      return Math.min(appliedPromo.discount_value, subtotal);
+    }
+  };
+
+  const getFinalTotal = () => {
+    const subtotal = getTotalPrice();
+    const deliveryCharge = subtotal > 1000 ? 0 : 60;
+    const tax = subtotal * 0.08;
+    const discount = calculateDiscount();
+    return subtotal + deliveryCharge + tax - discount;
   };
   if (items.length === 0) {
     return <div className="min-h-screen bg-background">
@@ -161,12 +263,59 @@ const Cart = () => {
                   <span>Tax (8%)</span>
                   <span>৳{(getTotalPrice() * 0.08).toFixed(2)}</span>
                 </div>
+
+                {/* Promo Code Section */}
+                <div className="space-y-3 pt-2">
+                  {!appliedPromo ? (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter promo code"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                        className="h-9"
+                      />
+                      <Button 
+                        onClick={applyPromoCode}
+                        disabled={isApplyingPromo}
+                        size="sm"
+                        variant="outline"
+                      >
+                        <Tag className="h-4 w-4 mr-1" />
+                        {isApplyingPromo ? "Applying..." : "Apply"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-800">
+                          {appliedPromo.code}
+                        </span>
+                      </div>
+                      <Button 
+                        onClick={removePromoCode}
+                        size="sm"
+                        variant="ghost"
+                        className="text-green-600 hover:text-green-800"
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                {appliedPromo && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Discount ({appliedPromo.discount_type === 'percentage' ? `${appliedPromo.discount_value}%` : `৳${appliedPromo.discount_value}`})</span>
+                    <span>-৳{calculateDiscount().toFixed(2)}</span>
+                  </div>
+                )}
                 
                 <hr />
                 
                 <div className="flex justify-between text-lg font-semibold">
                   <span>Total</span>
-                  <span>৳{(getTotalPrice() + (getTotalPrice() > 1000 ? 0 : 60) + (getTotalPrice() * 0.08)).toFixed(2)}</span>
+                  <span>৳{getFinalTotal().toFixed(2)}</span>
                 </div>
 
                 <Button className="w-full" size="lg" variant="hero" onClick={handleCheckout}>
