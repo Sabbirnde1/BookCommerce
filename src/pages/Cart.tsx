@@ -130,9 +130,8 @@ const Cart = () => {
   const getFinalTotal = () => {
     const subtotal = getTotalPrice();
     const deliveryCharge = subtotal > 1000 ? 0 : 60;
-    const tax = subtotal * 0.08;
     const discount = calculateDiscount();
-    return subtotal + deliveryCharge + tax - discount;
+    return subtotal + deliveryCharge - discount;
   };
   if (items.length === 0) {
     return <div className="min-h-screen bg-background">
@@ -259,10 +258,6 @@ const Cart = () => {
                   <span>৳{(getTotalPrice() > 1000 ? 0 : 60).toFixed(2)}</span>
                 </div>
                 
-                <div className="flex justify-between">
-                  <span>Tax (8%)</span>
-                  <span>৳{(getTotalPrice() * 0.08).toFixed(2)}</span>
-                </div>
 
                 {/* Promo Code Section */}
                 <div className="space-y-3 pt-2">
