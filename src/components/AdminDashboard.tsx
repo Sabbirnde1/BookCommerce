@@ -56,6 +56,7 @@ import { AdvancedAnalytics } from "./analytics/AdvancedAnalytics";
 import { OrderManagement } from "./admin/OrderManagement";
 import { CustomerSupport } from "./admin/CustomerSupport";
 import { UserManagement } from "./admin/UserManagement";
+import { Checkbox } from "./ui/checkbox";
 
 interface Product {
   id: string;
@@ -131,6 +132,14 @@ export function AdminDashboard() {
   const [validUntil, setValidUntil] = useState("");
   const [promoStatus, setPromoStatus] = useState("active");
 
+  // Best Authors state
+  const [bestAuthors, setBestAuthors] = useState<any[]>([]);
+  const [showBestAuthorDialog, setShowBestAuthorDialog] = useState(false);
+  const [authorName, setAuthorName] = useState("");
+  const [authorDisplayOrder, setAuthorDisplayOrder] = useState("0");
+  const [authorIsActive, setAuthorIsActive] = useState(true);
+  const [editingAuthor, setEditingAuthor] = useState<any>(null);
+
   // Book requests state
   const [bookRequests, setBookRequests] = useState<any[]>([]);
   const [showBookRequestDialog, setShowBookRequestDialog] = useState(false);
@@ -165,10 +174,12 @@ export function AdminDashboard() {
     if (isAdmin) {
       fetchProducts();
       fetchDashboardStats();
-      fetchBookRequests();
+      // Note: Some functions may not exist yet, need to be implemented
+      // fetchBookRequests();
       fetchPromoCodes();
-      fetchProductImages();
-      fetchHeroImages();
+      fetchBestAuthors();
+      // fetchProductImages();
+      // fetchHeroImages();
     }
   }, [isAdmin]);
 
@@ -519,6 +530,176 @@ export function AdminDashboard() {
       });
     }
   };
+
+  // Best Authors Management Functions
+  const fetchBestAuthors = async () => {
+    if (!isAdmin) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('best_authors')
+        .select('*')
+        .order('display_order', { ascending: true });
+
+      if (error) throw error;
+      setBestAuthors(data || []);
+    } catch (error) {
+      console.error('Error fetching best authors:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch best authors",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const createBestAuthor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdmin) return;
+
+    if (!authorName.trim()) {
+      toast({
+        title: "Author name is required",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const authorData = {
+        author_name: authorName.trim(),
+        display_order: parseInt(authorDisplayOrder) || 0,
+        is_active: authorIsActive,
+        created_by: user?.id
+      };
+
+      const { error } = await supabase
+        .from('best_authors')
+        .insert([authorData]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Best author added successfully"
+      });
+
+      setAuthorName("");
+      setAuthorDisplayOrder("0");
+      setAuthorIsActive(true);
+      setShowBestAuthorDialog(false);
+      fetchBestAuthors();
+    } catch (error) {
+      console.error('Error creating best author:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to add best author",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const updateBestAuthor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdmin || !editingAuthor) return;
+
+    try {
+      const { error } = await supabase
+        .from('best_authors')
+        .update({
+          author_name: authorName.trim(),
+          display_order: parseInt(authorDisplayOrder) || 0,
+          is_active: authorIsActive
+        })
+        .eq('id', editingAuthor.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Best author updated successfully"
+      });
+
+      resetBestAuthorForm();
+      setShowBestAuthorDialog(false);
+      fetchBestAuthors();
+    } catch (error) {
+      console.error('Error updating best author:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update best author",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const deleteBestAuthor = async (id: string) => {
+    if (!isAdmin) return;
+
+    try {
+      const { error } = await supabase
+        .from('best_authors')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Best author deleted successfully"
+      });
+
+      fetchBestAuthors();
+    } catch (error) {
+      console.error('Error deleting best author:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete best author",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const toggleBestAuthorStatus = async (id: string, currentStatus: boolean) => {
+    if (!isAdmin) return;
+
+    try {
+      const { error } = await supabase
+        .from('best_authors')
+        .update({ is_active: !currentStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Best author ${!currentStatus ? 'activated' : 'deactivated'}`
+      });
+
+      fetchBestAuthors();
+    } catch (error) {
+      console.error('Error updating best author status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update best author status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openEditBestAuthorDialog = (author: any) => {
+    setEditingAuthor(author);
+    setAuthorName(author.author_name);
+    setAuthorDisplayOrder(author.display_order.toString());
+    setAuthorIsActive(author.is_active);
+    setShowBestAuthorDialog(true);
+  };
+
+  const resetBestAuthorForm = () => {
+    setEditingAuthor(null);
+    setAuthorName("");
+    setAuthorDisplayOrder("0");
+    setAuthorIsActive(true);
 
   const fetchBookRequests = async () => {
     if (!isAdmin) return;
@@ -1027,7 +1208,149 @@ export function AdminDashboard() {
 
         {/* Products Tab */}
         <TabsContent value="products">
-          <ProductManagement />
+          <div className="space-y-6">
+            <Tabs defaultValue="all-products" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="all-products">All Products</TabsTrigger>
+                <TabsTrigger value="best-authors">Best Authors</TabsTrigger>
+                <TabsTrigger value="categories">Categories</TabsTrigger>
+                <TabsTrigger value="bulk-actions">Bulk Actions</TabsTrigger>
+              </TabsList>
+
+              {/* All Products Tab */}
+              <TabsContent value="all-products" className="space-y-4">
+                <ProductManagement />
+              </TabsContent>
+
+              {/* Best Authors Tab */}
+              <TabsContent value="best-authors" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          <Star className="h-5 w-5" />
+                          Best Authors Management
+                        </CardTitle>
+                        <CardDescription>
+                          Manage which authors are featured as "best authors" on your homepage.
+                        </CardDescription>
+                      </div>
+                      <Button onClick={() => {
+                        resetBestAuthorForm();
+                        setShowBestAuthorDialog(true);
+                      }}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Best Author
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="rounded-md border">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Author Name</TableHead>
+                            <TableHead>Display Order</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Books Count</TableHead>
+                            <TableHead>Created</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {bestAuthors.length === 0 ? (
+                            <TableRow>
+                              <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                                No best authors found
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            bestAuthors.map((author) => (
+                              <TableRow key={author.id}>
+                                <TableCell>
+                                  <div className="flex items-center gap-2">
+                                    <Star className="h-4 w-4 text-yellow-500" />
+                                    <span className="font-medium">{author.author_name}</span>
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <Badge variant="outline">
+                                    Order: {author.display_order}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>
+                                  <Badge 
+                                    variant={author.is_active ? 'default' : 'secondary'}
+                                  >
+                                    {author.is_active ? 'Active' : 'Inactive'}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="text-sm text-muted-foreground">
+                                    {/* TODO: Show actual book count for this author */}
+                                    Loading...
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  {new Date(author.created_at).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex items-center justify-end gap-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => openEditBestAuthorDialog(author)}
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => toggleBestAuthorStatus(author.id, author.is_active)}
+                                    >
+                                      {author.is_active ? <XCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => deleteBestAuthor(author.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Categories Tab - Placeholder */}
+              <TabsContent value="categories">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Category Management</CardTitle>
+                    <CardDescription>Manage product categories (Coming Soon)</CardDescription>
+                  </CardHeader>
+                </Card>
+              </TabsContent>
+
+              {/* Bulk Actions Tab - Placeholder */}
+              <TabsContent value="bulk-actions">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Bulk Actions</CardTitle>
+                    <CardDescription>Perform bulk operations on products (Coming Soon)</CardDescription>
+                  </CardHeader>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
         </TabsContent>
 
         {/* Image Management Tab */}
@@ -2082,6 +2405,144 @@ export function AdminDashboard() {
               </Button>
               <Button type="submit" disabled={loading || (!editingHeroImage && !selectedHeroImageFile)}>
                 {loading ? "Processing..." : editingHeroImage ? "Update" : "Upload"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Best Author Dialog */}
+      <Dialog open={showBestAuthorDialog} onOpenChange={setShowBestAuthorDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingAuthor ? 'Edit Best Author' : 'Add Best Author'}
+            </DialogTitle>
+            <DialogDescription>
+              {editingAuthor ? 'Update the best author details' : 'Add a new author to the best authors list'}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={editingAuthor ? updateBestAuthor : createBestAuthor} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="author-name">Author Name *</Label>
+              <Input
+                id="author-name"
+                type="text"
+                placeholder="Enter author name"
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="display-order">Display Order</Label>
+              <Input
+                id="display-order"
+                type="number"
+                placeholder="0"
+                value={authorDisplayOrder}
+                onChange={(e) => setAuthorDisplayOrder(e.target.value)}
+                min="0"
+              />
+              <p className="text-xs text-muted-foreground">
+                Lower numbers appear first in the list
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="author-active"
+                  checked={authorIsActive}
+                  onCheckedChange={(checked) => setAuthorIsActive(checked === true)}
+                />
+                <Label htmlFor="author-active">Active</Label>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Only active authors will be displayed on the website
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowBestAuthorDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Saving..." : (editingAuthor ? "Update" : "Add")} Author
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Best Author Dialog */}
+      <Dialog open={showBestAuthorDialog} onOpenChange={setShowBestAuthorDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingAuthor ? 'Edit Best Author' : 'Add Best Author'}
+            </DialogTitle>
+            <DialogDescription>
+              {editingAuthor ? 'Update the best author details' : 'Add a new author to the best authors list'}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={editingAuthor ? updateBestAuthor : createBestAuthor} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="author-name">Author Name *</Label>
+              <Input
+                id="author-name"
+                type="text"
+                placeholder="Enter author name"
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="display-order">Display Order</Label>
+              <Input
+                id="display-order"
+                type="number"
+                placeholder="0"
+                value={authorDisplayOrder}
+                onChange={(e) => setAuthorDisplayOrder(e.target.value)}
+                min="0"
+              />
+              <p className="text-xs text-muted-foreground">
+                Lower numbers appear first in the list
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="author-active"
+                  checked={authorIsActive}
+                  onCheckedChange={(checked) => setAuthorIsActive(checked === true)}
+                />
+                <Label htmlFor="author-active">Active</Label>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Only active authors will be displayed on the website
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowBestAuthorDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Saving..." : (editingAuthor ? "Update" : "Add")} Author
               </Button>
             </div>
           </form>

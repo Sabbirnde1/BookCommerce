@@ -41,6 +41,36 @@ export type Database = {
         }
         Relationships: []
       }
+      best_authors: {
+        Row: {
+          author_name: string
+          created_at: string
+          created_by: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          author_name: string
+          created_at?: string
+          created_by?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          created_at?: string
+          created_by?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       book_requests: {
         Row: {
           author: string
