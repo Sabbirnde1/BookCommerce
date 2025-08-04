@@ -202,9 +202,6 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
         <div className="max-w-screen-2xl mx-auto px-6 relative">
           <div className="text-center mb-12 md:mb-16">
-            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 text-sm font-medium">
-              ✨ Handpicked Collection
-            </Badge>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
               Featured Books
             </h2>
