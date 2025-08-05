@@ -273,7 +273,7 @@ const Index = () => {
         <div className="max-w-screen-2xl mx-auto px-6">
           <div className="text-center mb-12 md:mb-16">
             <Badge className="mb-4 bg-secondary/10 text-secondary border-secondary/20 text-sm font-medium">
-              📚 Complete Collection
+              📚Complete Collection
             </Badge>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
               All Books
@@ -348,9 +348,9 @@ const Index = () => {
       <section className="py-16 md:py-20 bg-gradient-to-br from-accent/5 via-transparent to-primary/5">
         <div className="max-w-screen-2xl mx-auto px-6">
           <div className="text-center mb-12 md:mb-16">
-            <Badge className="mb-4 bg-accent/10 text-accent border-accent/20 text-sm font-medium">
+            {/* <Badge className="mb-4 bg-accent/10 text-accent border-accent/20 text-sm font-medium">
               🏆 Most Popular
-            </Badge>
+            </Badge> */}
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
               Best Selling Books
             </h2>
