@@ -404,65 +404,7 @@ const Index = () => {
         </div>
       </section>
 
-      /* {/* Best Authors Books */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-secondary/10 via-background to-secondary/5">
-        <div className="max-w-screen-2xl mx-auto px-6">
-          <div className="text-center mb-12 md:mb-16">
-            /* {/* <Badge className="mb-4 bg-secondary/10 text-secondary border-secondary/20 text-sm font-medium">
-              ✍️ Renowned Writers
-            </Badge> */} */
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-              Best Authors
-            </h2>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Books from the most celebrated and beloved authors whose works have captured millions of hearts
-            </p>
-          </div>
-          
-          {bestAuthorsLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-4 md:gap-6">
-              {Array.from({ length: 8 }).map((_, index) => (
-                <div key={index} className="animate-pulse">
-                  <div className="bg-muted rounded-lg aspect-[3/4] mb-3"></div>
-                  <div className="space-y-2">
-                    <div className="h-4 bg-muted rounded w-3/4"></div>
-                    <div className="h-3 bg-muted rounded w-1/2"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : bestAuthorsBooks.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-4 md:gap-6">
-              {bestAuthorsBooks.map((book) => (
-                <BookCard 
-                  key={book.id} 
-                  id={book.id}
-                  title={book.title}
-                  author={book.author}
-                  price={book.price}
-                  originalPrice={book.original_price}
-                  condition={book.condition as "new" | "old"}
-                  rating={4}
-                  image={book.product_images?.[0]?.image_url || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop"}
-                  description={book.description}
-                  genre={book.category}
-                  isbn={book.isbn || ""}
-                  publisher={book.publisher || ""}
-                  publishedYear={book.publication_year || 2024}
-                  pages={book.pages || 200}
-                  inStock={book.stock_quantity}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Author Books Available</h3>
-              <p className="text-muted-foreground mb-4">Check back soon for books from renowned authors!</p>
-            </div>
-          )}
-        </div>
-      </section> */
+     
 
       {/* Trending Books */}
       <section className="py-16 md:py-20 bg-gradient-to-br from-primary/5 via-background to-accent/10">
