@@ -174,7 +174,7 @@ const BookCommerce = () => {
 
     addItem(cartItem);
     toast({
-      title: "Added to cart! 📚",
+      title: "Added to cart!",
       description: `${product.title} has been added to your cart.`,
     });
   };
