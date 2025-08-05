@@ -9,7 +9,7 @@ import { BookOpen, Search, Clock, Star, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/books-hero.jpg";
 import { useState, useEffect } from "react";
-import HeroSlider from "@/components/HeroSlider";
+import ModernHero from "@/components/ModernHero";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -148,7 +148,7 @@ const Index = () => {
       <Header />
       
       {/* Hero Slider */}
-      <HeroSlider />
+      <ModernHero />
       
       {/* Quick Navigation Bar */}
       <section className="py-6 md:py-8 bg-gradient-to-r from-primary/5 via-secondary/10 to-accent/5 border-b border-border/30">
