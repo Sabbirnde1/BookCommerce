@@ -408,9 +408,9 @@ const Index = () => {
       <section className="py-16 md:py-20 bg-gradient-to-br from-secondary/10 via-background to-secondary/5">
         <div className="max-w-screen-2xl mx-auto px-6">
           <div className="text-center mb-12 md:mb-16">
-            {/* <Badge className="mb-4 bg-secondary/10 text-secondary border-secondary/20 text-sm font-medium">
+            /* {/* <Badge className="mb-4 bg-secondary/10 text-secondary border-secondary/20 text-sm font-medium">
               ✍️ Renowned Writers
-            </Badge> */}
+            </Badge> */} */
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
               Best Authors
             </h2>
