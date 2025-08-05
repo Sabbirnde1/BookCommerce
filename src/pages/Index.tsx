@@ -404,7 +404,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Best Authors Books */}
+      /* {/* Best Authors Books */}
       <section className="py-16 md:py-20 bg-gradient-to-br from-secondary/10 via-background to-secondary/5">
         <div className="max-w-screen-2xl mx-auto px-6">
           <div className="text-center mb-12 md:mb-16">
@@ -462,7 +462,7 @@ const Index = () => {
             </div>
           )}
         </div>
-      </section>
+      </section> */
 
       {/* Trending Books */}
       <section className="py-16 md:py-20 bg-gradient-to-br from-primary/5 via-background to-accent/10">
