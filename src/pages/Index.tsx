@@ -525,9 +525,7 @@ const Index = () => {
         <div className="max-w-screen-2xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="text-center lg:text-left">
-              <Badge className="mb-4 bg-accent/10 text-accent border-accent/20">
-                Our Unique Feature
-              </Badge>
+             
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 text-foreground">
                 Can't Find Your Book?
                 <span className="block text-primary">We'll Find It For You!</span>
