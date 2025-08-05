@@ -161,7 +161,7 @@ const BookRequest = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  We typically respond within 24 hours with availability and pricing information. For rare books, it might take up to 48 hours.
+                  We typically respond within 48 hours with availability and pricing information. For rare books, it might take up to 48 hours.
                 </p>
               </CardContent>
             </Card>
