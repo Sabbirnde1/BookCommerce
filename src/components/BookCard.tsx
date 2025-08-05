@@ -34,7 +34,7 @@ export function BookCard(book: Book) {
 
     addItem(book);
     toast({
-      title: "Added to cart! 📚",
+      title: "Added to cart! ",
       description: `${book.title} has been added to your cart.`,
     });
   };
