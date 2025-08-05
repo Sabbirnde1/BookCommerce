@@ -11,7 +11,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AlertTriangle, Package, CheckCircle, XCircle, Star, Plus, Edit, Trash2 } from "lucide-react";
+import { AlertTriangle, Package, CheckCircle, XCircle, Star, Plus, Edit, Trash2, Tag, Calendar, Percent } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { ProductManagement } from "./ProductManagement";
 import { AdvancedAnalytics } from "./analytics/AdvancedAnalytics";
 import { OrderManagement } from "./admin/OrderManagement";
@@ -41,6 +43,17 @@ export function AdminDashboard() {
   const [authorIsActive, setAuthorIsActive] = useState(true);
   const [editingAuthor, setEditingAuthor] = useState<any>(null);
 
+  // Promo Codes state
+  const [promoCodes, setPromoCodes] = useState<any[]>([]);
+  const [showPromoDialog, setShowPromoDialog] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoDiscountType, setPromoDiscountType] = useState("percentage");
+  const [promoDiscountValue, setPromoDiscountValue] = useState("");
+  const [promoUsageLimit, setPromoUsageLimit] = useState("");
+  const [promoValidUntil, setPromoValidUntil] = useState("");
+  const [promoStatus, setPromoStatus] = useState("active");
+  const [editingPromo, setEditingPromo] = useState<any>(null);
+
   useEffect(() => {
     checkAdminStatus();
   }, [user]);
@@ -49,6 +62,7 @@ export function AdminDashboard() {
     if (isAdmin) {
       fetchDashboardStats();
       fetchBestAuthors();
+      fetchPromoCodes();
     }
   }, [isAdmin]);
 
@@ -263,6 +277,189 @@ export function AdminDashboard() {
     setAuthorIsActive(true);
   };
 
+  // Promo Codes Management Functions
+  const fetchPromoCodes = async () => {
+    if (!isAdmin) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('promo_codes')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPromoCodes(data || []);
+    } catch (error) {
+      console.error('Error fetching promo codes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch promo codes",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const createPromoCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdmin) return;
+
+    if (!promoCode.trim() || !promoDiscountValue.trim()) {
+      toast({
+        title: "All required fields must be filled",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const promoData = {
+        code: promoCode.toUpperCase().trim(),
+        discount_type: promoDiscountType,
+        discount_value: parseFloat(promoDiscountValue),
+        usage_limit: promoUsageLimit ? parseInt(promoUsageLimit) : null,
+        valid_until: promoValidUntil ? new Date(promoValidUntil).toISOString() : null,
+        status: promoStatus,
+        created_by: user?.id
+      };
+
+      const { error } = await supabase
+        .from('promo_codes')
+        .insert([promoData]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Promo code created successfully"
+      });
+
+      resetPromoForm();
+      setShowPromoDialog(false);
+      fetchPromoCodes();
+    } catch (error: any) {
+      console.error('Error creating promo code:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create promo code",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const updatePromoCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdmin || !editingPromo) return;
+
+    try {
+      const { error } = await supabase
+        .from('promo_codes')
+        .update({
+          code: promoCode.toUpperCase().trim(),
+          discount_type: promoDiscountType,
+          discount_value: parseFloat(promoDiscountValue),
+          usage_limit: promoUsageLimit ? parseInt(promoUsageLimit) : null,
+          valid_until: promoValidUntil ? new Date(promoValidUntil).toISOString() : null,
+          status: promoStatus
+        })
+        .eq('id', editingPromo.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Promo code updated successfully"
+      });
+
+      resetPromoForm();
+      setShowPromoDialog(false);
+      fetchPromoCodes();
+    } catch (error: any) {
+      console.error('Error updating promo code:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update promo code",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const deletePromoCode = async (id: string) => {
+    if (!isAdmin) return;
+
+    try {
+      const { error } = await supabase
+        .from('promo_codes')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Promo code deleted successfully"
+      });
+
+      fetchPromoCodes();
+    } catch (error) {
+      console.error('Error deleting promo code:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete promo code",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const togglePromoCodeStatus = async (id: string, currentStatus: string) => {
+    if (!isAdmin) return;
+
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+
+    try {
+      const { error } = await supabase
+        .from('promo_codes')
+        .update({ status: newStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Promo code ${newStatus === 'active' ? 'activated' : 'deactivated'}`
+      });
+
+      fetchPromoCodes();
+    } catch (error) {
+      console.error('Error updating promo code status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update promo code status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openEditPromoDialog = (promo: any) => {
+    setEditingPromo(promo);
+    setPromoCode(promo.code);
+    setPromoDiscountType(promo.discount_type);
+    setPromoDiscountValue(promo.discount_value.toString());
+    setPromoUsageLimit(promo.usage_limit ? promo.usage_limit.toString() : "");
+    setPromoValidUntil(promo.valid_until ? new Date(promo.valid_until).toISOString().split('T')[0] : "");
+    setPromoStatus(promo.status);
+    setShowPromoDialog(true);
+  };
+
+  const resetPromoForm = () => {
+    setEditingPromo(null);
+    setPromoCode("");
+    setPromoDiscountType("percentage");
+    setPromoDiscountValue("");
+    setPromoUsageLimit("");
+    setPromoValidUntil("");
+    setPromoStatus("active");
+  };
+
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -341,10 +538,11 @@ export function AdminDashboard() {
       )}
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="promo">Promo Codes</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
@@ -484,6 +682,140 @@ export function AdminDashboard() {
           <OrderManagement />
         </TabsContent>
 
+        {/* Promo Codes Tab */}
+        <TabsContent value="promo">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Tag className="h-5 w-5" />
+                    Promo Codes Management
+                  </CardTitle>
+                  <CardDescription>
+                    Create and manage discount codes for your customers.
+                  </CardDescription>
+                </div>
+                <Button onClick={() => {
+                  resetPromoForm();
+                  setShowPromoDialog(true);
+                }}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Promo Code
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Code</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Value</TableHead>
+                      <TableHead>Usage</TableHead>
+                      <TableHead>Expires</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {promoCodes.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                          No promo codes found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      promoCodes.map((promo) => (
+                        <TableRow key={promo.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Tag className="h-4 w-4 text-blue-500" />
+                              <span className="font-mono font-medium">{promo.code}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {promo.discount_type === 'percentage' ? (
+                                <><Percent className="h-3 w-3 mr-1" />Percentage</>
+                              ) : (
+                                <>₹ Fixed</>
+                              )}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <span className="font-medium">
+                              {promo.discount_type === 'percentage' ? `${promo.discount_value}%` : `৳${promo.discount_value}`}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              <div>{promo.used_count}/{promo.usage_limit || '∞'}</div>
+                              {promo.usage_limit && (
+                                <div className="w-16 bg-gray-200 rounded-full h-1 mt-1">
+                                  <div 
+                                    className="bg-blue-600 h-1 rounded-full" 
+                                    style={{ width: `${Math.min((promo.used_count / promo.usage_limit) * 100, 100)}%` }}
+                                  ></div>
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {promo.valid_until ? (
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                <span className="text-sm">
+                                  {new Date(promo.valid_until).toLocaleDateString()}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">No expiry</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={promo.status === 'active' ? 'default' : 'secondary'}
+                            >
+                              {promo.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openEditPromoDialog(promo)}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => togglePromoCodeStatus(promo.id, promo.status)}
+                              >
+                                {promo.status === 'active' ? <XCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => deletePromoCode(promo.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* Analytics Tab */}
         <TabsContent value="analytics">
           <AdvancedAnalytics />
@@ -553,6 +885,115 @@ export function AdminDashboard() {
               </Button>
               <Button type="submit" disabled={loading}>
                 {loading ? "Saving..." : (editingAuthor ? "Update" : "Add")} Author
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Promo Code Dialog */}
+      <Dialog open={showPromoDialog} onOpenChange={setShowPromoDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {editingPromo ? 'Edit Promo Code' : 'Add Promo Code'}
+            </DialogTitle>
+            <DialogDescription>
+              {editingPromo ? 'Update the promo code details' : 'Create a new discount code for customers'}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={editingPromo ? updatePromoCode : createPromoCode} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="promo-code">Promo Code *</Label>
+              <Input
+                id="promo-code"
+                type="text"
+                placeholder="e.g., SAVE20"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="discount-type">Discount Type *</Label>
+                <Select value={promoDiscountType} onValueChange={setPromoDiscountType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="percentage">Percentage</SelectItem>
+                    <SelectItem value="fixed">Fixed Amount</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="discount-value">
+                  Value * {promoDiscountType === 'percentage' ? '(%)' : '(৳)'}
+                </Label>
+                <Input
+                  id="discount-value"
+                  type="number"
+                  placeholder={promoDiscountType === 'percentage' ? '20' : '100'}
+                  value={promoDiscountValue}
+                  onChange={(e) => setPromoDiscountValue(e.target.value)}
+                  min="0"
+                  max={promoDiscountType === 'percentage' ? '100' : undefined}
+                  step={promoDiscountType === 'percentage' ? '1' : '0.01'}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="usage-limit">Usage Limit</Label>
+                <Input
+                  id="usage-limit"
+                  type="number"
+                  placeholder="Unlimited"
+                  value={promoUsageLimit}
+                  onChange={(e) => setPromoUsageLimit(e.target.value)}
+                  min="1"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="valid-until">Expires On</Label>
+                <Input
+                  id="valid-until"
+                  type="date"
+                  value={promoValidUntil}
+                  onChange={(e) => setPromoValidUntil(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="promo-status">Status</Label>
+              <Select value={promoStatus} onValueChange={setPromoStatus}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowPromoDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Saving..." : (editingPromo ? "Update" : "Create")} Promo Code
               </Button>
             </div>
           </form>
