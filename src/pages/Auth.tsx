@@ -61,7 +61,7 @@ const Auth = () => {
       });
     } else {
       toast({
-        title: "Welcome back! 📚",
+        title: "Welcome back!",
         description: "You have successfully logged in.",
       });
       navigate("/");
@@ -119,7 +119,7 @@ const Auth = () => {
       }
     } else {
       toast({
-        title: "Account Created! 🎉",
+        title: "Account Created!",
         description: "Please check your email to verify your account.",
       });
       // Reset form
