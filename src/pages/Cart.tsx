@@ -10,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
+
 const Cart = () => {
   const {
     items,
@@ -28,6 +29,7 @@ const Cart = () => {
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<any>(null);
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+
   const handleCheckout = () => {
     if (items.length === 0) {
       toast({
@@ -53,14 +55,25 @@ const Cart = () => {
     setIsApplyingPromo(true);
     
     try {
+      // Change from .single() to regular query to handle no results properly
       const { data, error } = await supabase
         .from('promo_codes')
         .select('*')
         .eq('code', promoCode.toUpperCase())
-        .eq('status', 'active')
-        .single();
+        .eq('status', 'active');
 
-      if (error || !data) {
+      if (error) {
+        console.error('Error fetching promo code:', error);
+        toast({
+          title: "Error applying promo code",
+          description: "Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Check if any promo codes were found
+      if (!data || data.length === 0) {
         toast({
           title: "Invalid promo code",
           description: "Please check your code and try again.",
@@ -69,9 +82,11 @@ const Cart = () => {
         return;
       }
 
+      const promoData = data[0]; // Get the first (and should be only) result
+
       // Check if promo code is still valid
       const now = new Date();
-      if (data.valid_until && new Date(data.valid_until) < now) {
+      if (promoData.valid_until && new Date(promoData.valid_until) < now) {
         toast({
           title: "Promo code expired",
           description: "This promo code has expired.",
@@ -81,7 +96,7 @@ const Cart = () => {
       }
 
       // Check usage limit
-      if (data.usage_limit && data.used_count >= data.usage_limit) {
+      if (promoData.usage_limit && promoData.used_count >= promoData.usage_limit) {
         toast({
           title: "Promo code limit reached",
           description: "This promo code has reached its usage limit.",
@@ -90,11 +105,10 @@ const Cart = () => {
         return;
       }
 
-
-      setAppliedPromo(data);
+      setAppliedPromo(promoData);
       toast({
         title: "Promo code applied!",
-        description: `You saved ${data.discount_type === 'percentage' ? `${data.discount_value}%` : `৳${data.discount_value}`}`,
+        description: `You saved ${promoData.discount_type === 'percentage' ? `${promoData.discount_value}%` : `৳${promoData.discount_value}`}`,
       });
     } catch (error) {
       console.error('Error applying promo code:', error);
@@ -133,6 +147,7 @@ const Cart = () => {
     const discount = calculateDiscount();
     return subtotal + deliveryCharge - discount;
   };
+
   if (items.length === 0) {
     return <div className="min-h-screen bg-background">
         <Header />
@@ -156,6 +171,7 @@ const Cart = () => {
         </div>
       </div>;
   }
+
   return <div className="min-h-screen bg-background">
       <Header />
       
@@ -328,4 +344,5 @@ const Cart = () => {
       <Footer />
     </div>;
 };
+
 export default Cart;
