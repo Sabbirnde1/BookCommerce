@@ -274,54 +274,60 @@ const Cart = () => {
                   <span>৳{(getTotalPrice() > 1000 ? 0 : 60).toFixed(2)}</span>
                 </div>
                  */}
+{/* Promo Code Section */}
+<div className="mt-4 p-4 rounded-xl border border-yellow-300 bg-yellow-50 shadow-sm">
+  <h3 className="text-sm font-semibold text-yellow-800 mb-2">🎁 Have a promo code?</h3>
 
-                {/* Promo Code Section */}
-                <div className="space-y-3 pt-2">
-                  {!appliedPromo ? (
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Enter promo code"
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                        className="h-9"
-                      />
-                      <Button 
-                        onClick={applyPromoCode}
-                        disabled={isApplyingPromo}
-                        size="sm"
-                        variant="outline"
-                      >
-                        <Tag className="h-4 w-4 mr-1" />
-                        {isApplyingPromo ? "Applying..." : "Apply"}
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <Tag className="h-4 w-4 text-green-600" />
-                        <span className="text-sm font-medium text-green-800">
-                          {appliedPromo.code}
-                        </span>
-                      </div>
-                      <Button 
-                        onClick={removePromoCode}
-                        size="sm"
-                        variant="ghost"
-                        className="text-green-600 hover:text-green-800"
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  )}
-                </div>
+  <div className="space-y-3 pt-2">
+    {!appliedPromo ? (
+      <div className="flex gap-2">
+        <Input
+          placeholder="Enter promo code"
+          value={promoCode}
+          onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+          className="h-9 border-yellow-300 focus-visible:ring-yellow-400"
+        />
+        <Button 
+          onClick={applyPromoCode}
+          disabled={isApplyingPromo}
+          size="sm"
+          variant="outline"
+          className="border-yellow-400 text-yellow-700 hover:bg-yellow-100"
+        >
+          <Tag className="h-4 w-4 mr-1" />
+          {isApplyingPromo ? "Applying..." : "Apply"}
+        </Button>
+      </div>
+    ) : (
+      <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+        <div className="flex items-center gap-2">
+          <Tag className="h-4 w-4 text-green-600" />
+          <span className="text-sm font-medium text-green-800">
+            {appliedPromo.code}
+          </span>
+        </div>
+        <Button 
+          onClick={removePromoCode}
+          size="sm"
+          variant="ghost"
+          className="text-green-600 hover:text-green-800"
+        >
+          Remove
+        </Button>
+      </div>
+    )}
+  </div>
 
-                {appliedPromo && (
-                  <div className="flex justify-between text-green-600">
-                    <span>Discount ({appliedPromo.discount_type === 'percentage' ? `${appliedPromo.discount_value}%` : `৳${appliedPromo.discount_value}`})</span>
-                    <span>-৳{calculateDiscount().toFixed(2)}</span>
-                  </div>
-                )}
-                
+  {appliedPromo && (
+    <div className="flex justify-between text-green-600 mt-2">
+      <span>
+        Discount ({appliedPromo.discount_type === 'percentage' ? `${appliedPromo.discount_value}%` : `৳${appliedPromo.discount_value}`})
+      </span>
+      <span>-৳{calculateDiscount().toFixed(2)}</span>
+    </div>
+  )}
+</div>
+
                 <hr />
                 
                 <div className="flex justify-between text-lg font-semibold">
