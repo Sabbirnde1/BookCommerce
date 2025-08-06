@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -152,6 +151,29 @@ const Auth = () => {
                     Nijer Cart
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent rounded-lg animate-pulse"></div>
+                </div>
+              </div>
+              
+              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+                Welcome to Your Literary Journey
+              </h1>
+              <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
+                Join thousands of book lovers. Sign in to access your wishlist, orders, and personalized recommendations.
+              </p>
+              
+              {/* Benefits */}
+              <div className="grid md:grid-cols-3 gap-4 mb-8">
+                <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
+                  <Heart className="h-4 w-4 text-primary" />
+                  <span>Save Favorites</span>
+                </div>
+                <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  <span>Track Orders</span>
+                </div>
+                <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
+                  <Shield className="h-4 w-4 text-primary" />
+                  <span>Secure Account</span>
                 </div>
               </div>
             </div>

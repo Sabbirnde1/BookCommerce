@@ -10,7 +10,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
-
 const Cart = () => {
   const {
     items,
@@ -29,7 +28,6 @@ const Cart = () => {
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<any>(null);
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
-
   const handleCheckout = () => {
     if (items.length === 0) {
       toast({
@@ -55,25 +53,14 @@ const Cart = () => {
     setIsApplyingPromo(true);
     
     try {
-      // Change from .single() to regular query to handle no results properly
       const { data, error } = await supabase
         .from('promo_codes')
         .select('*')
         .eq('code', promoCode.toUpperCase())
-        .eq('status', 'active');
+        .eq('status', 'active')
+        .single();
 
-      if (error) {
-        console.error('Error fetching promo code:', error);
-        toast({
-          title: "Error applying promo code",
-          description: "Please try again.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Check if any promo codes were found
-      if (!data || data.length === 0) {
+      if (error || !data) {
         toast({
           title: "Invalid promo code",
           description: "Please check your code and try again.",
@@ -82,11 +69,9 @@ const Cart = () => {
         return;
       }
 
-      const promoData = data[0]; // Get the first (and should be only) result
-
       // Check if promo code is still valid
       const now = new Date();
-      if (promoData.valid_until && new Date(promoData.valid_until) < now) {
+      if (data.valid_until && new Date(data.valid_until) < now) {
         toast({
           title: "Promo code expired",
           description: "This promo code has expired.",
@@ -96,7 +81,7 @@ const Cart = () => {
       }
 
       // Check usage limit
-      if (promoData.usage_limit && promoData.used_count >= promoData.usage_limit) {
+      if (data.usage_limit && data.used_count >= data.usage_limit) {
         toast({
           title: "Promo code limit reached",
           description: "This promo code has reached its usage limit.",
@@ -105,10 +90,11 @@ const Cart = () => {
         return;
       }
 
-      setAppliedPromo(promoData);
+
+      setAppliedPromo(data);
       toast({
         title: "Promo code applied!",
-        description: `You saved ${promoData.discount_type === 'percentage' ? `${promoData.discount_value}%` : `৳${promoData.discount_value}`}`,
+        description: `You saved ${data.discount_type === 'percentage' ? `${data.discount_value}%` : `৳${data.discount_value}`}`,
       });
     } catch (error) {
       console.error('Error applying promo code:', error);
@@ -147,7 +133,6 @@ const Cart = () => {
     const discount = calculateDiscount();
     return subtotal + deliveryCharge - discount;
   };
-
   if (items.length === 0) {
     return <div className="min-h-screen bg-background">
         <Header />
@@ -171,7 +156,6 @@ const Cart = () => {
         </div>
       </div>;
   }
-
   return <div className="min-h-screen bg-background">
       <Header />
       
@@ -269,65 +253,59 @@ const Cart = () => {
                   <span>৳{getTotalPrice().toFixed(2)}</span>
                 </div>
                 
-                {/* <div className="flex justify-between">
+                <div className="flex justify-between">
                   <span>Delivery Charge</span>
                   <span>৳{(getTotalPrice() > 1000 ? 0 : 60).toFixed(2)}</span>
                 </div>
-                 */}
-{/* Promo Code Section */}
-<div className="mt-4 p-4 rounded-xl border border-yellow-300 bg-yellow-50 shadow-sm">
-  <h3 className="text-sm font-semibold text-yellow-800 mb-2">🎁 Have a promo code?</h3>
+                
 
-  <div className="space-y-3 pt-2">
-    {!appliedPromo ? (
-      <div className="flex gap-2">
-        <Input
-          placeholder="Enter promo code"
-          value={promoCode}
-          onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-          className="h-9 border-yellow-300 focus-visible:ring-yellow-400"
-        />
-        <Button 
-          onClick={applyPromoCode}
-          disabled={isApplyingPromo}
-          size="sm"
-          variant="outline"
-          className="border-yellow-400 text-yellow-700 hover:bg-yellow-100"
-        >
-          <Tag className="h-4 w-4 mr-1" />
-          {isApplyingPromo ? "Applying..." : "Apply"}
-        </Button>
-      </div>
-    ) : (
-      <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
-        <div className="flex items-center gap-2">
-          <Tag className="h-4 w-4 text-green-600" />
-          <span className="text-sm font-medium text-green-800">
-            {appliedPromo.code}
-          </span>
-        </div>
-        <Button 
-          onClick={removePromoCode}
-          size="sm"
-          variant="ghost"
-          className="text-green-600 hover:text-green-800"
-        >
-          Remove
-        </Button>
-      </div>
-    )}
-  </div>
+                {/* Promo Code Section */}
+                <div className="space-y-3 pt-2">
+                  {!appliedPromo ? (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter promo code"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                        className="h-9"
+                      />
+                      <Button 
+                        onClick={applyPromoCode}
+                        disabled={isApplyingPromo}
+                        size="sm"
+                        variant="outline"
+                      >
+                        <Tag className="h-4 w-4 mr-1" />
+                        {isApplyingPromo ? "Applying..." : "Apply"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-800">
+                          {appliedPromo.code}
+                        </span>
+                      </div>
+                      <Button 
+                        onClick={removePromoCode}
+                        size="sm"
+                        variant="ghost"
+                        className="text-green-600 hover:text-green-800"
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  )}
+                </div>
 
-  {appliedPromo && (
-    <div className="flex justify-between text-green-600 mt-2">
-      <span>
-        Discount ({appliedPromo.discount_type === 'percentage' ? `${appliedPromo.discount_value}%` : `৳${appliedPromo.discount_value}`})
-      </span>
-      <span>-৳{calculateDiscount().toFixed(2)}</span>
-    </div>
-  )}
-</div>
-
+                {appliedPromo && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Discount ({appliedPromo.discount_type === 'percentage' ? `${appliedPromo.discount_value}%` : `৳${appliedPromo.discount_value}`})</span>
+                    <span>-৳{calculateDiscount().toFixed(2)}</span>
+                  </div>
+                )}
+                
                 <hr />
                 
                 <div className="flex justify-between text-lg font-semibold">
@@ -350,5 +328,4 @@ const Cart = () => {
       <Footer />
     </div>;
 };
-
 export default Cart;
