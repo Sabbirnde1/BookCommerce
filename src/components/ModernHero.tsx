@@ -113,13 +113,13 @@ const ModernHero = () => {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-2 mb-6 animate-fade-in">
               <Star className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-primary">Premium Book Collection</span>
+              <span className="text-sm font-medium text-primary">DIU Computer & Programming CLUB-CPC</span>
             </div>
 
             {/* Main Heading */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-              Discover Your Next
-              <span className="block text-primary">Great Read</span>
+              7% EXTRA OFF!
+              <span className="block text-primary">PROMO Code: NIJERCART_CPC</span>
             </h1>
 
             {/* Subtitle */}
