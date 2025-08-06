@@ -119,7 +119,7 @@ const ModernHero = () => {
             {/* Main Heading */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
               7% EXTRA OFF!
-              <span className="block text-primary">PROMO Code: NIJERCART_CPC</span>
+              <span className="block text-primary">NIJERCART_CPC</span>
             </h1>
 
             {/* Subtitle */}
