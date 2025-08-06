@@ -67,17 +67,9 @@ const HeroSlider = () => {
         if (error) throw error;
 
         if (data && data.length > 0) {
-          // Transform database data to slide format
-          const heroSlides: HeroSlide[] = data.map((hero) => ({
-            id: hero.id,
-            image: hero.image_url,
-            alt: hero.alt_text || hero.title,
-            title: hero.title,
-            subtitle: hero.subtitle || "",
-            cta: hero.cta_text || "Learn More",
-            link: hero.cta_link || "/books"
-          }));
-          setSlides(heroSlides);
+          // Since our new hero_images table structure is different and used for ModernHero backgrounds,
+          // we'll use fallback slides for the HeroSlider component
+          setSlides(fallbackSlides);
         } else {
           // Use fallback slides if no database images
           setSlides(fallbackSlides);

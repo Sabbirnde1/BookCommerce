@@ -54,6 +54,16 @@ export function AdminDashboard() {
   const [promoStatus, setPromoStatus] = useState("active");
   const [editingPromo, setEditingPromo] = useState<any>(null);
 
+  // Hero Images state
+  const [heroImages, setHeroImages] = useState<any[]>([]);
+  const [showHeroDialog, setShowHeroDialog] = useState(false);
+  const [heroDeviceType, setHeroDeviceType] = useState("desktop");
+  const [heroImageUrl, setHeroImageUrl] = useState("");
+  const [heroAltText, setHeroAltText] = useState("");
+  const [heroDisplayOrder, setHeroDisplayOrder] = useState("1");
+  const [heroIsActive, setHeroIsActive] = useState(true);
+  const [editingHero, setEditingHero] = useState<any>(null);
+
   useEffect(() => {
     checkAdminStatus();
   }, [user]);
@@ -63,6 +73,7 @@ export function AdminDashboard() {
       fetchDashboardStats();
       fetchBestAuthors();
       fetchPromoCodes();
+      fetchHeroImages();
     }
   }, [isAdmin]);
 
@@ -460,6 +471,184 @@ export function AdminDashboard() {
     setPromoStatus("active");
   };
 
+  // Hero Images Management Functions
+  const fetchHeroImages = async () => {
+    if (!isAdmin) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('hero_images')
+        .select('*')
+        .order('device_type', { ascending: true })
+        .order('display_order', { ascending: true });
+
+      if (error) throw error;
+      setHeroImages(data || []);
+    } catch (error) {
+      console.error('Error fetching hero images:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch hero images",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const createHeroImage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdmin) return;
+
+    if (!heroImageUrl.trim() || !heroDeviceType) {
+      toast({
+        title: "All required fields must be filled",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const heroData = {
+        device_type: heroDeviceType,
+        image_url: heroImageUrl.trim(),
+        alt_text: heroAltText.trim() || 'Hero background image',
+        display_order: parseInt(heroDisplayOrder) || 1,
+        is_active: heroIsActive,
+        created_by: user?.id
+      };
+
+      const { error } = await supabase
+        .from('hero_images')
+        .insert([heroData]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Hero image added successfully"
+      });
+
+      resetHeroForm();
+      setShowHeroDialog(false);
+      fetchHeroImages();
+    } catch (error: any) {
+      console.error('Error creating hero image:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to add hero image",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const updateHeroImage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdmin || !editingHero) return;
+
+    try {
+      const { error } = await supabase
+        .from('hero_images')
+        .update({
+          device_type: heroDeviceType,
+          image_url: heroImageUrl.trim(),
+          alt_text: heroAltText.trim() || 'Hero background image',
+          display_order: parseInt(heroDisplayOrder) || 1,
+          is_active: heroIsActive
+        })
+        .eq('id', editingHero.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Hero image updated successfully"
+      });
+
+      resetHeroForm();
+      setShowHeroDialog(false);
+      fetchHeroImages();
+    } catch (error: any) {
+      console.error('Error updating hero image:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update hero image",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const deleteHeroImage = async (id: string) => {
+    if (!isAdmin) return;
+
+    try {
+      const { error } = await supabase
+        .from('hero_images')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Hero image deleted successfully"
+      });
+
+      fetchHeroImages();
+    } catch (error) {
+      console.error('Error deleting hero image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete hero image",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const toggleHeroImageStatus = async (id: string, currentStatus: boolean) => {
+    if (!isAdmin) return;
+
+    try {
+      const { error } = await supabase
+        .from('hero_images')
+        .update({ is_active: !currentStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Hero image ${!currentStatus ? 'activated' : 'deactivated'}`
+      });
+
+      fetchHeroImages();
+    } catch (error) {
+      console.error('Error updating hero image status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update hero image status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openEditHeroDialog = (hero: any) => {
+    setEditingHero(hero);
+    setHeroDeviceType(hero.device_type);
+    setHeroImageUrl(hero.image_url);
+    setHeroAltText(hero.alt_text || '');
+    setHeroDisplayOrder(hero.display_order.toString());
+    setHeroIsActive(hero.is_active);
+    setShowHeroDialog(true);
+  };
+
+  const resetHeroForm = () => {
+    setEditingHero(null);
+    setHeroDeviceType("desktop");
+    setHeroImageUrl("");
+    setHeroAltText("");
+    setHeroDisplayOrder("1");
+    setHeroIsActive(true);
+  };
+
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -538,11 +727,12 @@ export function AdminDashboard() {
       )}
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
           <TabsTrigger value="promo">Promo Codes</TabsTrigger>
+          <TabsTrigger value="hero">Hero Images</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
@@ -816,6 +1006,114 @@ export function AdminDashboard() {
           </Card>
         </TabsContent>
 
+        {/* Hero Images Tab */}
+        <TabsContent value="hero">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="h-5 w-5" />
+                    Hero Images Management
+                  </CardTitle>
+                  <CardDescription>
+                    Manage hero background images for different devices (Desktop, Tablet, Mobile).
+                  </CardDescription>
+                </div>
+                <Button onClick={() => {
+                  resetHeroForm();
+                  setShowHeroDialog(true);
+                }}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Hero Image
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Device Type</TableHead>
+                      <TableHead>Image URL</TableHead>
+                      <TableHead>Alt Text</TableHead>
+                      <TableHead>Order</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {heroImages.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                          No hero images found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      heroImages.map((hero) => (
+                        <TableRow key={hero.id}>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {hero.device_type.charAt(0).toUpperCase() + hero.device_type.slice(1)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="max-w-xs truncate font-mono text-sm">
+                              {hero.image_url}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="max-w-xs truncate">
+                              {hero.alt_text}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              {hero.display_order}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={hero.is_active ? 'default' : 'secondary'}
+                            >
+                              {hero.is_active ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openEditHeroDialog(hero)}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => toggleHeroImageStatus(hero.id, hero.is_active)}
+                              >
+                                {hero.is_active ? <XCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => deleteHeroImage(hero.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* Analytics Tab */}
         <TabsContent value="analytics">
           <AdvancedAnalytics />
@@ -994,6 +1292,100 @@ export function AdminDashboard() {
               </Button>
               <Button type="submit" disabled={loading}>
                 {loading ? "Saving..." : (editingPromo ? "Update" : "Create")} Promo Code
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Hero Image Dialog */}
+      <Dialog open={showHeroDialog} onOpenChange={setShowHeroDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {editingHero ? 'Edit Hero Image' : 'Add Hero Image'}
+            </DialogTitle>
+            <DialogDescription>
+              {editingHero ? 'Update the hero image details' : 'Add a new hero background image for a specific device'}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={editingHero ? updateHeroImage : createHeroImage} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="device-type">Device Type *</Label>
+              <Select value={heroDeviceType} onValueChange={setHeroDeviceType}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desktop">Desktop</SelectItem>
+                  <SelectItem value="tablet">Tablet</SelectItem>
+                  <SelectItem value="mobile">Mobile</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="image-url">Image URL *</Label>
+              <Input
+                id="image-url"
+                type="url"
+                placeholder="https://example.com/image.jpg or /src/assets/hero.jpg"
+                value={heroImageUrl}
+                onChange={(e) => setHeroImageUrl(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="alt-text">Alt Text</Label>
+              <Input
+                id="alt-text"
+                type="text"
+                placeholder="Hero background image"
+                value={heroAltText}
+                onChange={(e) => setHeroAltText(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="display-order">Display Order</Label>
+              <Input
+                id="display-order"
+                type="number"
+                placeholder="1"
+                value={heroDisplayOrder}
+                onChange={(e) => setHeroDisplayOrder(e.target.value)}
+                min="1"
+              />
+              <p className="text-xs text-muted-foreground">
+                Lower numbers take priority for the same device type
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="hero-active"
+                  checked={heroIsActive}
+                  onCheckedChange={(checked) => setHeroIsActive(checked === true)}
+                />
+                <Label htmlFor="hero-active">Active</Label>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Only active images will be displayed on the website
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowHeroDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Saving..." : (editingHero ? "Update" : "Add")} Hero Image
               </Button>
             </div>
           </form>

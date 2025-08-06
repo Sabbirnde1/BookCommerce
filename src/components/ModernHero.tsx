@@ -1,31 +1,103 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Star } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import heroDesktop from "@/assets/hero-desktop.jpg";
 import heroTablet from "@/assets/hero-tablet.jpg";
 import heroMobile from "@/assets/hero-mobile.jpg";
 
+interface HeroImage {
+  device_type: 'desktop' | 'tablet' | 'mobile';
+  image_url: string;
+  alt_text: string;
+}
+
 const ModernHero = () => {
+  const [heroImages, setHeroImages] = useState<HeroImage[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHeroImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('hero_images')
+          .select('device_type, image_url, alt_text')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          setHeroImages(data as HeroImage[]);
+        } else {
+          // Fallback to static images if no data from database
+          setHeroImages([
+            { device_type: 'desktop', image_url: heroDesktop, alt_text: 'Desktop hero background' },
+            { device_type: 'tablet', image_url: heroTablet, alt_text: 'Tablet hero background' },
+            { device_type: 'mobile', image_url: heroMobile, alt_text: 'Mobile hero background' }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching hero images:', error);
+        // Fallback to static images on error
+        setHeroImages([
+          { device_type: 'desktop', image_url: heroDesktop, alt_text: 'Desktop hero background' },
+          { device_type: 'tablet', image_url: heroTablet, alt_text: 'Tablet hero background' },
+          { device_type: 'mobile', image_url: heroMobile, alt_text: 'Mobile hero background' }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeroImages();
+  }, []);
+
+  const getImageForDevice = (deviceType: 'desktop' | 'tablet' | 'mobile') => {
+    const image = heroImages.find(img => img.device_type === deviceType);
+    return image || { 
+      device_type: deviceType, 
+      image_url: deviceType === 'desktop' ? heroDesktop : deviceType === 'tablet' ? heroTablet : heroMobile,
+      alt_text: `${deviceType} hero background`
+    };
+  };
+
+  if (loading) {
+    return (
+      <section className="relative h-screen min-h-[600px] max-h-[800px] overflow-hidden bg-background">
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent"></div>
+        <div className="relative h-full flex items-center justify-center">
+          <div className="animate-pulse text-muted-foreground">Loading...</div>
+        </div>
+      </section>
+    );
+  }
+
+  const desktopImage = getImageForDevice('desktop');
+  const tabletImage = getImageForDevice('tablet');
+  const mobileImage = getImageForDevice('mobile');
+
   return (
     <section className="relative h-screen min-h-[600px] max-h-[800px] overflow-hidden">
       {/* Responsive Background Images */}
       <div className="absolute inset-0">
         {/* Desktop Image */}
         <img
-          src={heroDesktop}
-          alt="Modern bookstore hero"
+          src={desktopImage.image_url}
+          alt={desktopImage.alt_text}
           className="hidden lg:block w-full h-full object-cover object-center"
         />
         {/* Tablet Image */}
         <img
-          src={heroTablet}
-          alt="Modern bookstore hero"
+          src={tabletImage.image_url}
+          alt={tabletImage.alt_text}
           className="hidden md:block lg:hidden w-full h-full object-cover object-center"
         />
         {/* Mobile Image */}
         <img
-          src={heroMobile}
-          alt="Modern bookstore hero"
+          src={mobileImage.image_url}
+          alt={mobileImage.alt_text}
           className="block md:hidden w-full h-full object-cover object-center"
         />
       </div>
@@ -38,7 +110,11 @@ const ModernHero = () => {
       <div className="relative h-full flex items-center">
         <div className="container mx-auto px-4 md:px-8">
           <div className="max-w-2xl text-left">
-         
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-2 mb-6 animate-fade-in">
+              <Star className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium text-primary">Premium Book Collection</span>
+            </div>
 
             {/* Main Heading */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
