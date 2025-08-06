@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -152,11 +153,6 @@ const Auth = () => {
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent rounded-lg animate-pulse"></div>
                 </div>
-              </div>
-              
-              
-              
-              
               </div>
             </div>
 
