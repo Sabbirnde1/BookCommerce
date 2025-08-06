@@ -269,11 +269,11 @@ const Cart = () => {
                   <span>৳{getTotalPrice().toFixed(2)}</span>
                 </div>
                 
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <span>Delivery Charge</span>
                   <span>৳{(getTotalPrice() > 1000 ? 0 : 60).toFixed(2)}</span>
                 </div>
-                
+                 */}
 
                 {/* Promo Code Section */}
                 <div className="space-y-3 pt-2">
