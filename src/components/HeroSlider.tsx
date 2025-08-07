@@ -13,12 +13,12 @@ import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
 import { supabase } from "@/integrations/supabase/client";
 
-// Images
+// Local fallback images (optional if Supabase fails)
 import heroBanner1 from "@/assets/hero-banner-1.jpg";
 import heroBanner2 from "@/assets/hero-banner-2.jpg";
 import heroBanner3 from "@/assets/hero-banner-3.jpg";
 
-// Slide Interface
+// Slide interface
 interface HeroSlide {
   id: string | number;
   image: string;
@@ -29,7 +29,7 @@ interface HeroSlide {
   link: string;
 }
 
-// Manually Controlled Slides (Update here when needed)
+// Manual fallback slides
 const manualSlides: HeroSlide[] = [
   {
     id: 1,
@@ -75,7 +75,7 @@ const HeroSlider = () => {
     })
   );
 
-  // Fetch from Supabase or use manual fallback
+  // Fetch slides from Supabase
   useEffect(() => {
     const fetchHeroImages = async () => {
       try {
@@ -87,8 +87,21 @@ const HeroSlider = () => {
 
         if (error) throw error;
 
-        // Fallback to manual slides regardless (for full manual control)
-        setSlides(manualSlides);
+        if (data && data.length > 0) {
+          const mappedSlides: HeroSlide[] = data.map((item) => ({
+            id: item.id,
+            image: item.image_url,
+            alt: item.alt || "",
+            title: item.title || "",
+            subtitle: item.subtitle || "",
+            cta: item.cta || "Learn More",
+            link: item.link || "/",
+          }));
+
+          setSlides(mappedSlides);
+        } else {
+          setSlides(manualSlides);
+        }
       } catch (error) {
         console.error("Error fetching hero images:", error);
         setSlides(manualSlides);
@@ -100,11 +113,10 @@ const HeroSlider = () => {
     fetchHeroImages();
   }, []);
 
-  // Sync carousel position
+  // Handle carousel change
   useEffect(() => {
     if (!api) return;
     setCurrent(api.selectedScrollSnap());
-
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap());
     });
@@ -168,7 +180,7 @@ const HeroSlider = () => {
         </div>
       </Carousel>
 
-      {/* Indicators */}
+      {/* Slide Indicators */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
         {slides.map((_, index) => (
           <button
