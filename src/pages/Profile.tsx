@@ -233,32 +233,7 @@ const Profile = () => {
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-6">
-              {/* Profile Information - Main Column */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Quick Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className="p-4 text-center">
-                    <BookOpen className="h-8 w-8 mx-auto text-primary mb-2" />
-                    <p className="text-2xl font-bold">{bookRequests.length}</p>
-                    <p className="text-sm text-muted-foreground">Book Requests</p>
-                  </Card>
-                  <Card className="p-4 text-center">
-                    <CheckCircle className="h-8 w-8 mx-auto text-green-600 mb-2" />
-                    <p className="text-2xl font-bold">
-                      {bookRequests.filter(r => r.status === 'found').length}
-                    </p>
-                    <p className="text-sm text-muted-foreground">Found Books</p>
-                  </Card>
-                  <Card className="p-4 text-center">
-                    <Clock className="h-8 w-8 mx-auto text-yellow-600 mb-2" />
-                    <p className="text-2xl font-bold">
-                      {bookRequests.filter(r => r.status === 'pending').length}
-                    </p>
-                    <p className="text-sm text-muted-foreground">Pending</p>
-                  </Card>
-                </div>
-
+            
                 {/* Profile Form */}
                 <Card>
                   <CardHeader>
@@ -361,6 +336,31 @@ const Profile = () => {
                     </form>
                   </CardContent>
                 </Card>
+           <div className="grid lg:grid-cols-3 gap-6">
+              {/* Profile Information - Main Column */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Quick Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="p-4 text-center">
+                    <BookOpen className="h-8 w-8 mx-auto text-primary mb-2" />
+                    <p className="text-2xl font-bold">{bookRequests.length}</p>
+                    <p className="text-sm text-muted-foreground">Book Requests</p>
+                  </Card>
+                  <Card className="p-4 text-center">
+                    <CheckCircle className="h-8 w-8 mx-auto text-green-600 mb-2" />
+                    <p className="text-2xl font-bold">
+                      {bookRequests.filter(r => r.status === 'found').length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Found Books</p>
+                  </Card>
+                  <Card className="p-4 text-center">
+                    <Clock className="h-8 w-8 mx-auto text-yellow-600 mb-2" />
+                    <p className="text-2xl font-bold">
+                      {bookRequests.filter(r => r.status === 'pending').length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Pending</p>
+                  </Card>
+                </div>
 
                 {/* Book Requests */}
                 <Card>
