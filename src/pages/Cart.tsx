@@ -57,10 +57,9 @@ const Cart = () => {
         .from('promo_codes')
         .select('*')
         .eq('code', promoCode.toUpperCase())
-        .eq('status', 'active')
-        .single();
+        .eq('status', 'active');
 
-      if (error || !data) {
+      if (error || !data || data.length === 0) {
         toast({
           title: "Invalid promo code",
           description: "Please check your code and try again.",
@@ -69,9 +68,11 @@ const Cart = () => {
         return;
       }
 
+      const promo = data[0];
+
       // Check if promo code is still valid
       const now = new Date();
-      if (data.valid_until && new Date(data.valid_until) < now) {
+      if (promo.valid_until && new Date(promo.valid_until) < now) {
         toast({
           title: "Promo code expired",
           description: "This promo code has expired.",
@@ -81,7 +82,7 @@ const Cart = () => {
       }
 
       // Check usage limit
-      if (data.usage_limit && data.used_count >= data.usage_limit) {
+      if (promo.usage_limit && promo.used_count >= promo.usage_limit) {
         toast({
           title: "Promo code limit reached",
           description: "This promo code has reached its usage limit.",
@@ -90,11 +91,10 @@ const Cart = () => {
         return;
       }
 
-
-      setAppliedPromo(data);
+      setAppliedPromo(promo);
       toast({
         title: "Promo code applied!",
-        description: `You saved ${data.discount_type === 'percentage' ? `${data.discount_value}%` : `৳${data.discount_value}`}`,
+        description: `You saved ${promo.discount_type === 'percentage' ? `${promo.discount_value}%` : `৳${promo.discount_value}`}`,
       });
     } catch (error) {
       console.error('Error applying promo code:', error);
