@@ -20,7 +20,7 @@ export function FinancialReports({ dateRange }: FinancialReportsProps) {
   const [revenueData, setRevenueData] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
   const [profitLossData, setProfitLossData] = useState<any>({});
-  // const [taxData, setTaxData] = useState<any>({});
+  const [taxData, setTaxData] = useState<any>({});
   const [reportType, setReportType] = useState('monthly');
   const [loading, setLoading] = useState(true);
 
@@ -136,7 +136,7 @@ export function FinancialReports({ dateRange }: FinancialReportsProps) {
       corporateTax,
       vatPayable,
       taxCredit,
-      totalTaxLiability: corporateTax + vatPayable - taxCredit
+      // totalTaxLiability: corporateTax + vatPayable - taxCredit
     };
   };
 
