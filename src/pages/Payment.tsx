@@ -148,7 +148,7 @@ const Payment = () => {
       // Calculate totals
       const subtotal = getTotalPrice();
       const deliveryCharge = subtotal > 1000 ? 0 : 60;
-      const tax = subtotal * 0.08;
+      // const tax = subtotal * 0.08;
       
       // Calculate discount
       let discount = 0;
