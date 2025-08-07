@@ -20,7 +20,7 @@ export function FinancialReports({ dateRange }: FinancialReportsProps) {
   const [revenueData, setRevenueData] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
   const [profitLossData, setProfitLossData] = useState<any>({});
-  //const [taxData, setTaxData] = useState<any>({});
+  // const [taxData, setTaxData] = useState<any>({});
   const [reportType, setReportType] = useState('monthly');
   const [loading, setLoading] = useState(true);
 
@@ -52,8 +52,8 @@ export function FinancialReports({ dateRange }: FinancialReportsProps) {
       setProfitLossData(profitLoss);
 
       // Generate tax data
-      //const tax = generateTaxData(profitLoss);
-      //setTaxData(tax);
+      const tax = generateTaxData(profitLoss);
+      setTaxData(tax);
 
     } catch (error) {
       console.error('Error fetching financial data:', error);
@@ -125,20 +125,20 @@ export function FinancialReports({ dateRange }: FinancialReportsProps) {
     };
   };
 
-  // const generateTaxData = (profitLoss: any) => {
-  //   const taxableIncome = Math.max(0, profitLoss.netProfit);
-  //  // const corporateTax = taxableIncome * 0.25; // 25% corporate tax rate
-  //   const vatPayable = profitLoss.totalRevenue * 0.15; // 15% VAT
-  //   const taxCredit = Math.min(corporateTax * 0.1, 5000); // Sample tax credit
+  const generateTaxData = (profitLoss: any) => {
+    const taxableIncome = Math.max(0, profitLoss.netProfit);
+    const corporateTax = taxableIncome * 0.25; // 25% corporate tax rate
+    const vatPayable = profitLoss.totalRevenue * 0.15; // 15% VAT
+    const taxCredit = Math.min(corporateTax * 0.1, 5000); // Sample tax credit
 
-  //   return {
-  //     taxableIncome,
-  //     corporateTax,
-  //     vatPayable,
-  //     taxCredit,
-  //     totalTaxLiability: corporateTax + vatPayable - taxCredit
-  //   };
-  // };
+    return {
+      taxableIncome,
+      corporateTax,
+      vatPayable,
+      taxCredit,
+      totalTaxLiability: corporateTax + vatPayable - taxCredit
+    };
+  };
 
   const exportReport = (type: string) => {
     toast.success(`Exporting ${type} report...`);
