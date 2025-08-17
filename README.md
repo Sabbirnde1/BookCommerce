@@ -137,9 +137,15 @@ BookCommerce/
 │   │   └── database.php   # Database config
 │   ├── models/            # Data models
 │   │   ├── User.php       # User model
+<<<<<<< HEAD
 │   │   ├── Book.php      # Book model
 │   │   ├── Category.php   # Category model
 │   │   └── Cart.php      # Cart model
+=======
+│   │   ├── Book.php       # Book model
+│   │   ├── Category.php   # Category model
+│   │   └── Cart.php       # Cart model
+>>>>>>> fa150bb ( Convert backend to PHP + MySQL architecture)
 │   ├── middleware/        # Authentication middleware
 │   ├── utils/             # Utility classes
 │   └── setup.php          # Database setup script
