@@ -139,7 +139,7 @@ BookCommerce/
 │   │   ├── User.php       # User model
 │   │   ├── Book.php      # Book model
 │   │   ├── Category.php   # Category model
-│   │   └── Cart.php       # Cart model
+│   │   └── Cart.php      # Cart model
 │   ├── middleware/        # Authentication middleware
 │   ├── utils/             # Utility classes
 │   └── setup.php          # Database setup script
