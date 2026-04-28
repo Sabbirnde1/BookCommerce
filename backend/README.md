@@ -32,7 +32,7 @@ A RESTful PHP backend API for the BookCommerce e-commerce platform with MySQL da
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Sabbirnde/BookCommerce.git
+git clone <repository-url>
 cd BookCommerce
 ```
 

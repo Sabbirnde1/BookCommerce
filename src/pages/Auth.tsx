@@ -143,7 +143,7 @@ const Auth = () => {
               <div className="flex justify-center mb-6">
                 <div className="relative animate-fade-in flex items-center space-x-4">
                   <img 
-                    src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
+                    src="/uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
                     alt="Nijercart Logo" 
                     className="h-16 w-auto drop-shadow-2xl hover:scale-110 transition-transform duration-300"
                   />

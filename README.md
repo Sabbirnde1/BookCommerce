@@ -293,4 +293,10 @@ If you have any questions or run into issues:
 
 1. Check your project's issue tracker
 2. Create a new issue if your problem isn't already reported
+<<<<<<< HEAD
 3. Provide as much detail as possible including your OS, Node.js version, and error messages
+=======
+3. Provide as much detail as possible including your OS, Node.js version, and error messages
+
+
+>>>>>>> f1f0b6d (Development)

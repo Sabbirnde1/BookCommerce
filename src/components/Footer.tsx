@@ -10,7 +10,7 @@ export function Footer() {
           <div className="flex items-center space-x-3 mb-4 hover:scale-105 transition-transform duration-200">
             <div className="relative">
               <img 
-                src="/lovable-uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
+                src="/uploads/848411c9-0b2c-45e9-a022-488d67f663e4.png" 
                 alt="Nijercart Logo" 
                 className="h-12 w-auto drop-shadow-lg hover:drop-shadow-xl transition-all duration-200 brightness-0 invert"
               />
